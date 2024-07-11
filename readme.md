@@ -50,8 +50,8 @@ model Item {
 
 # Todo
 - [x] Setup database
-- [ ] Create management routes
+- [x] Create management routes
     - [x] Create
     - [x] Edit
     - [x] Delete
-    - [ ] Get
+    - [x] Get

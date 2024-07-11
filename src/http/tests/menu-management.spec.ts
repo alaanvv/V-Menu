@@ -104,4 +104,12 @@ describe('Menu management', _ => {
       expect(res.statusCode).toEqual(204)
     })
   })
+
+  describe('GET /menu', _ => {
+    it('should be able to get a menu', async _ => {
+      const res = await request(app.server).get(`/menu/${menu_id}`)
+
+      expect(res.statusCode).toEqual(200)
+    })
+  })
 })

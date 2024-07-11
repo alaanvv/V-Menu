@@ -51,7 +51,4 @@ model Item {
 # Todo
 - [x] Setup database
 - [x] Create management routes
-    - [x] Create
-    - [x] Edit
-    - [x] Delete
-    - [x] Get
+- [ ] Frontend to manage menus

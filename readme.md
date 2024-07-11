@@ -4,7 +4,7 @@
 - [Todo](#todo)
 
 # Database
-```prisma   
+```prisma
  model Menu {
   id         String     @id @default(cuid())
   name       String
@@ -48,11 +48,10 @@ model Item {
 }
 ```
 
-# Routes
-
 # Todo
 - [x] Setup database
 - [ ] Create management routes
-    - [ ] Create
-    - [ ] Edit
-    - [ ] Delete
+    - [x] Create
+    - [x] Edit
+    - [x] Delete
+    - [ ] Get

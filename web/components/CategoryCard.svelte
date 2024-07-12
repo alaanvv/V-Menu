@@ -6,8 +6,8 @@
       <Button class='grn' i='add'    t='Subcategoria' action={create_sub} />
       <Button class='blu' i='edit'   action={edit} />
       <Button class='red' i='delete' action={_delete} />
+      <Button             i='keyboard_arrow_up' action={move_up} />
       <Button             i='keyboard_arrow_down' />
-      <Button             i='keyboard_arrow_up' />
     </div>
   </div>
 
@@ -23,7 +23,7 @@
 
 <script>
   import SubcategoryModal from '../components/SubcategoryModal.svelte'
-  import SubcategoryCard from '../components/SubcategoryCard.svelte'
+  import SubcategoryCard  from '../components/SubcategoryCard.svelte'
   import CategoryModal    from '../components/CategoryModal.svelte'
   import Button           from '../components/Button.svelte'
 
@@ -40,6 +40,9 @@
 
     api(`category/${category.id}`, 'DELETE')
     menu.set({ ...$menu, categories: $menu.categories.filter(c => c.id != category.id) })
+  }
+  function move_up() {
+    api(`raise-category/${category.id}`, 'PUT')
   }
 </script>
 

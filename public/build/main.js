@@ -2555,7 +2555,7 @@ const file$3 = "web/components/CategoryCard.svelte";
 
 function get_each_context$1(ctx, list, i) {
 	const child_ctx = ctx.slice();
-	child_ctx[9] = list[i];
+	child_ctx[10] = list[i];
 	return child_ctx;
 }
 
@@ -2565,7 +2565,7 @@ function create_each_block$1(ctx) {
 	let current;
 
 	subcategorycard = new SubcategoryCard({
-			props: { subcategory: /*subcategory*/ ctx[9] },
+			props: { subcategory: /*subcategory*/ ctx[10] },
 			$$inline: true
 		});
 
@@ -2579,7 +2579,7 @@ function create_each_block$1(ctx) {
 		},
 		p: function update(ctx, dirty) {
 			const subcategorycard_changes = {};
-			if (dirty & /*category*/ 1) subcategorycard_changes.subcategory = /*subcategory*/ ctx[9];
+			if (dirty & /*category*/ 1) subcategorycard_changes.subcategory = /*subcategory*/ ctx[10];
 			subcategorycard.$set(subcategorycard_changes);
 		},
 		i: function intro(local) {
@@ -2663,12 +2663,15 @@ function create_fragment$4(ctx) {
 		});
 
 	button3 = new Button({
-			props: { i: "keyboard_arrow_down" },
+			props: {
+				i: "keyboard_arrow_up",
+				action: /*move_up*/ ctx[6]
+			},
 			$$inline: true
 		});
 
 	button4 = new Button({
-			props: { i: "keyboard_arrow_up" },
+			props: { i: "keyboard_arrow_down" },
 			$$inline: true
 		});
 
@@ -2685,7 +2688,7 @@ function create_fragment$4(ctx) {
 	});
 
 	function categorymodal_show_binding(value) {
-		/*categorymodal_show_binding*/ ctx[6](value);
+		/*categorymodal_show_binding*/ ctx[7](value);
 	}
 
 	let categorymodal_props = { id: /*category*/ ctx[0].id };
@@ -2702,7 +2705,7 @@ function create_fragment$4(ctx) {
 	binding_callbacks.push(() => bind(categorymodal, 'show', categorymodal_show_binding));
 
 	function subcategorymodal_show_binding(value) {
-		/*subcategorymodal_show_binding*/ ctx[7](value);
+		/*subcategorymodal_show_binding*/ ctx[8](value);
 	}
 
 	let subcategorymodal_props = { category_id: /*category*/ ctx[0].id };
@@ -2753,7 +2756,7 @@ function create_fragment$4(ctx) {
 			attr_dev(div1, "class", "row");
 			set_style(div1, "justify-content", "space-between");
 			add_location(div1, file$3, 1, 2, 25);
-			add_location(ul, file$3, 13, 2, 482);
+			add_location(ul, file$3, 13, 2, 499);
 			attr_dev(div2, "class", "category svelte-4wlb3k");
 			add_location(div2, file$3, 0, 0, 0);
 		},
@@ -2904,7 +2907,7 @@ function create_fragment$4(ctx) {
 function instance$4($$self, $$props, $$invalidate) {
 	let $menu;
 	validate_store(menu, 'menu');
-	component_subscribe($$self, menu, $$value => $$invalidate(8, $menu = $$value));
+	component_subscribe($$self, menu, $$value => $$invalidate(9, $menu = $$value));
 	let { $$slots: slots = {}, $$scope } = $$props;
 	validate_slots('CategoryCard', slots, []);
 	let { category } = $$props;
@@ -2926,6 +2929,10 @@ function instance$4($$self, $$props, $$invalidate) {
 			...$menu,
 			categories: $menu.categories.filter(c => c.id != category.id)
 		});
+	}
+
+	function move_up() {
+		api(`raise-category/${category.id}`, 'PUT');
 	}
 
 	$$self.$$.on_mount.push(function () {
@@ -2967,6 +2974,7 @@ function instance$4($$self, $$props, $$invalidate) {
 		create_sub,
 		edit,
 		_delete,
+		move_up,
 		$menu
 	});
 
@@ -2987,6 +2995,7 @@ function instance$4($$self, $$props, $$invalidate) {
 		create_sub,
 		edit,
 		_delete,
+		move_up,
 		categorymodal_show_binding,
 		subcategorymodal_show_binding
 	];

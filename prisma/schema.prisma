@@ -22,6 +22,7 @@ model Category {
   id            String        @id @default(cuid())
   menu_id       String
   name          String
+  pos           Int           @default(autoincrement())
 
   menu          Menu          @relation(fields: [menu_id], references: [id], onDelete: Cascade)
   subcategories Subcategory[]
@@ -32,6 +33,7 @@ model Subcategory {
   id          String   @id @default(cuid())
   category_id String
   name        String
+  pos         Int      @default(autoincrement())
 
   category    Category @relation(fields: [category_id], references: [id], onDelete: Cascade)
   items       Item[]
@@ -44,6 +46,7 @@ model Item {
   name           String
   description    String
   price_in_cents Decimal
+  pos            Int         @default(autoincrement())
 
   subcategory    Subcategory @relation(fields: [subcategory_id], references: [id], onDelete: Cascade)
   @@map("items")

@@ -12,14 +12,14 @@ export default async function(app: FastifyInstance) {
     if (!menu)
       throw new NotFoundError('Menu not found.')
 
-    const categories = await prisma.category.findMany({ where: { menu_id: id } })
+    const categories = await prisma.category.findMany({ where: { menu_id: id }, orderBy: { pos: 'asc' } })
 
     for (let i in categories) {
-      const subcategories = await prisma.subcategory.findMany({ where: { category_id: categories[i].id } })
+      const subcategories = await prisma.subcategory.findMany({ where: { category_id: categories[i].id }, orderBy: { pos: 'asc' } })
       ;(categories[i] as any).subcategories = subcategories
 
       for (let i in subcategories) {
-        const items = await prisma.item.findMany({ where: { subcategory_id: subcategories[i].id } })
+        const items = await prisma.item.findMany({ where: { subcategory_id: subcategories[i].id }, orderBy: { pos: 'asc' } })
         ;(subcategories[i] as any).items = items
       }
     }

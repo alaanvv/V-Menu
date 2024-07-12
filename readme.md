@@ -51,4 +51,7 @@ model Item {
 # Todo
 - [x] Setup database
 - [x] Create management routes
-- [ ] Frontend to manage menus
+- [x] Frontend to manage menus
+- [ ] Create order features
+    - [ ] Routes
+    - [ ] Consume

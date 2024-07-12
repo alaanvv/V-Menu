@@ -38,8 +38,7 @@ html, body {
 h1 {
   color: #ff3e00;
   text-transform: uppercase;
-  font-size: 4em;
-  font-weight: 100;
+  font-size: 2em;
 }
 
 h1, h2, h3, h4, h5, h6 {
@@ -158,6 +157,8 @@ button.grn {
   margin-top: 20px;
 }
 
+.jcsb { justify-content: space-between; }
+
 .hr {
   width: 100%;
   margin: 20px 0;
@@ -259,4 +260,9 @@ button.grn {
 
     width: 100%;
   }
+}
+
+ul {
+  padding: 0;
+  margin: 0;
 }

@@ -1,0 +1,54 @@
+<div class='category'>
+  <div class='row' style='justify-content: space-between;'>
+    <h2> {category.name} </h2>
+
+    <div class='row' style='justify-content: end;'>
+      <Button class='grn' i='add'    t='Subcategoria' action={create_subcategory} />
+      <Button class='blu' i='edit'   action={edit_category} />
+      <Button class='red' i='delete' action={delete_category} />
+      <Button             i='keyboard_arrow_down' />
+      <Button             i='keyboard_arrow_up' />
+    </div>
+  </div>
+
+  <ul>
+    {#each category.subcategories || [] as subcategory}
+      <SubcategoryCard {subcategory} />
+    {/each}
+  </ul>
+</div>
+
+<CategoryModal    bind:show={m_edit}        id={category.id} />
+<SubcategoryModal bind:show={m_subcategory} category_id={category.id} />
+
+<script>
+  import SubcategoryModal from '../components/SubcategoryModal.svelte'
+  import SubcategoryCard from '../components/SubcategoryCard.svelte'
+  import CategoryModal    from '../components/CategoryModal.svelte'
+  import Button           from '../components/Button.svelte'
+
+  import { api } from '../utils/api.js'
+  import { menu } from '../store.js'
+
+  export let category
+  let m_edit, m_subcategory
+
+  function create_subcategory() { m_subcategory = 1 }
+  function edit_category()      { m_edit        = 1 }
+  function delete_category() {
+    if (!confirm('Certeza que quer excluir essa categoria?')) return
+
+    api(`category/${category.id}`, 'DELETE')
+    menu.set({ ...$menu, categories: $menu.categories.filter(c => c.id != category.id) })
+  }
+</script>
+
+<style>
+  .category {
+    padding: 15px;
+    border: 3px solid var(--gray);
+    margin-top: 15px;
+
+    font-size: 1.1em;
+  }
+</style>

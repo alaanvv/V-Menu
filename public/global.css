@@ -133,6 +133,10 @@ button:disabled, button:disabled span {
   cursor: not-allowed !important;
 }
 
+form button {
+  width: 100%;
+}
+
 button.blu {
   background-color: var(--blue);
   color: white;

@@ -1322,19 +1322,18 @@ function create_default_slot$2(ctx) {
 			t2 = space();
 			form_1 = element("form");
 			label = element("label");
-			t3 = text("Nome:\n        ");
+			t3 = text("Nome: ");
 			input = element("input");
 			t4 = space();
 			button = element("button");
 			t5 = text(t5_value);
 			add_location(h2, file$7, 2, 4, 42);
 			input.required = true;
-			add_location(input, file$7, 6, 8, 137);
-			attr_dev(label, "class", "svelte-17dl953");
+			add_location(input, file$7, 5, 20, 129);
+			attr_dev(label, "class", "svelte-1mya8io");
 			add_location(label, file$7, 5, 6, 115);
 			button.disabled = /*l_submitting*/ ctx[2];
-			attr_dev(button, "class", "svelte-17dl953");
-			add_location(button, file$7, 9, 6, 201);
+			add_location(button, file$7, 7, 6, 187);
 			add_location(form_1, file$7, 4, 4, 102);
 		},
 		m: function mount(target, anchor) {
@@ -1681,19 +1680,18 @@ function create_default_slot$1(ctx) {
 			t2 = space();
 			form_1 = element("form");
 			label = element("label");
-			t3 = text("Nome:\n        ");
+			t3 = text("Nome: ");
 			input = element("input");
 			t4 = space();
 			button = element("button");
 			t5 = text(t5_value);
 			add_location(h2, file$6, 2, 4, 42);
 			input.required = true;
-			add_location(input, file$6, 6, 8, 140);
-			attr_dev(label, "class", "svelte-17dl953");
+			add_location(input, file$6, 5, 20, 132);
+			attr_dev(label, "class", "svelte-1mya8io");
 			add_location(label, file$6, 5, 6, 118);
 			button.disabled = /*l_submitting*/ ctx[2];
-			attr_dev(button, "class", "svelte-17dl953");
-			add_location(button, file$6, 9, 6, 204);
+			add_location(button, file$6, 7, 6, 190);
 			add_location(form_1, file$6, 4, 4, 105);
 		},
 		m: function mount(target, anchor) {
@@ -2641,7 +2639,7 @@ function create_fragment$4(ctx) {
 				class: "grn",
 				i: "add",
 				t: "Subcategoria",
-				action: /*create_subcategory*/ ctx[3]
+				action: /*create_sub*/ ctx[3]
 			},
 			$$inline: true
 		});
@@ -2650,7 +2648,7 @@ function create_fragment$4(ctx) {
 			props: {
 				class: "blu",
 				i: "edit",
-				action: /*edit_category*/ ctx[4]
+				action: /*edit*/ ctx[4]
 			},
 			$$inline: true
 		});
@@ -2659,7 +2657,7 @@ function create_fragment$4(ctx) {
 			props: {
 				class: "red",
 				i: "delete",
-				action: /*delete_category*/ ctx[5]
+				action: /*_delete*/ ctx[5]
 			},
 			$$inline: true
 		});
@@ -2755,8 +2753,8 @@ function create_fragment$4(ctx) {
 			attr_dev(div1, "class", "row");
 			set_style(div1, "justify-content", "space-between");
 			add_location(div1, file$3, 1, 2, 25);
-			add_location(ul, file$3, 13, 2, 507);
-			attr_dev(div2, "class", "category svelte-1gf52la");
+			add_location(ul, file$3, 13, 2, 482);
+			attr_dev(div2, "class", "category svelte-4wlb3k");
 			add_location(div2, file$3, 0, 0, 0);
 		},
 		l: function claim(nodes) {
@@ -2912,15 +2910,15 @@ function instance$4($$self, $$props, $$invalidate) {
 	let { category } = $$props;
 	let m_edit, m_subcategory;
 
-	function create_subcategory() {
+	function create_sub() {
 		$$invalidate(2, m_subcategory = 1);
 	}
 
-	function edit_category() {
+	function edit() {
 		$$invalidate(1, m_edit = 1);
 	}
 
-	function delete_category() {
+	function _delete() {
 		if (!confirm('Certeza que quer excluir essa categoria?')) return;
 		api(`category/${category.id}`, 'DELETE');
 
@@ -2966,9 +2964,9 @@ function instance$4($$self, $$props, $$invalidate) {
 		category,
 		m_edit,
 		m_subcategory,
-		create_subcategory,
-		edit_category,
-		delete_category,
+		create_sub,
+		edit,
+		_delete,
 		$menu
 	});
 
@@ -2986,9 +2984,9 @@ function instance$4($$self, $$props, $$invalidate) {
 		category,
 		m_edit,
 		m_subcategory,
-		create_subcategory,
-		edit_category,
-		delete_category,
+		create_sub,
+		edit,
+		_delete,
 		categorymodal_show_binding,
 		subcategorymodal_show_binding
 	];
@@ -3110,43 +3108,42 @@ function create_default_slot(ctx) {
 			t1 = space();
 			form_1 = element("form");
 			label0 = element("label");
-			t2 = text("Nome:\n        ");
+			t2 = text("Nome:     ");
 			input0 = element("input");
 			t3 = space();
 			label1 = element("label");
-			t4 = text("Telefone:\n        ");
+			t4 = text("Telefone: ");
 			input1 = element("input");
 			t5 = space();
 			label2 = element("label");
-			t6 = text("Whatsapp:\n        ");
+			t6 = text("Whatsapp: ");
 			input2 = element("input");
 			t7 = space();
 			label3 = element("label");
-			t8 = text("Endereço:\n        ");
+			t8 = text("Endereço: ");
 			input3 = element("input");
 			t9 = space();
 			button = element("button");
 			t10 = text(t10_value);
 			add_location(h2, file$2, 2, 4, 42);
 			input0.required = true;
-			add_location(input0, file$2, 6, 8, 102);
-			attr_dev(label0, "class", "svelte-17dl953");
+			add_location(input0, file$2, 5, 24, 98);
+			attr_dev(label0, "class", "svelte-1mya8io");
 			add_location(label0, file$2, 5, 6, 80);
 			input1.required = true;
-			add_location(input1, file$2, 10, 8, 196);
-			attr_dev(label1, "class", "svelte-17dl953");
-			add_location(label1, file$2, 9, 6, 170);
+			add_location(input1, file$2, 6, 24, 177);
+			attr_dev(label1, "class", "svelte-1mya8io");
+			add_location(label1, file$2, 6, 6, 159);
 			input2.required = true;
-			add_location(input2, file$2, 14, 8, 290);
-			attr_dev(label2, "class", "svelte-17dl953");
-			add_location(label2, file$2, 13, 6, 264);
+			add_location(input2, file$2, 7, 24, 256);
+			attr_dev(label2, "class", "svelte-1mya8io");
+			add_location(label2, file$2, 7, 6, 238);
 			input3.required = true;
-			add_location(input3, file$2, 18, 8, 384);
-			attr_dev(label3, "class", "svelte-17dl953");
-			add_location(label3, file$2, 17, 6, 358);
+			add_location(input3, file$2, 8, 24, 335);
+			attr_dev(label3, "class", "svelte-1mya8io");
+			add_location(label3, file$2, 8, 6, 317);
 			button.disabled = /*l_submitting*/ ctx[1];
-			attr_dev(button, "class", "svelte-17dl953");
-			add_location(button, file$2, 21, 6, 451);
+			add_location(button, file$2, 10, 6, 397);
 			add_location(form_1, file$2, 4, 4, 67);
 		},
 		m: function mount(target, anchor) {

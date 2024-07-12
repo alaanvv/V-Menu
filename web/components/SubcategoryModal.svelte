@@ -3,9 +3,7 @@
     <h2> {id ? 'Editando' : 'Criando'} uma Subcategoria </h2>
 
     <form>
-      <label> Nome:
-        <input bind:value={form.name} required />
-      </label>
+      <label> Nome: <input bind:value={form.name} required /> </label>
 
       <button on:click={submit} disabled={l_submitting}> {l_submitting ? '...' : 'Enviar'} </button>
     </form>
@@ -55,11 +53,6 @@
 </script>
 
 <style>
-  button {
-    width: 100% !important;
-    resize: none;
-  }
-
   label {
     margin: 20px 0;
 

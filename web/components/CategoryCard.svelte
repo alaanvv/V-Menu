@@ -3,9 +3,9 @@
     <h2> {category.name} </h2>
 
     <div class='row' style='justify-content: end;'>
-      <Button class='grn' i='add'    t='Subcategoria' action={create_subcategory} />
-      <Button class='blu' i='edit'   action={edit_category} />
-      <Button class='red' i='delete' action={delete_category} />
+      <Button class='grn' i='add'    t='Subcategoria' action={create_sub} />
+      <Button class='blu' i='edit'   action={edit} />
+      <Button class='red' i='delete' action={_delete} />
       <Button             i='keyboard_arrow_down' />
       <Button             i='keyboard_arrow_up' />
     </div>
@@ -33,9 +33,9 @@
   export let category
   let m_edit, m_subcategory
 
-  function create_subcategory() { m_subcategory = 1 }
-  function edit_category()      { m_edit        = 1 }
-  function delete_category() {
+  function create_sub() { m_subcategory = 1 }
+  function edit()       { m_edit        = 1 }
+  function _delete() {
     if (!confirm('Certeza que quer excluir essa categoria?')) return
 
     api(`category/${category.id}`, 'DELETE')
@@ -48,7 +48,5 @@
     padding: 15px;
     border: 3px solid var(--gray);
     margin-top: 15px;
-
-    font-size: 1.1em;
   }
 </style>

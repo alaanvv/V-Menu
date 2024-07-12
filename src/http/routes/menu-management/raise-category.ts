@@ -18,8 +18,7 @@ export default async function(app: FastifyInstance) {
     await prisma.category.updateMany({
       where: {
         menu_id: category.menu_id,
-        pos: { gte: category.pos - 1 },
-        NOT: { id }
+        pos: category.pos - 1,
       },
       data: {
         pos: { increment: 1 }

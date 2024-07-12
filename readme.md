@@ -52,6 +52,6 @@ model Item {
 - [x] Setup database
 - [x] Create management routes
 - [x] Frontend to manage menus
-- [ ] Create order features
+- [x] Create order features
     - [x] Routes
-    - [ ] Consume
+    - [x] Consume

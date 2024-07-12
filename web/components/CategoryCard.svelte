@@ -6,8 +6,8 @@
       <Button class='grn' i='add'    t='Subcategoria' action={create_sub} />
       <Button class='blu' i='edit'   action={edit} />
       <Button class='red' i='delete' action={_delete} />
-      <Button             i='keyboard_arrow_up' action={move_up} />
-      <Button             i='keyboard_arrow_down' />
+      <Button             i='keyboard_arrow_up' action={move_up} disabled={i == 0} />
+      <Button             i='keyboard_arrow_down' action={move_down} disabled={i == $menu.categories.length - 1} />
     </div>
   </div>
 
@@ -32,6 +32,7 @@
 
   export let category
   let m_edit, m_subcategory
+  let i
 
   function create_sub() { m_subcategory = 1 }
   function edit()       { m_edit        = 1 }
@@ -43,7 +44,42 @@
   }
   function move_up() {
     api(`raise-category/${category.id}`, 'PUT')
+
+    const i = $menu.categories.findIndex(c => c.id == category.id)
+    let arr = $menu.categories
+
+    let temp = arr[i - 1]
+    arr[i - 1] = arr[i]
+    arr[i] = temp
+
+    menu.set({ ...$menu, categories: arr })
   }
+  function move_down() {
+    let next, id
+    for (let c of $menu.categories) {
+      if (next) {
+        id = c.id
+        break
+      }
+      if (c.id == category.id) next = true
+    }
+
+    api(`raise-category/${id}`, 'PUT')
+
+    let arr = $menu.categories
+
+    let temp = arr[i + 1]
+    arr[i + 1] = arr[i]
+    arr[i] = temp
+
+    menu.set({ ...$menu, categories: arr })
+  }
+
+  function update_i() {
+    i = $menu.categories.findIndex(c => c.id == category.id)
+  }
+
+  $: if ($menu) update_i()
 </script>
 
 <style>

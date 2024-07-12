@@ -2318,7 +2318,7 @@ function create_fragment$5(ctx) {
 			props: {
 				class: "blu",
 				i: "edit",
-				action: /*edit_subcategory*/ ctx[2]
+				action: /*edit_subcategory*/ ctx[4]
 			},
 			$$inline: true
 		});
@@ -2327,23 +2327,31 @@ function create_fragment$5(ctx) {
 			props: {
 				class: "red",
 				i: "delete",
-				action: /*delete_subcategory*/ ctx[3]
+				action: /*delete_subcategory*/ ctx[5]
 			},
 			$$inline: true
 		});
 
 	button2 = new Button({
-			props: { i: "keyboard_arrow_down" },
+			props: {
+				i: "keyboard_arrow_up",
+				action: /*move_up*/ ctx[6],
+				disabled: /*i*/ ctx[3] == 0
+			},
 			$$inline: true
 		});
 
 	button3 = new Button({
-			props: { i: "keyboard_arrow_up" },
+			props: {
+				i: "keyboard_arrow_down",
+				action: /*move_down*/ ctx[7],
+				disabled: /*i*/ ctx[3] == /*category*/ ctx[2].subcategories.length - 1
+			},
 			$$inline: true
 		});
 
 	function subcategorymodal_show_binding(value) {
-		/*subcategorymodal_show_binding*/ ctx[4](value);
+		/*subcategorymodal_show_binding*/ ctx[9](value);
 	}
 
 	let subcategorymodal_props = {
@@ -2405,6 +2413,12 @@ function create_fragment$5(ctx) {
 		},
 		p: function update(ctx, [dirty]) {
 			if ((!current || dirty & /*subcategory*/ 1) && t0_value !== (t0_value = /*subcategory*/ ctx[0].name + "")) set_data_dev(t0, t0_value);
+			const button2_changes = {};
+			if (dirty & /*i*/ 8) button2_changes.disabled = /*i*/ ctx[3] == 0;
+			button2.$set(button2_changes);
+			const button3_changes = {};
+			if (dirty & /*i, category*/ 12) button3_changes.disabled = /*i*/ ctx[3] == /*category*/ ctx[2].subcategories.length - 1;
+			button3.$set(button3_changes);
 			const subcategorymodal_changes = {};
 			if (dirty & /*subcategory*/ 1) subcategorymodal_changes.id = /*subcategory*/ ctx[0].id;
 			if (dirty & /*subcategory*/ 1) subcategorymodal_changes.category_id = /*subcategory*/ ctx[0].category_id;
@@ -2459,11 +2473,12 @@ function create_fragment$5(ctx) {
 function instance$5($$self, $$props, $$invalidate) {
 	let $menu;
 	validate_store(menu, 'menu');
-	component_subscribe($$self, menu, $$value => $$invalidate(5, $menu = $$value));
+	component_subscribe($$self, menu, $$value => $$invalidate(8, $menu = $$value));
 	let { $$slots: slots = {}, $$scope } = $$props;
 	validate_slots('SubcategoryCard', slots, []);
 	let { subcategory } = $$props;
 	let m_edit;
+	let category, i;
 
 	function edit_subcategory() {
 		$$invalidate(1, m_edit = 1);
@@ -2475,6 +2490,48 @@ function instance$5($$self, $$props, $$invalidate) {
 		const new_menu = $menu;
 		for (let i in new_menu.categories) if (new_menu.categories[i].id == subcategory.category_id) new_menu.categories[i].subcategories = new_menu.categories[i].subcategories.filter(sc => sc.id != subcategory.id);
 		menu.set(new_menu);
+	}
+
+	function move_up() {
+		api(`raise-subcategory/${subcategory.id}`, 'PUT');
+		let arr = category.subcategories;
+		let temp = arr[i - 1];
+		arr[i - 1] = arr[i];
+		arr[i] = temp;
+
+		menu.set({
+			...$menu,
+			categories: $menu.categories.map(c => c.id != category.id ? c : { ...c, subcategories: arr })
+		});
+	}
+
+	function move_down() {
+		let next, id;
+
+		for (let sc of category.subcategories) {
+			if (next) {
+				id = sc.id;
+				break;
+			}
+
+			if (sc.id == subcategory.id) next = true;
+		}
+
+		api(`raise-subcategory/${id}`, 'PUT');
+		let arr = category.subcategories;
+		let temp = arr[i + 1];
+		arr[i + 1] = arr[i];
+		arr[i] = temp;
+
+		menu.set({
+			...$menu,
+			categories: $menu.categories.map(c => c.id != category.id ? c : { ...c, subcategories: arr })
+		});
+	}
+
+	function update_i() {
+		$$invalidate(2, category = $menu.categories.find(c => c.subcategories.find(sc => sc.id == subcategory.id)));
+		$$invalidate(3, i = category.subcategories.findIndex(sc => sc.id == subcategory.id));
 	}
 
 	$$self.$$.on_mount.push(function () {
@@ -2505,25 +2562,43 @@ function instance$5($$self, $$props, $$invalidate) {
 		menu,
 		subcategory,
 		m_edit,
+		category,
+		i,
 		edit_subcategory,
 		delete_subcategory,
+		move_up,
+		move_down,
+		update_i,
 		$menu
 	});
 
 	$$self.$inject_state = $$props => {
 		if ('subcategory' in $$props) $$invalidate(0, subcategory = $$props.subcategory);
 		if ('m_edit' in $$props) $$invalidate(1, m_edit = $$props.m_edit);
+		if ('category' in $$props) $$invalidate(2, category = $$props.category);
+		if ('i' in $$props) $$invalidate(3, i = $$props.i);
 	};
 
 	if ($$props && "$$inject" in $$props) {
 		$$self.$inject_state($$props.$$inject);
 	}
 
+	$$self.$$.update = () => {
+		if ($$self.$$.dirty & /*$menu*/ 256) {
+			if ($menu) update_i();
+		}
+	};
+
 	return [
 		subcategory,
 		m_edit,
+		category,
+		i,
 		edit_subcategory,
 		delete_subcategory,
+		move_up,
+		move_down,
+		$menu,
 		subcategorymodal_show_binding
 	];
 }
@@ -2555,7 +2630,7 @@ const file$3 = "web/components/CategoryCard.svelte";
 
 function get_each_context$1(ctx, list, i) {
 	const child_ctx = ctx.slice();
-	child_ctx[10] = list[i];
+	child_ctx[13] = list[i];
 	return child_ctx;
 }
 
@@ -2565,7 +2640,7 @@ function create_each_block$1(ctx) {
 	let current;
 
 	subcategorycard = new SubcategoryCard({
-			props: { subcategory: /*subcategory*/ ctx[10] },
+			props: { subcategory: /*subcategory*/ ctx[13] },
 			$$inline: true
 		});
 
@@ -2579,7 +2654,7 @@ function create_each_block$1(ctx) {
 		},
 		p: function update(ctx, dirty) {
 			const subcategorycard_changes = {};
-			if (dirty & /*category*/ 1) subcategorycard_changes.subcategory = /*subcategory*/ ctx[10];
+			if (dirty & /*category*/ 1) subcategorycard_changes.subcategory = /*subcategory*/ ctx[13];
 			subcategorycard.$set(subcategorycard_changes);
 		},
 		i: function intro(local) {
@@ -2639,7 +2714,7 @@ function create_fragment$4(ctx) {
 				class: "grn",
 				i: "add",
 				t: "Subcategoria",
-				action: /*create_sub*/ ctx[3]
+				action: /*create_sub*/ ctx[5]
 			},
 			$$inline: true
 		});
@@ -2648,7 +2723,7 @@ function create_fragment$4(ctx) {
 			props: {
 				class: "blu",
 				i: "edit",
-				action: /*edit*/ ctx[4]
+				action: /*edit*/ ctx[6]
 			},
 			$$inline: true
 		});
@@ -2657,7 +2732,7 @@ function create_fragment$4(ctx) {
 			props: {
 				class: "red",
 				i: "delete",
-				action: /*_delete*/ ctx[5]
+				action: /*_delete*/ ctx[7]
 			},
 			$$inline: true
 		});
@@ -2665,13 +2740,18 @@ function create_fragment$4(ctx) {
 	button3 = new Button({
 			props: {
 				i: "keyboard_arrow_up",
-				action: /*move_up*/ ctx[6]
+				action: /*move_up*/ ctx[8],
+				disabled: /*i*/ ctx[4] == 0
 			},
 			$$inline: true
 		});
 
 	button4 = new Button({
-			props: { i: "keyboard_arrow_down" },
+			props: {
+				i: "keyboard_arrow_down",
+				action: /*move_down*/ ctx[9],
+				disabled: /*i*/ ctx[4] == /*$menu*/ ctx[1].categories.length - 1
+			},
 			$$inline: true
 		});
 
@@ -2688,13 +2768,13 @@ function create_fragment$4(ctx) {
 	});
 
 	function categorymodal_show_binding(value) {
-		/*categorymodal_show_binding*/ ctx[7](value);
+		/*categorymodal_show_binding*/ ctx[10](value);
 	}
 
 	let categorymodal_props = { id: /*category*/ ctx[0].id };
 
-	if (/*m_edit*/ ctx[1] !== void 0) {
-		categorymodal_props.show = /*m_edit*/ ctx[1];
+	if (/*m_edit*/ ctx[2] !== void 0) {
+		categorymodal_props.show = /*m_edit*/ ctx[2];
 	}
 
 	categorymodal = new CategoryModal({
@@ -2705,13 +2785,13 @@ function create_fragment$4(ctx) {
 	binding_callbacks.push(() => bind(categorymodal, 'show', categorymodal_show_binding));
 
 	function subcategorymodal_show_binding(value) {
-		/*subcategorymodal_show_binding*/ ctx[8](value);
+		/*subcategorymodal_show_binding*/ ctx[11](value);
 	}
 
 	let subcategorymodal_props = { category_id: /*category*/ ctx[0].id };
 
-	if (/*m_subcategory*/ ctx[2] !== void 0) {
-		subcategorymodal_props.show = /*m_subcategory*/ ctx[2];
+	if (/*m_subcategory*/ ctx[3] !== void 0) {
+		subcategorymodal_props.show = /*m_subcategory*/ ctx[3];
 	}
 
 	subcategorymodal = new SubcategoryModal({
@@ -2756,7 +2836,7 @@ function create_fragment$4(ctx) {
 			attr_dev(div1, "class", "row");
 			set_style(div1, "justify-content", "space-between");
 			add_location(div1, file$3, 1, 2, 25);
-			add_location(ul, file$3, 13, 2, 499);
+			add_location(ul, file$3, 13, 2, 580);
 			attr_dev(div2, "class", "category svelte-4wlb3k");
 			add_location(div2, file$3, 0, 0, 0);
 		},
@@ -2796,6 +2876,12 @@ function create_fragment$4(ctx) {
 		},
 		p: function update(ctx, [dirty]) {
 			if ((!current || dirty & /*category*/ 1) && t0_value !== (t0_value = /*category*/ ctx[0].name + "")) set_data_dev(t0, t0_value);
+			const button3_changes = {};
+			if (dirty & /*i*/ 16) button3_changes.disabled = /*i*/ ctx[4] == 0;
+			button3.$set(button3_changes);
+			const button4_changes = {};
+			if (dirty & /*i, $menu*/ 18) button4_changes.disabled = /*i*/ ctx[4] == /*$menu*/ ctx[1].categories.length - 1;
+			button4.$set(button4_changes);
 
 			if (dirty & /*category*/ 1) {
 				each_value = /*category*/ ctx[0].subcategories || [];
@@ -2828,9 +2914,9 @@ function create_fragment$4(ctx) {
 			const categorymodal_changes = {};
 			if (dirty & /*category*/ 1) categorymodal_changes.id = /*category*/ ctx[0].id;
 
-			if (!updating_show && dirty & /*m_edit*/ 2) {
+			if (!updating_show && dirty & /*m_edit*/ 4) {
 				updating_show = true;
-				categorymodal_changes.show = /*m_edit*/ ctx[1];
+				categorymodal_changes.show = /*m_edit*/ ctx[2];
 				add_flush_callback(() => updating_show = false);
 			}
 
@@ -2838,9 +2924,9 @@ function create_fragment$4(ctx) {
 			const subcategorymodal_changes = {};
 			if (dirty & /*category*/ 1) subcategorymodal_changes.category_id = /*category*/ ctx[0].id;
 
-			if (!updating_show_1 && dirty & /*m_subcategory*/ 4) {
+			if (!updating_show_1 && dirty & /*m_subcategory*/ 8) {
 				updating_show_1 = true;
-				subcategorymodal_changes.show = /*m_subcategory*/ ctx[2];
+				subcategorymodal_changes.show = /*m_subcategory*/ ctx[3];
 				add_flush_callback(() => updating_show_1 = false);
 			}
 
@@ -2907,18 +2993,19 @@ function create_fragment$4(ctx) {
 function instance$4($$self, $$props, $$invalidate) {
 	let $menu;
 	validate_store(menu, 'menu');
-	component_subscribe($$self, menu, $$value => $$invalidate(9, $menu = $$value));
+	component_subscribe($$self, menu, $$value => $$invalidate(1, $menu = $$value));
 	let { $$slots: slots = {}, $$scope } = $$props;
 	validate_slots('CategoryCard', slots, []);
 	let { category } = $$props;
 	let m_edit, m_subcategory;
+	let i;
 
 	function create_sub() {
-		$$invalidate(2, m_subcategory = 1);
+		$$invalidate(3, m_subcategory = 1);
 	}
 
 	function edit() {
-		$$invalidate(1, m_edit = 1);
+		$$invalidate(2, m_edit = 1);
 	}
 
 	function _delete() {
@@ -2933,6 +3020,36 @@ function instance$4($$self, $$props, $$invalidate) {
 
 	function move_up() {
 		api(`raise-category/${category.id}`, 'PUT');
+		const i = $menu.categories.findIndex(c => c.id == category.id);
+		let arr = $menu.categories;
+		let temp = arr[i - 1];
+		arr[i - 1] = arr[i];
+		arr[i] = temp;
+		menu.set({ ...$menu, categories: arr });
+	}
+
+	function move_down() {
+		let next, id;
+
+		for (let c of $menu.categories) {
+			if (next) {
+				id = c.id;
+				break;
+			}
+
+			if (c.id == category.id) next = true;
+		}
+
+		api(`raise-category/${id}`, 'PUT');
+		let arr = $menu.categories;
+		let temp = arr[i + 1];
+		arr[i + 1] = arr[i];
+		arr[i] = temp;
+		menu.set({ ...$menu, categories: arr });
+	}
+
+	function update_i() {
+		$$invalidate(4, i = $menu.categories.findIndex(c => c.id == category.id));
 	}
 
 	$$self.$$.on_mount.push(function () {
@@ -2949,12 +3066,12 @@ function instance$4($$self, $$props, $$invalidate) {
 
 	function categorymodal_show_binding(value) {
 		m_edit = value;
-		$$invalidate(1, m_edit);
+		$$invalidate(2, m_edit);
 	}
 
 	function subcategorymodal_show_binding(value) {
 		m_subcategory = value;
-		$$invalidate(2, m_subcategory);
+		$$invalidate(3, m_subcategory);
 	}
 
 	$$self.$$set = $$props => {
@@ -2971,31 +3088,44 @@ function instance$4($$self, $$props, $$invalidate) {
 		category,
 		m_edit,
 		m_subcategory,
+		i,
 		create_sub,
 		edit,
 		_delete,
 		move_up,
+		move_down,
+		update_i,
 		$menu
 	});
 
 	$$self.$inject_state = $$props => {
 		if ('category' in $$props) $$invalidate(0, category = $$props.category);
-		if ('m_edit' in $$props) $$invalidate(1, m_edit = $$props.m_edit);
-		if ('m_subcategory' in $$props) $$invalidate(2, m_subcategory = $$props.m_subcategory);
+		if ('m_edit' in $$props) $$invalidate(2, m_edit = $$props.m_edit);
+		if ('m_subcategory' in $$props) $$invalidate(3, m_subcategory = $$props.m_subcategory);
+		if ('i' in $$props) $$invalidate(4, i = $$props.i);
 	};
 
 	if ($$props && "$$inject" in $$props) {
 		$$self.$inject_state($$props.$$inject);
 	}
 
+	$$self.$$.update = () => {
+		if ($$self.$$.dirty & /*$menu*/ 2) {
+			if ($menu) update_i();
+		}
+	};
+
 	return [
 		category,
+		$menu,
 		m_edit,
 		m_subcategory,
+		i,
 		create_sub,
 		edit,
 		_delete,
 		move_up,
+		move_down,
 		categorymodal_show_binding,
 		subcategorymodal_show_binding
 	];

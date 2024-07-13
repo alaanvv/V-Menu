@@ -1,10 +1,10 @@
 <TopBar />
 
-<div class='page'>
+<main>
   {#if      $menu && $curr_page == 'menu'}  <MenuEdit />
   {:else if $menu && $curr_page == 'items'} <ItemsEdit />
   {/if}
-</div>
+</main>
 
 <script>
   import TopBar    from './components/TopBar.svelte'
@@ -15,7 +15,7 @@
   import { api } from './utils/api'
   import { onMount } from 'svelte'
 
-  if (!$curr_page) curr_page.set('menu')
+  if (!$curr_page) curr_page.set('items')
 
   onMount(async _ => {
     if (!$menu)
@@ -24,7 +24,7 @@
 </script>
 
 <style>
-  .page {
+  main {
     padding: 40px;
     margin: 20px;
 
@@ -32,5 +32,17 @@
     border-radius: 10px;
 
     overflow-y: scroll;
+  }
+
+  @media screen and (max-width: 768px) {
+    main {
+      padding: 1em;
+      margin: 20px 0;
+      border-radius: 0;
+
+      overflow-x: hidden;
+
+      font-size: 0.9em;
+    }
   }
 </style>

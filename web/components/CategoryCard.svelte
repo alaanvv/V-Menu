@@ -1,13 +1,11 @@
 <div class='category'>
-  <div class='row' style='justify-content: space-between;'>
+  <div class='row toprow' style='justify-content: space-between;'>
     <h2> {category.name} </h2>
 
     <div class='row' style='justify-content: end;'>
-      <Button class='grn' i='add'    t='Subcategoria' action={create_sub} />
-      <Button class='blu' i='edit'   action={edit} />
-      <Button class='red' i='delete' action={_delete} />
-      <Button             i='keyboard_arrow_up' action={move_up} disabled={i == 0} />
-      <Button             i='keyboard_arrow_down' action={move_down} disabled={i == $menu.categories.length - 1} />
+      <Button i='settings' action={show_options} />
+      <Button i='keyboard_arrow_up' action={move_up} disabled={i == 0} />
+      <Button i='keyboard_arrow_down' action={move_down} disabled={i == $menu.categories.length - 1} />
     </div>
   </div>
 
@@ -18,6 +16,14 @@
   </ul>
 </div>
 
+<Modal bind:show={m_options}>
+  <p class='special'> Categoria: {category.name} </p>
+  <div class='btn-col'>
+    <Button class='grn' i='add'    t='Subcategoria' action={create_sub} />
+    <Button class='blu' i='edit'   t='Editar'       action={edit} />
+    <Button class='red' i='delete' t='Excluir'      action={_delete} />
+  </div>
+</Modal>
 <CategoryModal    bind:show={m_edit}        id={category.id} />
 <SubcategoryModal bind:show={m_subcategory} category_id={category.id} />
 
@@ -26,17 +32,20 @@
   import SubcategoryCard  from '../components/SubcategoryCard.svelte'
   import CategoryModal    from '../components/CategoryModal.svelte'
   import Button           from '../components/Button.svelte'
+  import Modal            from '../components/Modal.svelte'
 
   import { api } from '../utils/api.js'
   import { menu } from '../store.js'
 
   export let category
-  let m_edit, m_subcategory
+  let m_edit, m_subcategory, m_options
   let i
 
-  function create_sub() { m_subcategory = 1 }
-  function edit()       { m_edit        = 1 }
+  function create_sub()   { m_options = 0; m_subcategory = 1 }
+  function edit()         { m_options = 0; m_edit        = 1 }
+  function show_options() { m_options = 1 }
   function _delete() {
+    m_options = 0
     if (!confirm('Certeza que quer excluir essa categoria?')) return
 
     api(`category/${category.id}`, 'DELETE')
@@ -87,5 +96,11 @@
     padding: 15px;
     border: 3px solid var(--gray);
     margin-top: 15px;
+  }
+
+  .special {
+    margin: 0 0 20px 0;
+
+    text-align: center;
   }
 </style>

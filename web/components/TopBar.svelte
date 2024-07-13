@@ -21,7 +21,6 @@
     padding: 20px 0;
     margin: 0;
   }
-
   ul :global(li) {
     border-radius: 5px;
     padding: 10px;
@@ -34,5 +33,9 @@
   ul :global(li.active) {
     background: var(--bg1);
     color: var(--fg1) !important;
+  }
+
+  @supports (-webkit-touch-callout: none) {
+    .topbar { padding-top: 80px; }
   }
 </style>

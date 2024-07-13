@@ -1,7 +1,7 @@
 <div>
   <div class='row jcsb'>
     <h1> {$menu.name} </h1>
-    <Button class='blu' i='edit' t='Editar Informações' action={edit_menu} />
+    <Button class='blu' i='edit' t='Editar' action={edit_menu} />
   </div>
 
   <table>

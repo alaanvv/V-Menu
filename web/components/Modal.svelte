@@ -1,7 +1,9 @@
-<!-- svelte-ignore a11y-click-events-have-key-events -->
-<div class='modal' on:click={background_click}>
-  <div class='modal-content'> <slot /> </div>
-</div>
+{#if show}
+  <!-- svelte-ignore a11y-click-events-have-key-events -->
+  <div class='modal' on:click={background_click}>
+    <div class='modal-content'> <slot /> </div>
+  </div>
+{/if}
 
 <script>
   import { onMount, createEventDispatcher } from 'svelte'

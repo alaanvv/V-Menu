@@ -1,5 +1,5 @@
 {#if show}
-  <Modal on:close={close}>
+  <Modal {show} on:close={close}>
     <h2> {id ? 'Editando' : 'Criando'} uma Categoria </h2>
 
     <form>

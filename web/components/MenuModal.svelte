@@ -16,7 +16,7 @@
 <script>
   import Modal from './Modal.svelte'
 
-  import { api } from '../utils/api.js'
+  import { edit_menu } from '../utils/menu-management.js'
   import { menu } from '../store.js'
 
   export let show
@@ -28,8 +28,7 @@
   async function submit() {
     l_submitting = true
 
-    await api(`menu/${$menu.id}`, 'PUT', form)
-    menu.set({ ...$menu, ...form })
+    await edit_menu(form)
     close()
   }
 

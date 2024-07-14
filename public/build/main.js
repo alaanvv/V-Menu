@@ -42,6 +42,11 @@ function subscribe(store, ...callbacks) {
     const unsub = store.subscribe(...callbacks);
     return unsub.unsubscribe ? () => unsub.unsubscribe() : unsub;
 }
+function get_store_value(store) {
+    let value;
+    subscribe(store, _ => value = _)();
+    return value;
+}
 function component_subscribe(component, store, callback) {
     component.$$.on_destroy.push(subscribe(store, callback));
 }
@@ -135,14 +140,6 @@ function children(element) {
 }
 function set_input_value(input, value) {
     input.value = value == null ? '' : value;
-}
-function set_style(node, key, value, important) {
-    if (value == null) {
-        node.style.removeProperty(key);
-    }
-    else {
-        node.style.setProperty(key, value, important ? 'important' : '');
-    }
 }
 function select_option(select, value, mounting) {
     for (let i = 0; i < select.options.length; i += 1) {
@@ -1069,7 +1066,7 @@ class TopBar extends SvelteComponentDev {
 const file$c = "web/components/Modal.svelte";
 
 // (1:0) {#if show}
-function create_if_block$6(ctx) {
+function create_if_block$5(ctx) {
 	let div1;
 	let div0;
 	let current;
@@ -1138,7 +1135,7 @@ function create_if_block$6(ctx) {
 
 	dispatch_dev("SvelteRegisterBlock", {
 		block,
-		id: create_if_block$6.name,
+		id: create_if_block$5.name,
 		type: "if",
 		source: "(1:0) {#if show}",
 		ctx
@@ -1150,7 +1147,7 @@ function create_if_block$6(ctx) {
 function create_fragment$c(ctx) {
 	let if_block_anchor;
 	let current;
-	let if_block = /*show*/ ctx[0] && create_if_block$6(ctx);
+	let if_block = /*show*/ ctx[0] && create_if_block$5(ctx);
 
 	const block = {
 		c: function create() {
@@ -1174,7 +1171,7 @@ function create_fragment$c(ctx) {
 						transition_in(if_block, 1);
 					}
 				} else {
-					if_block = create_if_block$6(ctx);
+					if_block = create_if_block$5(ctx);
 					if_block.c();
 					transition_in(if_block, 1);
 					if_block.m(if_block_anchor.parentNode, if_block_anchor);
@@ -1318,72 +1315,145 @@ async function api(route, method, body) {
   return { res, data }
 }
 
+// Menu
+async function edit_menu(_data) {
+  let menu$1 = get_store_value(menu);
+
+  await api(`menu/${menu$1.id}`, 'PUT', _data);
+
+  menu$1 = { ...menu$1, ..._data };
+
+  menu.set(menu$1);
+}
+
+// Category
+async function create_category(_data) {
+  const menu$1 = get_store_value(menu);
+
+  const { data } = await api(`category/${menu$1.id}`, 'POST', _data);
+
+  menu$1.categories.push(data.category);
+
+  menu.set(menu$1);
+}
+
+async function edit_category(id, _data) {
+  const menu$1 = get_store_value(menu);
+
+  await api(`category/${id}`, 'PUT', _data);
+
+  for (let ci in menu$1.categories)
+    if (menu$1.categories[ci].id == id)
+      menu$1.categories[ci] = { ...menu$1.categories[ci], ..._data };
+
+  menu.set(menu$1);
+}
+
+async function delete_category(id) {
+  const menu$1 = get_store_value(menu);
+
+  await api(`category/${id}`, 'DELETE');
+
+  menu$1.categories = menu$1.categories.filter(c => c.id != id);
+
+  menu.set(menu$1);
+}
+
+async function move_category_up(id) {
+  const menu$1 = get_store_value(menu);
+
+  api(`raise-category/${id}`, 'PUT');
+
+  const i = menu$1.categories.findIndex(c => c.id == id);
+  const item = menu$1.categories.splice(i, 1)[0];
+  menu$1.categories = [...menu$1.categories.slice(0, i - 1), item, ...menu$1.categories.slice(i - 1)];
+
+  menu.set(menu$1);
+}
+
+async function move_category_down(id) {
+  const menu$1 = get_store_value(menu);
+
+  const i = menu$1.categories.findIndex(c => c.id == id);
+  await move_category_up(menu$1.categories[i + 1].id);
+}
+
+// Subcategory
+async function create_subcategory(id, _data) {
+  const menu$1 = get_store_value(menu);
+
+  const { data } = await api(`subcategory/${id}`, 'POST', _data);
+
+  for (let ci in menu$1.categories)
+    if (menu$1.categories[ci].id == id)
+      menu$1.categories[ci].subcategories.push(data.subcategory);
+
+  menu.set(menu$1);
+}
+
+async function edit_subcategory(id, _data) {
+  const menu$1 = get_store_value(menu);
+
+  await api(`subcategory/${id}`, 'PUT', _data);
+
+  for (let ci in menu$1.categories) {
+    const sci = menu$1.categories[ci].subcategories.findIndex(sc => sc.id == id);
+    if (sci == -1) continue
+
+    menu$1.categories[ci].subcategories[sci] = { ...menu$1.categories[ci].subcategories[sci], ..._data };
+    break
+  }
+
+  menu.set(menu$1);
+}
+
+async function delete_subcategory(id) {
+  const menu$1 = get_store_value(menu);
+
+  await api(`subcategory/${id}`, 'DELETE');
+
+  for (let ci in menu$1.categories)
+    menu$1.categories[ci].subcategories = menu$1.categories[ci].subcategories.filter(sc => sc.id != id);
+
+  menu.set(menu$1);
+}
+
+async function move_subcategory_up(id) {
+  const menu$1 = get_store_value(menu);
+
+  api(`raise-subcategory/${id}`, 'PUT');
+
+  for (let ci in menu$1.categories) {
+    const sci = menu$1.categories[ci].subcategories.findIndex(sc => sc.id == id);
+    if (sci == -1) continue
+
+    const item = menu$1.categories[ci].subcategories.splice(sci, 1)[0];
+    menu$1.categories[ci].subcategories = [...menu$1.categories[ci].subcategories.slice(0, sci - 1), item, ...menu$1.categories[ci].subcategories.slice(sci - 1)];
+    break
+  }
+
+  menu.set(menu$1);
+}
+
+async function move_subcategory_down(id) {
+  const menu$1 = get_store_value(menu);
+
+  for (let ci in menu$1.categories) {
+    const sci = menu$1.categories[ci].subcategories.findIndex(sc => sc.id == id);
+    if (sci == -1) continue
+
+    await move_subcategory_up(menu$1.categories[ci].subcategories[sci + 1].id);
+    break
+  }
+}
+
 /* web/components/CategoryModal.svelte generated by Svelte v3.59.2 */
 const file$b = "web/components/CategoryModal.svelte";
 
-// (1:0) {#if show}
-function create_if_block$5(ctx) {
-	let modal;
-	let current;
-
-	modal = new Modal({
-			props: {
-				show: /*show*/ ctx[0],
-				$$slots: { default: [create_default_slot$6] },
-				$$scope: { ctx }
-			},
-			$$inline: true
-		});
-
-	modal.$on("close", /*close*/ ctx[4]);
-
-	const block = {
-		c: function create() {
-			create_component(modal.$$.fragment);
-		},
-		m: function mount(target, anchor) {
-			mount_component(modal, target, anchor);
-			current = true;
-		},
-		p: function update(ctx, dirty) {
-			const modal_changes = {};
-			if (dirty & /*show*/ 1) modal_changes.show = /*show*/ ctx[0];
-
-			if (dirty & /*$$scope, l_submitting, form, id*/ 526) {
-				modal_changes.$$scope = { dirty, ctx };
-			}
-
-			modal.$set(modal_changes);
-		},
-		i: function intro(local) {
-			if (current) return;
-			transition_in(modal.$$.fragment, local);
-			current = true;
-		},
-		o: function outro(local) {
-			transition_out(modal.$$.fragment, local);
-			current = false;
-		},
-		d: function destroy(detaching) {
-			destroy_component(modal, detaching);
-		}
-	};
-
-	dispatch_dev("SvelteRegisterBlock", {
-		block,
-		id: create_if_block$5.name,
-		type: "if",
-		source: "(1:0) {#if show}",
-		ctx
-	});
-
-	return block;
-}
-
-// (2:2) <Modal {show} on:close={close}>
+// (1:0) <Modal {show} on:close={close}>
 function create_default_slot$6(ctx) {
 	let h2;
-	let t0_value = (/*id*/ ctx[1] ? 'Editando' : 'Criando') + "";
+	let t0_value = (/*category*/ ctx[1] ? 'Editando' : 'Criando') + "";
 	let t0;
 	let t1;
 	let t2;
@@ -1411,14 +1481,14 @@ function create_default_slot$6(ctx) {
 			t4 = space();
 			button = element("button");
 			t5 = text(t5_value);
-			add_location(h2, file$b, 2, 4, 49);
+			add_location(h2, file$b, 1, 2, 34);
 			input.required = true;
-			add_location(input, file$b, 5, 20, 136);
+			add_location(input, file$b, 4, 18, 123);
 			attr_dev(label, "class", "svelte-1mya8io");
-			add_location(label, file$b, 5, 6, 122);
+			add_location(label, file$b, 4, 4, 109);
 			button.disabled = /*l_submitting*/ ctx[2];
-			add_location(button, file$b, 7, 6, 194);
-			add_location(form_1, file$b, 4, 4, 109);
+			add_location(button, file$b, 6, 4, 179);
+			add_location(form_1, file$b, 3, 2, 98);
 		},
 		m: function mount(target, anchor) {
 			insert_dev(target, h2, anchor);
@@ -1444,7 +1514,7 @@ function create_default_slot$6(ctx) {
 			}
 		},
 		p: function update(ctx, dirty) {
-			if (dirty & /*id*/ 2 && t0_value !== (t0_value = (/*id*/ ctx[1] ? 'Editando' : 'Criando') + "")) set_data_dev(t0, t0_value);
+			if (dirty & /*category*/ 2 && t0_value !== (t0_value = (/*category*/ ctx[1] ? 'Editando' : 'Criando') + "")) set_data_dev(t0, t0_value);
 
 			if (dirty & /*form*/ 8 && input.value !== /*form*/ ctx[3].name) {
 				set_input_value(input, /*form*/ ctx[3].name);
@@ -1469,7 +1539,7 @@ function create_default_slot$6(ctx) {
 		block,
 		id: create_default_slot$6.name,
 		type: "slot",
-		source: "(2:2) <Modal {show} on:close={close}>",
+		source: "(1:0) <Modal {show} on:close={close}>",
 		ctx
 	});
 
@@ -1477,59 +1547,52 @@ function create_default_slot$6(ctx) {
 }
 
 function create_fragment$b(ctx) {
-	let if_block_anchor;
+	let modal;
 	let current;
-	let if_block = /*show*/ ctx[0] && create_if_block$5(ctx);
+
+	modal = new Modal({
+			props: {
+				show: /*show*/ ctx[0],
+				$$slots: { default: [create_default_slot$6] },
+				$$scope: { ctx }
+			},
+			$$inline: true
+		});
+
+	modal.$on("close", /*close*/ ctx[4]);
 
 	const block = {
 		c: function create() {
-			if (if_block) if_block.c();
-			if_block_anchor = empty();
+			create_component(modal.$$.fragment);
 		},
 		l: function claim(nodes) {
 			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
 		},
 		m: function mount(target, anchor) {
-			if (if_block) if_block.m(target, anchor);
-			insert_dev(target, if_block_anchor, anchor);
+			mount_component(modal, target, anchor);
 			current = true;
 		},
 		p: function update(ctx, [dirty]) {
-			if (/*show*/ ctx[0]) {
-				if (if_block) {
-					if_block.p(ctx, dirty);
+			const modal_changes = {};
+			if (dirty & /*show*/ 1) modal_changes.show = /*show*/ ctx[0];
 
-					if (dirty & /*show*/ 1) {
-						transition_in(if_block, 1);
-					}
-				} else {
-					if_block = create_if_block$5(ctx);
-					if_block.c();
-					transition_in(if_block, 1);
-					if_block.m(if_block_anchor.parentNode, if_block_anchor);
-				}
-			} else if (if_block) {
-				group_outros();
-
-				transition_out(if_block, 1, 1, () => {
-					if_block = null;
-				});
-
-				check_outros();
+			if (dirty & /*$$scope, l_submitting, form, category*/ 270) {
+				modal_changes.$$scope = { dirty, ctx };
 			}
+
+			modal.$set(modal_changes);
 		},
 		i: function intro(local) {
 			if (current) return;
-			transition_in(if_block);
+			transition_in(modal.$$.fragment, local);
 			current = true;
 		},
 		o: function outro(local) {
-			transition_out(if_block);
+			transition_out(modal.$$.fragment, local);
 			current = false;
 		},
 		d: function destroy(detaching) {
-			if (if_block) if_block.d(detaching);
-			if (detaching) detach_dev(if_block_anchor);
+			destroy_component(modal, detaching);
 		}
 	};
 
@@ -1545,14 +1608,11 @@ function create_fragment$b(ctx) {
 }
 
 function instance$b($$self, $$props, $$invalidate) {
-	let $menu;
-	validate_store(menu, 'menu');
-	component_subscribe($$self, menu, $$value => $$invalidate(7, $menu = $$value));
 	let { $$slots: slots = {}, $$scope } = $$props;
 	validate_slots('CategoryModal', slots, []);
-	let { show, id } = $$props;
+	let { show, category } = $$props;
 	let l_submitting;
-	let form = {};
+	let form;
 
 	function close() {
 		$$invalidate(0, show = false);
@@ -1560,32 +1620,14 @@ function instance$b($$self, $$props, $$invalidate) {
 
 	async function submit() {
 		$$invalidate(2, l_submitting = true);
-
-		if (id) {
-			await api(`category/${id}`, 'PUT', form);
-
-			menu.set({
-				...$menu,
-				categories: $menu.categories.map(c => c.id == id ? { ...c, ...form } : c)
-			});
-
-			close();
-		} else {
-			const { data } = await api(`category/${$menu.id}`, 'POST', form);
-
-			menu.set({
-				...$menu,
-				categories: [...$menu.categories, data.category]
-			});
-
-			close();
-		}
+		if (category) edit_category(category.id, form); else create_category(form);
+		close();
 	}
 
 	function mount() {
 		$$invalidate(2, l_submitting = false);
 		$$invalidate(3, form = {});
-		if (id) $$invalidate(3, form.name = $menu.categories.find(c => c.id == id)?.name, form);
+		if (category) $$invalidate(3, form.name = category.name, form);
 	}
 
 	$$self.$$.on_mount.push(function () {
@@ -1593,12 +1635,12 @@ function instance$b($$self, $$props, $$invalidate) {
 			console.warn("<CategoryModal> was created without expected prop 'show'");
 		}
 
-		if (id === undefined && !('id' in $$props || $$self.$$.bound[$$self.$$.props['id']])) {
-			console.warn("<CategoryModal> was created without expected prop 'id'");
+		if (category === undefined && !('category' in $$props || $$self.$$.bound[$$self.$$.props['category']])) {
+			console.warn("<CategoryModal> was created without expected prop 'category'");
 		}
 	});
 
-	const writable_props = ['show', 'id'];
+	const writable_props = ['show', 'category'];
 
 	Object.keys($$props).forEach(key => {
 		if (!~writable_props.indexOf(key) && key.slice(0, 2) !== '$$' && key !== 'slot') console.warn(`<CategoryModal> was created with unknown prop '${key}'`);
@@ -1611,26 +1653,25 @@ function instance$b($$self, $$props, $$invalidate) {
 
 	$$self.$$set = $$props => {
 		if ('show' in $$props) $$invalidate(0, show = $$props.show);
-		if ('id' in $$props) $$invalidate(1, id = $$props.id);
+		if ('category' in $$props) $$invalidate(1, category = $$props.category);
 	};
 
 	$$self.$capture_state = () => ({
 		Modal,
-		api,
-		menu,
+		create_category,
+		edit_category,
 		show,
-		id,
+		category,
 		l_submitting,
 		form,
 		close,
 		submit,
-		mount,
-		$menu
+		mount
 	});
 
 	$$self.$inject_state = $$props => {
 		if ('show' in $$props) $$invalidate(0, show = $$props.show);
-		if ('id' in $$props) $$invalidate(1, id = $$props.id);
+		if ('category' in $$props) $$invalidate(1, category = $$props.category);
 		if ('l_submitting' in $$props) $$invalidate(2, l_submitting = $$props.l_submitting);
 		if ('form' in $$props) $$invalidate(3, form = $$props.form);
 	};
@@ -1645,13 +1686,13 @@ function instance$b($$self, $$props, $$invalidate) {
 		}
 	};
 
-	return [show, id, l_submitting, form, close, submit, input_input_handler];
+	return [show, category, l_submitting, form, close, submit, input_input_handler];
 }
 
 class CategoryModal extends SvelteComponentDev {
 	constructor(options) {
 		super(options);
-		init(this, options, instance$b, create_fragment$b, safe_not_equal, { show: 0, id: 1 });
+		init(this, options, instance$b, create_fragment$b, safe_not_equal, { show: 0, category: 1 });
 
 		dispatch_dev("SvelteRegisterComponent", {
 			component: this,
@@ -1669,11 +1710,11 @@ class CategoryModal extends SvelteComponentDev {
 		throw new Error("<CategoryModal>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
 	}
 
-	get id() {
+	get category() {
 		throw new Error("<CategoryModal>: Props cannot be read directly from the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
 	}
 
-	set id(value) {
+	set category(value) {
 		throw new Error("<CategoryModal>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
 	}
 }
@@ -1920,28 +1961,8 @@ function instance$a($$self, $$props, $$invalidate) {
 
 	async function submit() {
 		$$invalidate(2, l_submitting = true);
-
-		if (id) {
-			await api(`subcategory/${id}`, 'PUT', form);
-			const new_menu = $menu;
-			for (let i in new_menu.categories) if (new_menu.categories[i].id == category_id) new_menu.categories[i].subcategories = new_menu.categories[i].subcategories.map(sc => sc.id != id ? sc : { ...sc, ...form });
-			menu.set(new_menu);
-			close();
-		} else {
-			const { data } = await api(`subcategory/${category_id}`, 'POST', form);
-
-			menu.set({
-				...$menu,
-				categories: $menu.categories.map(c => c.id != category_id
-				? c
-				: {
-						...c,
-						subcategories: [...c.subcategories || [], data.subcategory]
-					})
-			});
-
-			close();
-		}
+		if (id) edit_subcategory(id, form); else create_subcategory(category_id, form);
+		close();
 	}
 
 	function mount() {
@@ -1983,7 +2004,8 @@ function instance$a($$self, $$props, $$invalidate) {
 
 	$$self.$capture_state = () => ({
 		Modal,
-		api,
+		create_subcategory,
+		edit_subcategory,
 		menu,
 		show,
 		id,
@@ -2425,9 +2447,9 @@ function create_default_slot$4(ctx) {
 			t3 = space();
 			create_component(button1.$$.fragment);
 			attr_dev(p, "class", "special svelte-huuhgf");
-			add_location(p, file$8, 9, 2, 376);
+			add_location(p, file$8, 9, 2, 373);
 			attr_dev(div, "class", "btn-col");
-			add_location(div, file$8, 10, 2, 436);
+			add_location(div, file$8, 10, 2, 433);
 		},
 		m: function mount(target, anchor) {
 			insert_dev(target, p, anchor);
@@ -2477,7 +2499,7 @@ function create_default_slot$4(ctx) {
 function create_fragment$8(ctx) {
 	let li;
 	let p;
-	let t0_value = /*subcategory*/ ctx[0].name + "";
+	let t0_value = (/*subcategory*/ ctx[0].name || 'Sem nome') + "";
 	let t0;
 	let t1;
 	let button0;
@@ -2560,8 +2582,7 @@ function create_fragment$8(ctx) {
 			create_component(modal.$$.fragment);
 			t4 = space();
 			create_component(subcategorymodal.$$.fragment);
-			attr_dev(p, "class", "cp");
-			set_style(p, "flex-grow", "2");
+			attr_dev(p, "class", "cp fg");
 			add_location(p, file$8, 2, 2, 76);
 			attr_dev(li, "class", "row svelte-huuhgf");
 			add_location(li, file$8, 1, 0, 57);
@@ -2589,7 +2610,7 @@ function create_fragment$8(ctx) {
 			}
 		},
 		p: function update(ctx, [dirty]) {
-			if ((!current || dirty & /*subcategory*/ 1) && t0_value !== (t0_value = /*subcategory*/ ctx[0].name + "")) set_data_dev(t0, t0_value);
+			if ((!current || dirty & /*subcategory*/ 1) && t0_value !== (t0_value = (/*subcategory*/ ctx[0].name || 'Sem nome') + "")) set_data_dev(t0, t0_value);
 			const button0_changes = {};
 			if (dirty & /*i*/ 16) button0_changes.disabled = /*i*/ ctx[4] == 0;
 			button0.$set(button0_changes);
@@ -2682,51 +2703,19 @@ function instance$8($$self, $$props, $$invalidate) {
 	function _delete() {
 		$$invalidate(2, m_options = 0);
 		if (!confirm('Certeza que quer excluir essa subcategoria?')) return;
-		api(`subcategory/${subcategory.id}`, 'DELETE');
-		const new_menu = $menu;
-		for (let i in new_menu.categories) if (new_menu.categories[i].id == subcategory.category_id) new_menu.categories[i].subcategories = new_menu.categories[i].subcategories.filter(sc => sc.id != subcategory.id);
-		menu.set(new_menu);
+		delete_subcategory(subcategory.id);
 	}
 
 	function move_up() {
-		api(`raise-subcategory/${subcategory.id}`, 'PUT');
-		let arr = category.subcategories;
-		let temp = arr[i - 1];
-		arr[i - 1] = arr[i];
-		arr[i] = temp;
-
-		menu.set({
-			...$menu,
-			categories: $menu.categories.map(c => c.id != category.id ? c : { ...c, subcategories: arr })
-		});
+		move_subcategory_up(subcategory.id);
 	}
 
 	function move_down() {
-		let next, id;
-
-		for (let sc of category.subcategories) {
-			if (next) {
-				id = sc.id;
-				break;
-			}
-
-			if (sc.id == subcategory.id) next = true;
-		}
-
-		api(`raise-subcategory/${id}`, 'PUT');
-		let arr = category.subcategories;
-		let temp = arr[i + 1];
-		arr[i + 1] = arr[i];
-		arr[i] = temp;
-
-		menu.set({
-			...$menu,
-			categories: $menu.categories.map(c => c.id != category.id ? c : { ...c, subcategories: arr })
-		});
+		move_subcategory_down(subcategory.id);
 	}
 
 	function update_i() {
-		$$invalidate(3, category = $menu.categories.find(c => (c.subcategories || []).find(sc => sc.id == subcategory.id)));
+		$$invalidate(3, category = $menu.categories.find(c => c.subcategories?.find(sc => sc.id == subcategory.id)));
 		$$invalidate(4, i = category.subcategories.findIndex(sc => sc.id == subcategory.id));
 	}
 
@@ -2760,7 +2749,9 @@ function instance$8($$self, $$props, $$invalidate) {
 		SubcategoryModal,
 		Button,
 		Modal,
-		api,
+		delete_subcategory,
+		move_subcategory_up,
+		move_subcategory_down,
 		menu,
 		subcategory,
 		m_edit,
@@ -2838,7 +2829,7 @@ const file$7 = "web/components/CategoryCard.svelte";
 
 function get_each_context$3(ctx, list, i) {
 	const child_ctx = ctx.slice();
-	child_ctx[16] = list[i];
+	child_ctx[15] = list[i];
 	return child_ctx;
 }
 
@@ -2848,7 +2839,7 @@ function create_each_block$3(ctx) {
 	let current;
 
 	subcategorycard = new SubcategoryCard({
-			props: { subcategory: /*subcategory*/ ctx[16] },
+			props: { subcategory: /*subcategory*/ ctx[15] },
 			$$inline: true
 		});
 
@@ -2862,7 +2853,7 @@ function create_each_block$3(ctx) {
 		},
 		p: function update(ctx, dirty) {
 			const subcategorycard_changes = {};
-			if (dirty & /*category*/ 1) subcategorycard_changes.subcategory = /*subcategory*/ ctx[16];
+			if (dirty & /*category*/ 1) subcategorycard_changes.subcategory = /*subcategory*/ ctx[15];
 			subcategorycard.$set(subcategorycard_changes);
 		},
 		i: function intro(local) {
@@ -2948,9 +2939,9 @@ function create_default_slot$3(ctx) {
 			t4 = space();
 			create_component(button2.$$.fragment);
 			attr_dev(p, "class", "special svelte-199o48f");
-			add_location(p, file$7, 19, 2, 588);
+			add_location(p, file$7, 19, 2, 527);
 			attr_dev(div, "class", "btn-col");
-			add_location(div, file$7, 20, 2, 642);
+			add_location(div, file$7, 20, 2, 581);
 		},
 		m: function mount(target, anchor) {
 			insert_dev(target, p, anchor);
@@ -3086,7 +3077,7 @@ function create_fragment$7(ctx) {
 		/*categorymodal_show_binding*/ ctx[13](value);
 	}
 
-	let categorymodal_props = { id: /*category*/ ctx[0].id };
+	let categorymodal_props = { category: /*category*/ ctx[0] };
 
 	if (/*m_edit*/ ctx[2] !== void 0) {
 		categorymodal_props.show = /*m_edit*/ ctx[2];
@@ -3142,14 +3133,12 @@ function create_fragment$7(ctx) {
 			create_component(categorymodal.$$.fragment);
 			t7 = space();
 			create_component(subcategorymodal.$$.fragment);
-			add_location(h2, file$7, 2, 4, 94);
-			attr_dev(div0, "class", "row");
-			set_style(div0, "justify-content", "end");
-			add_location(div0, file$7, 4, 4, 126);
-			attr_dev(div1, "class", "row toprow");
-			set_style(div1, "justify-content", "space-between");
+			add_location(h2, file$7, 2, 4, 59);
+			attr_dev(div0, "class", "row jce");
+			add_location(div0, file$7, 4, 4, 91);
+			attr_dev(div1, "class", "row toprow jcsb");
 			add_location(div1, file$7, 1, 2, 25);
-			add_location(ul, file$7, 11, 2, 427);
+			add_location(ul, file$7, 11, 2, 366);
 			attr_dev(div2, "class", "category svelte-199o48f");
 			add_location(div2, file$7, 0, 0, 0);
 		},
@@ -3224,7 +3213,7 @@ function create_fragment$7(ctx) {
 
 			const modal_changes = {};
 
-			if (dirty & /*$$scope, category*/ 524289) {
+			if (dirty & /*$$scope, category*/ 262145) {
 				modal_changes.$$scope = { dirty, ctx };
 			}
 
@@ -3236,7 +3225,7 @@ function create_fragment$7(ctx) {
 
 			modal.$set(modal_changes);
 			const categorymodal_changes = {};
-			if (dirty & /*category*/ 1) categorymodal_changes.id = /*category*/ ctx[0].id;
+			if (dirty & /*category*/ 1) categorymodal_changes.category = /*category*/ ctx[0];
 
 			if (!updating_show_1 && dirty & /*m_edit*/ 4) {
 				updating_show_1 = true;
@@ -3339,46 +3328,15 @@ function instance$7($$self, $$props, $$invalidate) {
 	function _delete() {
 		$$invalidate(4, m_options = 0);
 		if (!confirm('Certeza que quer excluir essa categoria?')) return;
-		api(`category/${category.id}`, 'DELETE');
-
-		menu.set({
-			...$menu,
-			categories: $menu.categories.filter(c => c.id != category.id)
-		});
+		delete_category(category.id);
 	}
 
 	function move_up() {
-		api(`raise-category/${category.id}`, 'PUT');
-		const i = $menu.categories.findIndex(c => c.id == category.id);
-		let arr = $menu.categories;
-		let temp = arr[i - 1];
-		arr[i - 1] = arr[i];
-		arr[i] = temp;
-		menu.set({ ...$menu, categories: arr });
+		move_category_up(category.id);
 	}
 
 	function move_down() {
-		let next, id;
-
-		for (let c of $menu.categories) {
-			if (next) {
-				id = c.id;
-				break;
-			}
-
-			if (c.id == category.id) next = true;
-		}
-
-		api(`raise-category/${id}`, 'PUT');
-		let arr = $menu.categories;
-		let temp = arr[i + 1];
-		arr[i + 1] = arr[i];
-		arr[i] = temp;
-		menu.set({ ...$menu, categories: arr });
-	}
-
-	function update_i() {
-		$$invalidate(5, i = $menu.categories.findIndex(c => c.id == category.id));
+		move_category_down(category.id);
 	}
 
 	$$self.$$.on_mount.push(function () {
@@ -3418,7 +3376,9 @@ function instance$7($$self, $$props, $$invalidate) {
 		CategoryModal,
 		Button,
 		Modal,
-		api,
+		delete_category,
+		move_category_up,
+		move_category_down,
 		menu,
 		category,
 		m_edit,
@@ -3431,7 +3391,6 @@ function instance$7($$self, $$props, $$invalidate) {
 		_delete,
 		move_up,
 		move_down,
-		update_i,
 		$menu
 	});
 
@@ -3448,8 +3407,8 @@ function instance$7($$self, $$props, $$invalidate) {
 	}
 
 	$$self.$$.update = () => {
-		if ($$self.$$.dirty & /*$menu*/ 2) {
-			if ($menu) update_i();
+		if ($$self.$$.dirty & /*$menu, category*/ 3) {
+			$$invalidate(5, i = $menu?.categories.findIndex(c => c.id == category.id));
 		}
 	};
 
@@ -3794,8 +3753,7 @@ function instance$6($$self, $$props, $$invalidate) {
 
 	async function submit() {
 		$$invalidate(1, l_submitting = true);
-		await api(`menu/${$menu.id}`, 'PUT', form);
-		menu.set({ ...$menu, ...form });
+		await edit_menu(form);
 		close();
 	}
 
@@ -3848,7 +3806,7 @@ function instance$6($$self, $$props, $$invalidate) {
 
 	$$self.$capture_state = () => ({
 		Modal,
-		api,
+		edit_menu,
 		menu,
 		show,
 		l_submitting,
@@ -3919,7 +3877,7 @@ function get_each_context$2(ctx, list, i) {
 	return child_ctx;
 }
 
-// (26:2) {#each $menu.categories as category}
+// (25:0) {#each $menu.categories as category}
 function create_each_block$2(ctx) {
 	let categorycard;
 	let current;
@@ -3960,7 +3918,7 @@ function create_each_block$2(ctx) {
 		block,
 		id: create_each_block$2.name,
 		type: "each",
-		source: "(26:2) {#each $menu.categories as category}",
+		source: "(25:0) {#each $menu.categories as category}",
 		ctx
 	});
 
@@ -3968,7 +3926,6 @@ function create_each_block$2(ctx) {
 }
 
 function create_fragment$5(ctx) {
-	let div2;
 	let div0;
 	let h1;
 	let t0_value = /*$menu*/ ctx[2].name + "";
@@ -4021,7 +3978,7 @@ function create_fragment$5(ctx) {
 				class: "blu",
 				i: "edit",
 				t: "Editar",
-				action: /*edit_menu*/ ctx[3]
+				action: /*edit*/ ctx[3]
 			},
 			$$inline: true
 		});
@@ -4058,8 +4015,8 @@ function create_fragment$5(ctx) {
 
 	let menumodal_props = {};
 
-	if (/*m_edit_menu*/ ctx[0] !== void 0) {
-		menumodal_props.show = /*m_edit_menu*/ ctx[0];
+	if (/*m_edit*/ ctx[0] !== void 0) {
+		menumodal_props.show = /*m_edit*/ ctx[0];
 	}
 
 	menumodal = new MenuModal({ props: menumodal_props, $$inline: true });
@@ -4084,7 +4041,6 @@ function create_fragment$5(ctx) {
 
 	const block = {
 		c: function create() {
-			div2 = element("div");
 			div0 = element("div");
 			h1 = element("h1");
 			t0 = text(t0_value);
@@ -4129,41 +4085,39 @@ function create_fragment$5(ctx) {
 			create_component(menumodal.$$.fragment);
 			t18 = space();
 			create_component(categorymodal.$$.fragment);
-			add_location(h1, file$5, 2, 4, 35);
+			add_location(h1, file$5, 1, 2, 25);
 			attr_dev(div0, "class", "row jcsb");
-			add_location(div0, file$5, 1, 2, 8);
+			add_location(div0, file$5, 0, 0, 0);
 			attr_dev(td0, "class", "svelte-i7doj6");
-			add_location(td0, file$5, 8, 6, 160);
+			add_location(td0, file$5, 7, 4, 135);
 			attr_dev(td1, "class", "svelte-i7doj6");
-			add_location(td1, file$5, 9, 6, 206);
-			add_location(tr0, file$5, 7, 4, 149);
+			add_location(td1, file$5, 8, 4, 179);
+			add_location(tr0, file$5, 6, 2, 126);
 			attr_dev(td2, "class", "svelte-i7doj6");
-			add_location(td2, file$5, 12, 6, 256);
+			add_location(td2, file$5, 11, 4, 223);
 			attr_dev(td3, "class", "svelte-i7doj6");
-			add_location(td3, file$5, 13, 6, 302);
-			add_location(tr1, file$5, 11, 4, 245);
+			add_location(td3, file$5, 12, 4, 267);
+			add_location(tr1, file$5, 10, 2, 214);
 			attr_dev(td4, "class", "svelte-i7doj6");
-			add_location(td4, file$5, 16, 6, 355);
+			add_location(td4, file$5, 15, 4, 314);
 			attr_dev(td5, "class", "svelte-i7doj6");
-			add_location(td5, file$5, 17, 6, 401);
-			add_location(tr2, file$5, 15, 4, 344);
-			add_location(table, file$5, 6, 2, 137);
+			add_location(td5, file$5, 16, 4, 358);
+			add_location(tr2, file$5, 14, 2, 305);
+			add_location(table, file$5, 5, 0, 116);
 			attr_dev(div1, "class", "hr");
-			add_location(div1, file$5, 21, 2, 452);
-			add_location(div2, file$5, 0, 0, 0);
+			add_location(div1, file$5, 20, 0, 403);
 		},
 		l: function claim(nodes) {
 			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
 		},
 		m: function mount(target, anchor) {
-			insert_dev(target, div2, anchor);
-			append_dev(div2, div0);
+			insert_dev(target, div0, anchor);
 			append_dev(div0, h1);
 			append_dev(h1, t0);
 			append_dev(div0, t1);
 			mount_component(button0, div0, null);
-			append_dev(div2, t2);
-			append_dev(div2, table);
+			insert_dev(target, t2, anchor);
+			insert_dev(target, table, anchor);
 			append_dev(table, tr0);
 			append_dev(tr0, td0);
 			mount_component(icon0, td0, null);
@@ -4187,15 +4141,15 @@ function create_fragment$5(ctx) {
 			append_dev(tr2, t12);
 			append_dev(tr2, td5);
 			append_dev(td5, t13);
-			append_dev(div2, t14);
-			append_dev(div2, div1);
-			append_dev(div2, t15);
-			mount_component(button1, div2, null);
-			append_dev(div2, t16);
+			insert_dev(target, t14, anchor);
+			insert_dev(target, div1, anchor);
+			insert_dev(target, t15, anchor);
+			mount_component(button1, target, anchor);
+			insert_dev(target, t16, anchor);
 
 			for (let i = 0; i < each_blocks.length; i += 1) {
 				if (each_blocks[i]) {
-					each_blocks[i].m(div2, null);
+					each_blocks[i].m(target, anchor);
 				}
 			}
 
@@ -4226,7 +4180,7 @@ function create_fragment$5(ctx) {
 						each_blocks[i] = create_each_block$2(child_ctx);
 						each_blocks[i].c();
 						transition_in(each_blocks[i], 1);
-						each_blocks[i].m(div2, null);
+						each_blocks[i].m(t17.parentNode, t17);
 					}
 				}
 
@@ -4241,9 +4195,9 @@ function create_fragment$5(ctx) {
 
 			const menumodal_changes = {};
 
-			if (!updating_show && dirty & /*m_edit_menu*/ 1) {
+			if (!updating_show && dirty & /*m_edit*/ 1) {
 				updating_show = true;
-				menumodal_changes.show = /*m_edit_menu*/ ctx[0];
+				menumodal_changes.show = /*m_edit*/ ctx[0];
 				add_flush_callback(() => updating_show = false);
 			}
 
@@ -4291,12 +4245,18 @@ function create_fragment$5(ctx) {
 			current = false;
 		},
 		d: function destroy(detaching) {
-			if (detaching) detach_dev(div2);
+			if (detaching) detach_dev(div0);
 			destroy_component(button0);
+			if (detaching) detach_dev(t2);
+			if (detaching) detach_dev(table);
 			destroy_component(icon0);
 			destroy_component(icon1);
 			destroy_component(icon2);
-			destroy_component(button1);
+			if (detaching) detach_dev(t14);
+			if (detaching) detach_dev(div1);
+			if (detaching) detach_dev(t15);
+			destroy_component(button1, detaching);
+			if (detaching) detach_dev(t16);
 			destroy_each(each_blocks, detaching);
 			if (detaching) detach_dev(t17);
 			destroy_component(menumodal, detaching);
@@ -4322,10 +4282,10 @@ function instance$5($$self, $$props, $$invalidate) {
 	component_subscribe($$self, menu, $$value => $$invalidate(2, $menu = $$value));
 	let { $$slots: slots = {}, $$scope } = $$props;
 	validate_slots('MenuEdit', slots, []);
-	let m_edit_menu, m_create_category;
+	let m_edit, m_create_category;
 
-	function edit_menu() {
-		$$invalidate(0, m_edit_menu = 1);
+	function edit() {
+		$$invalidate(0, m_edit = 1);
 	}
 
 	function create_category() {
@@ -4339,8 +4299,8 @@ function instance$5($$self, $$props, $$invalidate) {
 	});
 
 	function menumodal_show_binding(value) {
-		m_edit_menu = value;
-		$$invalidate(0, m_edit_menu);
+		m_edit = value;
+		$$invalidate(0, m_edit);
 	}
 
 	function categorymodal_show_binding(value) {
@@ -4355,15 +4315,15 @@ function instance$5($$self, $$props, $$invalidate) {
 		Button,
 		Icon,
 		menu,
-		m_edit_menu,
+		m_edit,
 		m_create_category,
-		edit_menu,
+		edit,
 		create_category,
 		$menu
 	});
 
 	$$self.$inject_state = $$props => {
-		if ('m_edit_menu' in $$props) $$invalidate(0, m_edit_menu = $$props.m_edit_menu);
+		if ('m_edit' in $$props) $$invalidate(0, m_edit = $$props.m_edit);
 		if ('m_create_category' in $$props) $$invalidate(1, m_create_category = $$props.m_create_category);
 	};
 
@@ -4372,10 +4332,10 @@ function instance$5($$self, $$props, $$invalidate) {
 	}
 
 	return [
-		m_edit_menu,
+		m_edit,
 		m_create_category,
 		$menu,
-		edit_menu,
+		edit,
 		create_category,
 		menumodal_show_binding,
 		categorymodal_show_binding
@@ -5701,32 +5661,32 @@ const file$1 = "web/routes/ItemsEdit.svelte";
 
 function get_each_context(ctx, list, i) {
 	const child_ctx = ctx.slice();
-	child_ctx[10] = list[i];
+	child_ctx[4] = list[i];
 	return child_ctx;
 }
 
 function get_each_context_1(ctx, list, i) {
 	const child_ctx = ctx.slice();
-	child_ctx[13] = list[i];
+	child_ctx[6] = list[i];
 	return child_ctx;
 }
 
 function get_each_context_2(ctx, list, i) {
 	const child_ctx = ctx.slice();
-	child_ctx[13] = list[i];
+	child_ctx[6] = list[i];
 	return child_ctx;
 }
 
 function get_each_context_3(ctx, list, i) {
 	const child_ctx = ctx.slice();
-	child_ctx[10] = list[i];
+	child_ctx[4] = list[i];
 	return child_ctx;
 }
 
 // (6:4) {#each $menu.categories as category}
 function create_each_block_3(ctx) {
 	let option;
-	let t0_value = /*category*/ ctx[10].name + "";
+	let t0_value = /*category*/ ctx[4].name + "";
 	let t0;
 	let t1;
 	let option_value_value;
@@ -5736,9 +5696,9 @@ function create_each_block_3(ctx) {
 			option = element("option");
 			t0 = text(t0_value);
 			t1 = space();
-			option.__value = option_value_value = /*category*/ ctx[10].id;
+			option.__value = option_value_value = /*category*/ ctx[4].id;
 			option.value = option.__value;
-			add_location(option, file$1, 6, 6, 261);
+			add_location(option, file$1, 6, 6, 209);
 		},
 		m: function mount(target, anchor) {
 			insert_dev(target, option, anchor);
@@ -5746,9 +5706,9 @@ function create_each_block_3(ctx) {
 			append_dev(option, t1);
 		},
 		p: function update(ctx, dirty) {
-			if (dirty & /*$menu*/ 16 && t0_value !== (t0_value = /*category*/ ctx[10].name + "")) set_data_dev(t0, t0_value);
+			if (dirty & /*$menu*/ 8 && t0_value !== (t0_value = /*category*/ ctx[4].name + "")) set_data_dev(t0, t0_value);
 
-			if (dirty & /*$menu*/ 16 && option_value_value !== (option_value_value = /*category*/ ctx[10].id)) {
+			if (dirty & /*$menu*/ 8 && option_value_value !== (option_value_value = /*category*/ ctx[4].id)) {
 				prop_dev(option, "__value", option_value_value);
 				option.value = option.__value;
 			}
@@ -5769,10 +5729,10 @@ function create_each_block_3(ctx) {
 	return block;
 }
 
-// (13:4) {#each ($menu.categories.find(c => c.id == category_id) || []).subcategories || [] as subcategory}
+// (13:4) {#each category?.subcategories || [] as subcategory}
 function create_each_block_2(ctx) {
 	let option;
-	let t0_value = /*subcategory*/ ctx[13].name + "";
+	let t0_value = /*subcategory*/ ctx[6].name + "";
 	let t0;
 	let t1;
 	let option_value_value;
@@ -5782,9 +5742,9 @@ function create_each_block_2(ctx) {
 			option = element("option");
 			t0 = text(t0_value);
 			t1 = space();
-			option.__value = option_value_value = /*subcategory*/ ctx[13].id;
+			option.__value = option_value_value = /*subcategory*/ ctx[6].id;
 			option.value = option.__value;
-			add_location(option, file$1, 13, 6, 570);
+			add_location(option, file$1, 13, 6, 472);
 		},
 		m: function mount(target, anchor) {
 			insert_dev(target, option, anchor);
@@ -5792,9 +5752,9 @@ function create_each_block_2(ctx) {
 			append_dev(option, t1);
 		},
 		p: function update(ctx, dirty) {
-			if (dirty & /*$menu, category_id*/ 17 && t0_value !== (t0_value = /*subcategory*/ ctx[13].name + "")) set_data_dev(t0, t0_value);
+			if (dirty & /*category*/ 16 && t0_value !== (t0_value = /*subcategory*/ ctx[6].name + "")) set_data_dev(t0, t0_value);
 
-			if (dirty & /*$menu, category_id*/ 17 && option_value_value !== (option_value_value = /*subcategory*/ ctx[13].id)) {
+			if (dirty & /*category*/ 16 && option_value_value !== (option_value_value = /*subcategory*/ ctx[6].id)) {
 				prop_dev(option, "__value", option_value_value);
 				option.value = option.__value;
 			}
@@ -5808,7 +5768,7 @@ function create_each_block_2(ctx) {
 		block,
 		id: create_each_block_2.name,
 		type: "each",
-		source: "(13:4) {#each ($menu.categories.find(c => c.id == category_id) || []).subcategories || [] as subcategory}",
+		source: "(13:4) {#each category?.subcategories || [] as subcategory}",
 		ctx
 	});
 
@@ -5821,7 +5781,7 @@ function create_each_block_1(ctx) {
 	let current;
 
 	subcategorytable = new SubcategoryTable({
-			props: { subcategory: /*subcategory*/ ctx[13] },
+			props: { subcategory: /*subcategory*/ ctx[6] },
 			$$inline: true
 		});
 
@@ -5835,7 +5795,7 @@ function create_each_block_1(ctx) {
 		},
 		p: function update(ctx, dirty) {
 			const subcategorytable_changes = {};
-			if (dirty & /*filtered_menu*/ 8) subcategorytable_changes.subcategory = /*subcategory*/ ctx[13];
+			if (dirty & /*filtered_menu*/ 32) subcategorytable_changes.subcategory = /*subcategory*/ ctx[6];
 			subcategorytable.$set(subcategorytable_changes);
 		},
 		i: function intro(local) {
@@ -5868,12 +5828,12 @@ function create_each_block(ctx) {
 	let div;
 	let t0;
 	let h1;
-	let t1_value = /*category*/ ctx[10].name + "";
+	let t1_value = /*category*/ ctx[4].name + "";
 	let t1;
 	let t2;
 	let each_1_anchor;
 	let current;
-	let each_value_1 = /*category*/ ctx[10].subcategories;
+	let each_value_1 = /*category*/ ctx[4].subcategories;
 	validate_each_argument(each_value_1);
 	let each_blocks = [];
 
@@ -5899,8 +5859,8 @@ function create_each_block(ctx) {
 
 			each_1_anchor = empty();
 			attr_dev(div, "class", "hr");
-			add_location(div, file$1, 19, 2, 710);
-			add_location(h1, file$1, 21, 2, 732);
+			add_location(div, file$1, 19, 2, 612);
+			add_location(h1, file$1, 21, 2, 634);
 		},
 		m: function mount(target, anchor) {
 			insert_dev(target, div, anchor);
@@ -5919,10 +5879,10 @@ function create_each_block(ctx) {
 			current = true;
 		},
 		p: function update(ctx, dirty) {
-			if ((!current || dirty & /*filtered_menu*/ 8) && t1_value !== (t1_value = /*category*/ ctx[10].name + "")) set_data_dev(t1, t1_value);
+			if ((!current || dirty & /*filtered_menu*/ 32) && t1_value !== (t1_value = /*category*/ ctx[4].name + "")) set_data_dev(t1, t1_value);
 
-			if (dirty & /*filtered_menu*/ 8) {
-				each_value_1 = /*category*/ ctx[10].subcategories;
+			if (dirty & /*filtered_menu*/ 32) {
+				each_value_1 = /*category*/ ctx[4].subcategories;
 				validate_each_argument(each_value_1);
 				let i;
 
@@ -6003,7 +5963,7 @@ function create_fragment$1(ctx) {
 	let current;
 	let mounted;
 	let dispose;
-	let each_value_3 = /*$menu*/ ctx[4].categories;
+	let each_value_3 = /*$menu*/ ctx[3].categories;
 	validate_each_argument(each_value_3);
 	let each_blocks_2 = [];
 
@@ -6011,7 +5971,7 @@ function create_fragment$1(ctx) {
 		each_blocks_2[i] = create_each_block_3(get_each_context_3(ctx, each_value_3, i));
 	}
 
-	let each_value_2 = (/*$menu*/ ctx[4].categories.find(/*func*/ ctx[7]) || []).subcategories || [];
+	let each_value_2 = /*category*/ ctx[4]?.subcategories || [];
 	validate_each_argument(each_value_2);
 	let each_blocks_1 = [];
 
@@ -6019,7 +5979,7 @@ function create_fragment$1(ctx) {
 		each_blocks_1[i] = create_each_block_2(get_each_context_2(ctx, each_value_2, i));
 	}
 
-	let each_value = /*filtered_menu*/ ctx[3].categories;
+	let each_value = /*filtered_menu*/ ctx[5].categories;
 	validate_each_argument(each_value);
 	let each_blocks = [];
 
@@ -6061,24 +6021,22 @@ function create_fragment$1(ctx) {
 
 			each2_anchor = empty();
 			attr_dev(input, "placeholder", "Pesquisar");
-			attr_dev(input, "class", "svelte-setgh4");
-			add_location(input, file$1, 1, 2, 45);
+			attr_dev(input, "class", "svelte-1nqktdd");
+			add_location(input, file$1, 1, 2, 20);
 			option0.__value = false;
 			option0.value = option0.__value;
-			add_location(option0, file$1, 4, 4, 164);
-			set_style(select0, "margin-left", "auto");
-			attr_dev(select0, "class", "svelte-setgh4");
-			if (/*category_id*/ ctx[0] === void 0) add_render_callback(() => /*select0_change_handler*/ ctx[6].call(select0));
-			add_location(select0, file$1, 3, 2, 99);
+			add_location(option0, file$1, 4, 4, 112);
+			attr_dev(select0, "class", "svelte-1nqktdd");
+			if (/*category_id*/ ctx[0] === void 0) add_render_callback(() => /*select0_change_handler*/ ctx[8].call(select0));
+			add_location(select0, file$1, 3, 2, 74);
 			option1.__value = false;
 			option1.value = option1.__value;
-			add_location(option1, file$1, 11, 4, 408);
+			add_location(option1, file$1, 11, 4, 356);
 			select1.disabled = select1_disabled_value = !/*category_id*/ ctx[0];
-			attr_dev(select1, "class", "svelte-setgh4");
-			if (/*subcategory_id*/ ctx[1] === void 0) add_render_callback(() => /*select1_change_handler*/ ctx[8].call(select1));
-			add_location(select1, file$1, 10, 2, 343);
-			attr_dev(div, "class", "row");
-			set_style(div, "flex-wrap", "wrap");
+			attr_dev(select1, "class", "svelte-1nqktdd");
+			if (/*subcategory_id*/ ctx[1] === void 0) add_render_callback(() => /*select1_change_handler*/ ctx[9].call(select1));
+			add_location(select1, file$1, 10, 2, 291);
+			attr_dev(div, "class", "row svelte-1nqktdd");
 			add_location(div, file$1, 0, 0, 0);
 		},
 		l: function claim(nodes) {
@@ -6123,9 +6081,9 @@ function create_fragment$1(ctx) {
 
 			if (!mounted) {
 				dispose = [
-					listen_dev(input, "input", /*input_input_handler*/ ctx[5]),
-					listen_dev(select0, "change", /*select0_change_handler*/ ctx[6]),
-					listen_dev(select1, "change", /*select1_change_handler*/ ctx[8])
+					listen_dev(input, "input", /*input_input_handler*/ ctx[7]),
+					listen_dev(select0, "change", /*select0_change_handler*/ ctx[8]),
+					listen_dev(select1, "change", /*select1_change_handler*/ ctx[9])
 				];
 
 				mounted = true;
@@ -6136,8 +6094,8 @@ function create_fragment$1(ctx) {
 				set_input_value(input, /*query*/ ctx[2]);
 			}
 
-			if (dirty & /*$menu*/ 16) {
-				each_value_3 = /*$menu*/ ctx[4].categories;
+			if (dirty & /*$menu*/ 8) {
+				each_value_3 = /*$menu*/ ctx[3].categories;
 				validate_each_argument(each_value_3);
 				let i;
 
@@ -6160,12 +6118,12 @@ function create_fragment$1(ctx) {
 				each_blocks_2.length = each_value_3.length;
 			}
 
-			if (dirty & /*category_id, $menu*/ 17) {
+			if (dirty & /*category_id, $menu*/ 9) {
 				select_option(select0, /*category_id*/ ctx[0]);
 			}
 
-			if (dirty & /*$menu, category_id*/ 17) {
-				each_value_2 = (/*$menu*/ ctx[4].categories.find(/*func*/ ctx[7]) || []).subcategories || [];
+			if (dirty & /*category*/ 16) {
+				each_value_2 = /*category*/ ctx[4]?.subcategories || [];
 				validate_each_argument(each_value_2);
 				let i;
 
@@ -6188,16 +6146,16 @@ function create_fragment$1(ctx) {
 				each_blocks_1.length = each_value_2.length;
 			}
 
-			if (!current || dirty & /*category_id, $menu*/ 17 && select1_disabled_value !== (select1_disabled_value = !/*category_id*/ ctx[0])) {
+			if (!current || dirty & /*category_id, $menu*/ 9 && select1_disabled_value !== (select1_disabled_value = !/*category_id*/ ctx[0])) {
 				prop_dev(select1, "disabled", select1_disabled_value);
 			}
 
-			if (dirty & /*subcategory_id, $menu, category_id*/ 19) {
+			if (dirty & /*subcategory_id, category*/ 18) {
 				select_option(select1, /*subcategory_id*/ ctx[1]);
 			}
 
-			if (dirty & /*filtered_menu*/ 8) {
-				each_value = /*filtered_menu*/ ctx[3].categories;
+			if (dirty & /*filtered_menu*/ 32) {
+				each_value = /*filtered_menu*/ ctx[5].categories;
 				validate_each_argument(each_value);
 				let i;
 
@@ -6268,19 +6226,19 @@ function create_fragment$1(ctx) {
 function instance$1($$self, $$props, $$invalidate) {
 	let $menu;
 	validate_store(menu, 'menu');
-	component_subscribe($$self, menu, $$value => $$invalidate(4, $menu = $$value));
+	component_subscribe($$self, menu, $$value => $$invalidate(3, $menu = $$value));
 	let { $$slots: slots = {}, $$scope } = $$props;
 	validate_slots('ItemsEdit', slots, []);
-	let category_id, subcategory_id, query;
+	let category_id, subcategory_id, category, subcategory, query;
 	let filtered_menu;
 
 	function apply_filters(category_id, subcategory_id, query) {
 		if (!$menu.categories.find(c => c.id == category_id)?.subcategories.find(sc => sc.id == subcategory_id)) subcategory_id = false;
-		$$invalidate(3, filtered_menu = { ...$menu });
-		if (category_id) $$invalidate(3, filtered_menu.categories = filtered_menu.categories.filter(c => c.id == category_id), filtered_menu);
+		$$invalidate(5, filtered_menu = { ...$menu });
+		if (category_id) $$invalidate(5, filtered_menu.categories = filtered_menu.categories.filter(c => c.id == category_id), filtered_menu);
 
 		if (subcategory_id) $$invalidate(
-			3,
+			5,
 			filtered_menu.categories = filtered_menu.categories.map(c => c.id != category_id
 			? c
 			: {
@@ -6291,7 +6249,7 @@ function instance$1($$self, $$props, $$invalidate) {
 		);
 
 		if (query) $$invalidate(
-			3,
+			5,
 			filtered_menu.categories = filtered_menu.categories.map(c => ({
 				...c,
 				subcategories: c.subcategories.map(sc => ({
@@ -6319,12 +6277,10 @@ function instance$1($$self, $$props, $$invalidate) {
 		$$invalidate(0, category_id);
 	}
 
-	const func = c => c.id == category_id;
-
 	function select1_change_handler() {
 		subcategory_id = select_value(this);
 		$$invalidate(1, subcategory_id);
-		$$invalidate(0, category_id);
+		(($$invalidate(4, category), $$invalidate(3, $menu)), $$invalidate(0, category_id));
 	}
 
 	$$self.$capture_state = () => ({
@@ -6332,6 +6288,8 @@ function instance$1($$self, $$props, $$invalidate) {
 		menu,
 		category_id,
 		subcategory_id,
+		category,
+		subcategory,
 		query,
 		filtered_menu,
 		apply_filters,
@@ -6341,8 +6299,10 @@ function instance$1($$self, $$props, $$invalidate) {
 	$$self.$inject_state = $$props => {
 		if ('category_id' in $$props) $$invalidate(0, category_id = $$props.category_id);
 		if ('subcategory_id' in $$props) $$invalidate(1, subcategory_id = $$props.subcategory_id);
+		if ('category' in $$props) $$invalidate(4, category = $$props.category);
+		if ('subcategory' in $$props) $$invalidate(6, subcategory = $$props.subcategory);
 		if ('query' in $$props) $$invalidate(2, query = $$props.query);
-		if ('filtered_menu' in $$props) $$invalidate(3, filtered_menu = $$props.filtered_menu);
+		if ('filtered_menu' in $$props) $$invalidate(5, filtered_menu = $$props.filtered_menu);
 	};
 
 	if ($$props && "$$inject" in $$props) {
@@ -6353,17 +6313,26 @@ function instance$1($$self, $$props, $$invalidate) {
 		if ($$self.$$.dirty & /*category_id, subcategory_id, query*/ 7) {
 			apply_filters(category_id, subcategory_id, query);
 		}
+
+		if ($$self.$$.dirty & /*$menu, category_id*/ 9) {
+			$$invalidate(4, category = $menu.categories.find(c => c.id == category_id));
+		}
+
+		if ($$self.$$.dirty & /*category, subcategory_id*/ 18) {
+			$$invalidate(6, subcategory = category?.subcategories.find(sc => sc.id == subcategory_id));
+		}
 	};
 
 	return [
 		category_id,
 		subcategory_id,
 		query,
-		filtered_menu,
 		$menu,
+		category,
+		filtered_menu,
+		subcategory,
 		input_input_handler,
 		select0_change_handler,
-		func,
 		select1_change_handler
 	];
 }

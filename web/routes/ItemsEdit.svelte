@@ -1,7 +1,7 @@
-<div class='row' style='flex-wrap: wrap;'>
+<div class='row'>
   <input placeholder='Pesquisar' bind:value={query}>
 
-  <select bind:value={category_id} style='margin-left: auto;'>
+  <select bind:value={category_id}>
     <option value={false}> Todas categorias </option>
     {#each $menu.categories as category}
       <option value={category.id}> {category.name} </option>
@@ -10,7 +10,7 @@
 
   <select bind:value={subcategory_id} disabled={!category_id}>
     <option value={false}> Todas subcategorias </option>
-    {#each ($menu.categories.find(c => c.id == category_id) || []).subcategories || [] as subcategory}
+    {#each category?.subcategories || [] as subcategory}
       <option value={subcategory.id}> {subcategory.name} </option>
     {/each}
   </select>
@@ -31,7 +31,7 @@
 
   import { menu } from '../store.js'
 
-  let category_id, subcategory_id, query
+  let category_id, subcategory_id, category, subcategory, query
   let filtered_menu
 
   function apply_filters(category_id, subcategory_id, query) {
@@ -51,9 +51,19 @@
   }
 
   $: apply_filters(category_id, subcategory_id, query)
+  $: category    = $menu.categories.find(c => c.id == category_id)
+  $: subcategory = category?.subcategories.find(sc => sc.id == subcategory_id)
 </script>
 
 <style>
+  select:nth-child(2) {
+    margin-left: auto;
+  }
+
+  .row {
+    flex-wrap: wrap;
+  }
+
   @media screen and (max-width: 768px) {
     input {
       width: 100%;

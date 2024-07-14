@@ -1,8 +1,8 @@
 <div class='category'>
-  <div class='row toprow' style='justify-content: space-between;'>
+  <div class='row toprow jcsb'>
     <h2> {category.name} </h2>
 
-    <div class='row' style='justify-content: end;'>
+    <div class='row jce'>
       <Button i='settings' action={show_options} />
       <Button i='keyboard_arrow_up' action={move_up} disabled={i == 0} />
       <Button i='keyboard_arrow_down' action={move_down} disabled={i == $menu.categories.length - 1} />
@@ -24,7 +24,7 @@
     <Button class='red' i='delete' t='Excluir'      action={_delete} />
   </div>
 </Modal>
-<CategoryModal    bind:show={m_edit}        id={category.id} />
+<CategoryModal    bind:show={m_edit}        {category} />
 <SubcategoryModal bind:show={m_subcategory} category_id={category.id} />
 
 <script>
@@ -34,7 +34,7 @@
   import Button           from '../components/Button.svelte'
   import Modal            from '../components/Modal.svelte'
 
-  import { api } from '../utils/api.js'
+  import { delete_category, move_category_up, move_category_down } from '../utils/menu-management.js'
   import { menu } from '../store.js'
 
   export let category
@@ -48,47 +48,12 @@
     m_options = 0
     if (!confirm('Certeza que quer excluir essa categoria?')) return
 
-    api(`category/${category.id}`, 'DELETE')
-    menu.set({ ...$menu, categories: $menu.categories.filter(c => c.id != category.id) })
+    delete_category(category.id)
   }
-  function move_up() {
-    api(`raise-category/${category.id}`, 'PUT')
+  function move_up()   { move_category_up(category.id)   }
+  function move_down() { move_category_down(category.id) }
 
-    const i = $menu.categories.findIndex(c => c.id == category.id)
-    let arr = $menu.categories
-
-    let temp = arr[i - 1]
-    arr[i - 1] = arr[i]
-    arr[i] = temp
-
-    menu.set({ ...$menu, categories: arr })
-  }
-  function move_down() {
-    let next, id
-    for (let c of $menu.categories) {
-      if (next) {
-        id = c.id
-        break
-      }
-      if (c.id == category.id) next = true
-    }
-
-    api(`raise-category/${id}`, 'PUT')
-
-    let arr = $menu.categories
-
-    let temp = arr[i + 1]
-    arr[i + 1] = arr[i]
-    arr[i] = temp
-
-    menu.set({ ...$menu, categories: arr })
-  }
-
-  function update_i() {
-    i = $menu.categories.findIndex(c => c.id == category.id)
-  }
-
-  $: if ($menu) update_i()
+  $: i = $menu?.categories.findIndex(c => c.id == category.id)
 </script>
 
 <style>

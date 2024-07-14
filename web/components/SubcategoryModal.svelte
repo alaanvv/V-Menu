@@ -13,7 +13,7 @@
 <script>
   import Modal from './Modal.svelte'
 
-  import { api } from '../utils/api.js'
+  import { create_subcategory, edit_subcategory } from '../utils/menu-management.js'
   import { menu } from '../store.js'
 
   export let show, id, category_id
@@ -25,21 +25,9 @@
   async function submit() {
     l_submitting = true
 
-    if (id) {
-      await api(`subcategory/${id}`, 'PUT', form)
-
-      const new_menu = $menu
-      for (let i in new_menu.categories)
-        if (new_menu.categories[i].id == category_id)
-          new_menu.categories[i].subcategories = new_menu.categories[i].subcategories.map(sc => sc.id != id ? sc : { ...sc, ...form })
-
-      menu.set(new_menu)
-      close()
-    } else {
-      const { data } = await api(`subcategory/${category_id}`, 'POST', form)
-      menu.set({ ...$menu, categories: $menu.categories.map(c => c.id != category_id ? c : { ...c, subcategories: [ ...(c.subcategories || []), data.subcategory ] }) })
-      close()
-    }
+    if (id) edit_subcategory(id, form)
+    else    create_subcategory(category_id, form)
+    close()
   }
 
   function mount() {

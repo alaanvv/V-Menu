@@ -1,34 +1,32 @@
-<div>
-  <div class='row jcsb'>
-    <h1> {$menu.name} </h1>
-    <Button class='blu' i='edit' t='Editar' action={edit_menu} />
-  </div>
-
-  <table>
-    <tr>
-      <td> <Icon i='phone' /> Telefone: </td>
-      <td> {$menu.phone} </td>
-    </tr>
-    <tr>
-      <td> <Icon i='phone' /> Whatsapp: </td>
-      <td> {$menu.whatsapp} </td>
-    </tr>
-    <tr>
-      <td> <Icon i='place' /> Endereço: </td>
-      <td> {$menu.address} </td>
-    </tr>
-  </table>
-
-  <div class='hr' />
-
-  <Button class='grn' i='add' t='Categoria' action={create_category} />
-
-  {#each $menu.categories as category}
-    <CategoryCard {category} />
-  {/each}
+<div class='row jcsb'>
+  <h1> {$menu.name} </h1>
+  <Button class='blu' i='edit' t='Editar' action={edit} />
 </div>
 
-<MenuModal     bind:show={m_edit_menu} />
+<table>
+  <tr>
+    <td> <Icon i='phone' /> Telefone: </td>
+    <td> {$menu.phone} </td>
+  </tr>
+  <tr>
+    <td> <Icon i='phone' /> Whatsapp: </td>
+    <td> {$menu.whatsapp} </td>
+  </tr>
+  <tr>
+    <td> <Icon i='place' /> Endereço: </td>
+    <td> {$menu.address} </td>
+  </tr>
+</table>
+
+<div class='hr' />
+
+<Button class='grn' i='add' t='Categoria' action={create_category} />
+
+{#each $menu.categories as category}
+  <CategoryCard {category} />
+{/each}
+
+<MenuModal     bind:show={m_edit} />
 <CategoryModal bind:show={m_create_category} />
 
 <script>
@@ -40,9 +38,9 @@
 
   import { menu } from '../store.js'
 
-  let m_edit_menu, m_create_category
+  let m_edit, m_create_category
 
-  function edit_menu()       { m_edit_menu       = 1 }
+  function edit()            { m_edit = 1 }
   function create_category() { m_create_category = 1 }
 </script>
 

@@ -165,6 +165,14 @@ describe('Menu management', _ => {
     })
   })
 
+  describe('GET /menus', _ => {
+    it('should be able to get all menus', async _ => {
+      const res = await request(app.server).get(`/menus`)
+
+      expect(res.statusCode).toEqual(200)
+    })
+  })
+
   describe('DELETE /item', _ => {
     it('should be able to delete a item', async _ => {
       const res = await request(app.server).delete(`/item/${item_id}`).set('Authorization', `Bearer ${session_id}`).send()

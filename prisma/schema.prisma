@@ -8,7 +8,7 @@ datasource db {
 }
 
 model Menu {
-  id       String  @id @default(cuid())
+  id       String @id @default(cuid())
   username String
   password String
   name     String
@@ -17,7 +17,7 @@ model Menu {
   address  String
 
   categories Category[]
-  Session    Session[]
+  session    Session[]
 
   @@map("menus")
 }
@@ -59,24 +59,11 @@ model Item {
   @@map("items")
 }
 
-model User {
-  id         String   @id @default(cuid())
-  role       String
-  editable   Boolean  @default(true)
-  created_at DateTime @default(now())
-
-  sessions Session[]
-
-  @@map("users")
-}
-
 model Session {
   id      String @id @default(cuid())
   menu_id String
 
-  menu   Menu    @relation(fields: [menu_id], references: [id], onDelete: Cascade)
-  User   User?   @relation(fields: [userId], references: [id])
-  userId String?
+  menu Menu @relation(fields: [menu_id], references: [id], onDelete: Cascade)
 
   @@map("sessions")
 }

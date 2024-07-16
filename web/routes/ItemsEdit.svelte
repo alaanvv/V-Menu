@@ -2,14 +2,14 @@
   <input placeholder='Pesquisar' bind:value={query}>
 
   <select bind:value={category_id}>
-    <option value={false}> Todas categorias </option>
-    {#each $menu.categories as category}
+    <option value={undefined}> Todas categorias </option>
+    {#each $menu.categories || [] as category}
       <option value={category.id}> {category.name} </option>
     {/each}
   </select>
 
   <select bind:value={subcategory_id} disabled={!category_id}>
-    <option value={false}> Todas subcategorias </option>
+    <option value={undefined}> Todas subcategorias </option>
     {#each category?.subcategories || [] as subcategory}
       <option value={subcategory.id}> {subcategory.name} </option>
     {/each}
@@ -26,6 +26,14 @@
   {/each}
 {/each}
 
+{#if !filtered_menu.categories.length && (query || category_id || subcategory_id)}
+  <p>
+    Nada encontrado para esses filtros.
+    <!-- svelte-ignore a11y-click-events-have-key-events -->
+    <span class='underline cp' on:click={clear_filters}> Limpar filtros </span>
+  </p>
+{/if}
+
 <script>
   import SubcategoryTable from '../components/SubcategoryTable.svelte'
 
@@ -36,7 +44,7 @@
 
   function apply_filters(category_id, subcategory_id, query) {
     if (!$menu.categories.find(c => c.id == category_id)?.subcategories.find(sc => sc.id == subcategory_id))
-      subcategory_id = false
+      subcategory_id = undefined
 
     filtered_menu = { ...$menu }
 
@@ -46,8 +54,15 @@
     if (subcategory_id)
       filtered_menu.categories = filtered_menu.categories.map(c => c.id != category_id ? c : { ...c, subcategories: c.subcategories.filter(sc => sc.id == subcategory_id) })
 
-    if (query)
-      filtered_menu.categories = filtered_menu.categories.map(c => ({ ...c, subcategories: c.subcategories.map(sc => ({ ...sc, items: sc.items.filter(i => i.name.toLowerCase().includes(query.toLowerCase())) })) }))
+    if (query) {
+      filtered_menu.categories = filtered_menu.categories.map(c => ({ ...c, subcategories: c.subcategories.map(sc => ({ ...sc, items: sc.items.filter(i => i.name.toLowerCase().includes(query.toLowerCase())) })).filter(sc => sc.items.length) })).filter(c => c.subcategories.length)
+    }
+  }
+
+  function clear_filters() {
+    query = ''
+    category_id = undefined
+    subcategory_id = undefined
   }
 
   $: apply_filters(category_id, subcategory_id, query)

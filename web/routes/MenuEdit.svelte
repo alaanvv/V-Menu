@@ -1,6 +1,7 @@
-<div class='row jcsb'>
+<div class='row'>
   <h1> {$menu.name} </h1>
-  <Button class='blu' i='edit' t='Editar' action={edit} />
+  <Button class='right blu' i='edit'   t='Editar' action={edit} />
+  <Button                   i='logout' t='Sair'   action={logout} />
 </div>
 
 <table>
@@ -36,12 +37,19 @@
   import Button        from '../components/Button.svelte'
   import Icon          from '../components/Icon.svelte'
 
-  import { menu } from '../store.js'
+  import { session_id, menu } from '../store.js'
+  import { api } from '../utils/api.js'
 
   let m_edit, m_create_category
 
   function edit()            { m_edit = 1 }
   function create_category() { m_create_category = 1 }
+  function logout() {
+    api(`logout/${session_id}`)
+    localStorage.removeItem('session_id')
+    session_id.set()
+    menu.set()
+  }
 </script>
 
 <style>

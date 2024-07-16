@@ -1,6 +1,5 @@
 # Summary
 - [Database](#database)
-- [Routes](#routes)
 - [Todo](#todo)
 
 # Database
@@ -73,11 +72,11 @@ model Session {
 - [x] Frontend to manage menus
 - [x] Create order features
 - [x] Write missing tests
-- [ ] Account system
+- [x] Account system
     - [x] Database user linked to a menu
     - [x] Route to create user (also menu)
     - [x] Session database table
     - [x] Routes for creating and deleting sessions
     - [x] Require session token to modify stuff
     - [x] Login system
-    - [ ] Create small and safe web app to register customers
+    - [x] Create small and safe web app to register customers

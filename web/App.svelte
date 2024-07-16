@@ -4,18 +4,20 @@
   {#if loading}
     Carregando...
   {:else}
-    {#if      $menu && $curr_page == 'menu'}  <MenuEdit />
-    {:else if $menu && $curr_page == 'items'} <ItemsEdit />
-    {:else if          $curr_page == 'login'} <Login />
+    {#if      $menu && $curr_page == 'menu'}        <MenuEdit />
+    {:else if $menu && $curr_page == 'items'}       <ItemsEdit />
+    {:else if          $curr_page == 'login'}       <Login />
+    {:else if          $curr_page == 'admin'}       <AdminPanel />
     {/if}
   {/if}
 </main>
 
 <script>
-  import ItemsEdit from './routes/ItemsEdit.svelte'
-  import MenuEdit  from './routes/MenuEdit.svelte'
-  import TopBar    from './components/TopBar.svelte'
-  import Login     from './routes/Login.svelte'
+  import AdminPanel from './routes/AdminPanel.svelte'
+  import ItemsEdit  from './routes/ItemsEdit.svelte'
+  import MenuEdit   from './routes/MenuEdit.svelte'
+  import TopBar     from './components/TopBar.svelte'
+  import Login      from './routes/Login.svelte'
 
   import { session_id, curr_page, menu } from './store.js'
   import { api } from './utils/api.js'
@@ -36,7 +38,7 @@
   })
 
   $: {
-    if      (!$session_id) curr_page.set('login')
+    if      (!$session_id && $curr_page != 'admin') curr_page.set('login')
     else if ($curr_page == 'login' || !$curr_page)  curr_page.set('items')
   }
 </script>

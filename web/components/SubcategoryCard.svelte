@@ -13,7 +13,7 @@
     <Button class='red' i='delete' t='Excluir'  action={_delete} />
   </div>
 </Modal>
-<SubcategoryModal bind:show={m_edit} id={subcategory.id} category_id={subcategory.category_id} />
+<SubcategoryModal bind:show={m_edit} {subcategory} category_id={subcategory.category_id} />
 
 <script>
   import SubcategoryModal from '../components/SubcategoryModal.svelte'

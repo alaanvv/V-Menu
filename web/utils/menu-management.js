@@ -133,3 +133,79 @@ export async function move_subcategory_down(id) {
     break
   }
 }
+
+// Item
+export async function create_item(id, _data) {
+  const menu = get(_menu)
+
+  const { data } = await api(`item/${id}`, 'POST', _data)
+
+  for (let ci in menu.categories) {
+    const sci = menu.categories[ci].subcategories.findIndex(sc => sc.id == id)
+    if (sci == -1) continue
+
+    menu.categories[ci].subcategories[sci].items.push(data.item)
+    break
+  }
+
+  _menu.set(menu)
+}
+
+export async function edit_item(id, _data) {
+  const menu = get(_menu)
+
+  await api(`item/${id}`, 'PUT', _data)
+
+  for (let ci in menu.categories)
+    for (let sci in menu.categories[ci].subcategories)
+      for (let ii in menu.categories[ci].subcategories[sci].items)
+        if (menu.categories[ci].subcategories[sci].items[ii].id == id) {
+          menu.categories[ci].subcategories[sci].items[ii] = { ...menu.categories[ci].subcategories[sci].items[ii].id, ..._data }
+          break
+        }
+
+  _menu.set(menu)
+}
+
+export async function delete_item(id) {
+  const menu = get(_menu)
+
+  await api(`item/${id}`, 'DELETE')
+
+  for (let ci in menu.categories)
+    for (let sci in menu.categories[ci].subcategories)
+      menu.categories[ci].subcategories[sci].items = menu.categories[ci].subcategories[sci].items.filter(i => i.id != id)
+
+  _menu.set(menu)
+}
+
+export async function move_item_up(id) {
+  const menu = get(_menu)
+
+  api(`raise-item/${id}`, 'PUT')
+
+  for (let ci in menu.categories) {
+    const sci = menu.categories[ci].subcategories.findIndex(sc => sc.items.find(i => i.id == id))
+    if (sci == -1) continue
+    const ii = menu.categories[ci].subcategories[sci].items.findIndex(i => i.id == id)
+
+    const item = menu.categories[ci].subcategories[sci].items.splice(ii, 1)[0]
+    menu.categories[ci].subcategories[sci].items = [...menu.categories[ci].subcategories[sci].items.slice(0, ii - 1), item, ...menu.categories[ci].subcategories[sci].items.slice(ii - 1)]
+    break
+  }
+
+  _menu.set(menu)
+}
+
+export async function move_item_down(id) {
+  const menu = get(_menu)
+
+  for (let ci in menu.categories) {
+    const sci = menu.categories[ci].subcategories.findIndex(sc => sc.items.find(i => i.id == id))
+    if (sci == -1) continue
+    const ii = menu.categories[ci].subcategories[sci].items.findIndex(i => i.id == id)
+
+    await move_subcategory_up(menu.categories[ci].subcategories[sci].items[ii + 1].id)
+    break
+  }
+}

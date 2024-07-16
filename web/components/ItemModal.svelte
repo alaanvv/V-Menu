@@ -1,6 +1,6 @@
 {#if show}
   <Modal {show} on:close={close}>
-    <h2> {id ? 'Editando' : 'Criando'} um Produto </h2>
+    <h2 class='special tac'> {item ? `Produto: ${item.name}` : 'Criando um Produto'} </h2>
 
     <form>
       <label> Nome:      <input bind:value={form.name} required /> </label>
@@ -15,10 +15,10 @@
 <script>
   import Modal from './Modal.svelte'
 
-  import { api } from '../utils/api.js'
+  import { create_item, edit_item } from '../utils/menu-management.js'
   import { menu } from '../store.js'
 
-  export let show, id, subcategory_id
+  export let show, item, subcategory_id
   let l_submitting
   let form = {}
 
@@ -27,46 +27,26 @@
   async function submit() {
     l_submitting = true
 
+    if (!form.description)
+      delete form.description
     form.price_in_cents = Math.round(form.price * 100)
 
-    if (id) {
-      await api(`item/${id}`, 'PUT', form)
-
-      const new_menu = $menu
-      for (let i in new_menu.categories)
-        if (new_menu.categories[i].subcategories.find(sc => sc.id == subcategory_id))
-          for (let j in new_menu.categories[i].subcategories)
-            if (new_menu.categories[i].subcategories[j].id == subcategory_id)
-              new_menu.categories[i].subcategories[j].items = new_menu.categories[i].subcategories[j].items.map(i => i.id != id ? i : { ...i, ...form })
-
-      menu.set(new_menu)
-      close()
-    } else {
-      const { data } = await api(`item/${subcategory_id}`, 'POST', form)
-
-      const new_menu = $menu
-      for (let i in new_menu.categories)
-        if (new_menu.categories[i].subcategories.find(sc => sc.id == subcategory_id))
-          for (let j in new_menu.categories[i].subcategories)
-            if (new_menu.categories[i].subcategories[j].id == subcategory_id)
-              new_menu.categories[i].subcategories[j].items = [...new_menu.categories[i].subcategories[j].items, data.item]
-
-      menu.set(new_menu)
-      close()
-    }
+    if (item) await edit_item(item.id, form)
+    else      await create_item(subcategory_id, form)
+    close()
   }
 
   function mount() {
     l_submitting = false
     form = {}
-    if (id) {
+    if (item) {
       const category = $menu.categories.find(c => c.subcategories.find(sc => sc.id == subcategory_id))
       const subcategory = category.subcategories.find(sc => sc.id == subcategory_id)
-      const item = subcategory.items.find(i => i.id == id)
+      const _item = subcategory.items.find(i => i.id == item.id)
 
-      form.name = item.name
-      form.description = item.description
-      form.price = item.price_in_cents / 100
+      form.name = _item.name
+      form.description = _item.description
+      form.price = _item.price_in_cents / 100
     }
   }
 

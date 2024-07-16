@@ -1,7 +1,7 @@
 <tr>
   <td> {item.name} </td>
-  <td> {item.description} </td>
-  <td> R$ {String(item.price_in_cents / 100).replace('.', ',')} </td>
+  <td> {item.description || 'Sem descrição'} </td>
+  <td> R$ {format_price(item.price_in_cents)} </td>
   <td> <Button class='blu' i='edit' action={show_options} /> </td>
 </tr>
 
@@ -14,15 +14,15 @@
     <Button i='keyboard_arrow_down' t='Mover pra baixo' action={move_down} disabled={i == items_length - 1} />
   </div>
 </Modal>
-<ItemModal bind:show={m_edit} id={item.id} subcategory_id={item.subcategory_id} />
+<ItemModal bind:show={m_edit} {item} subcategory_id={item.subcategory_id} />
 
 <script>
   import ItemModal from '../components/ItemModal.svelte'
   import Button from '../components/Button.svelte'
   import Modal from '../components/Modal.svelte'
 
+  import { delete_item, move_item_up, move_item_down } from '../utils/menu-management.js'
   import { menu } from '../store.js'
-  import { api }  from '../utils/api.js'
 
   export let item
   let m_options, m_edit
@@ -34,76 +34,31 @@
     m_options = 0
     if (!confirm('Certeza que quer excluir esse produto?')) return
 
-    api(`item/${item.id}`, 'DELETE')
-
-    const new_menu = $menu
-    for (let i in new_menu.categories)
-      if (new_menu.categories[i].subcategories.find(sc => sc.id == item.subcategory_id))
-        for (let j in new_menu.categories[i].subcategories)
-          if (new_menu.categories[i].subcategories[j].id == item.subcategory_id)
-            new_menu.categories[i].subcategories[j].items = new_menu.categories[i].subcategories[j].items.filter(it => it.id != item.id)
-
-    menu.set(new_menu)
+    delete_item(item.id)
   }
-
   function move_up() {
     m_options = 0
-    api(`raise-item/${item.id}`, 'PUT')
-
-    const category = $menu.categories.find(c => c.subcategories.find(sc => sc.id == item.subcategory_id))
-    const subcategory = category.subcategories.find(sc => sc.id == item.subcategory_id)
-    const arr = subcategory.items
-
-    let temp = arr[i - 1]
-    arr[i - 1] = arr[i]
-    arr[i] = temp
-
-    const new_menu = $menu
-
-    subcategory.items = arr
-    category.subcategories.map(sc => sc.id != subcategory.id ? sc : subcategory)
-    new_menu.categories.map(c => c.id != category.id ? c : category)
-
-    menu.set(new_menu)
+    move_item_up(item.id)
   }
   function move_down() {
     m_options = 0
+    move_item_down(item.id)
+  }
 
-    const category = $menu.categories.find(c => c.subcategories.find(sc => sc.id == item.subcategory_id))
-    const subcategory = category.subcategories.find(sc => sc.id == item.subcategory_id)
-    const arr = subcategory.items
-
-    let next, id
-    for (let i of arr) {
-      if (next) {
-        id = i.id
-        break
-      }
-      if (i.id == item.id) next = true
-    }
-
-    api(`raise-item/${id}`, 'PUT')
-
-    let temp = arr[i + 1]
-    arr[i + 1] = arr[i]
-    arr[i] = temp
-
-    const new_menu = $menu
-
-    subcategory.items = arr
-    category.subcategories.map(sc => sc.id != subcategory.id ? sc : subcategory)
-    new_menu.categories.map(c => c.id != category.id ? c : category)
-
-    menu.set(new_menu)
+  function format_price(n) {
+    let str = String(n / 100).replace('.', ',')
+    if (n % 100 == 0) str += ',00'
+    else if (n % 10 == 0) str += '0'
+    return str
   }
 
   function update_i() {
     const category = $menu.categories.find(c => c.subcategories.find(sc => sc.id == item.subcategory_id))
-    const subcategory = category.subcategories.find(sc => sc.id == item.subcategory_id)
-    const items = subcategory.items
-    items_length = items.length
+    const subcategory = category?.subcategories.find(sc => sc.id == item.subcategory_id)
+    const items = subcategory?.items
+    items_length = items?.length
 
-    i = items.findIndex(i => i.id == item.id)
+    i = items?.findIndex(i => i.id == item.id)
   }
 
   $: if ($menu) update_i()

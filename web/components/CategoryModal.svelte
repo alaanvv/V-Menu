@@ -1,5 +1,5 @@
 <Modal {show} on:close={close}>
-  <h2> {category ? 'Editando' : 'Criando'} uma Categoria </h2>
+  <h2 class='special tac'> {category ? `Categoria: ${category.name}` : 'Criando uma categoria'} </h2>
 
   <form>
     <label> Nome: <input bind:value={form.name} required /> </label>
@@ -22,8 +22,8 @@
   async function submit() {
     l_submitting = true
 
-    if (category) edit_category(category.id, form)
-    else          create_category(form)
+    if (category) await edit_category(category.id, form)
+    else          await create_category(form)
     close()
   }
 

@@ -32,7 +32,7 @@
   function edit()         { m_options = 0; m_edit    = 1 }
   function _delete() {
     m_options = 0
-    if (!confirm('Certeza que quer excluir esse produto?')) return
+    if (!confirm(`Certeza que quer excluir o produto ${item.name}?`)) return
 
     delete_item(item.id)
   }

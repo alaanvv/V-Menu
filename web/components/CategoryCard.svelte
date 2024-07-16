@@ -46,7 +46,7 @@
   function show_options() { m_options = 1 }
   function _delete() {
     m_options = 0
-    if (!confirm('Certeza que quer excluir essa categoria?')) return
+    if (!confirm(`Certeza que quer excluir a categoria ${category.name}?`)) return
 
     delete_category(category.id)
   }

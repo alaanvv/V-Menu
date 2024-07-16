@@ -2,6 +2,7 @@
 <li class='row'>
   <p class='cp fg' on:click={show_options}> {subcategory.name || 'Sem nome' } </p>
 
+  <Button i='settings' action={show_options} />
   <Button i='keyboard_arrow_up' action={move_up} disabled={i == 0} />
   <Button i='keyboard_arrow_down' action={move_down} disabled={i == category.subcategories.length - 1} />
 </li>
@@ -31,7 +32,7 @@
   function edit()         { m_options = 0; m_edit    = 1 }
   function _delete() {
     m_options = 0
-    if (!confirm('Certeza que quer excluir essa subcategoria?')) return
+    if (!confirm(`Certeza que quer excluir a subcategoria ${subcategory.name}?`)) return
 
     delete_subcategory(subcategory.id)
   }

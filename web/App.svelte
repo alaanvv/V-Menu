@@ -1,26 +1,44 @@
 <TopBar />
 
 <main>
-  {#if      $menu && $curr_page == 'menu'}  <MenuEdit />
-  {:else if $menu && $curr_page == 'items'} <ItemsEdit />
+  {#if loading}
+    Carregando...
+  {:else}
+    {#if      $menu && $curr_page == 'menu'}  <MenuEdit />
+    {:else if $menu && $curr_page == 'items'} <ItemsEdit />
+    {:else if          $curr_page == 'login'} <Login />
+    {/if}
   {/if}
 </main>
 
 <script>
-  import TopBar    from './components/TopBar.svelte'
-  import MenuEdit  from './routes/MenuEdit.svelte'
   import ItemsEdit from './routes/ItemsEdit.svelte'
+  import MenuEdit  from './routes/MenuEdit.svelte'
+  import TopBar    from './components/TopBar.svelte'
+  import Login     from './routes/Login.svelte'
 
-  import { curr_page, menu } from './store.js'
-  import { api } from './utils/api'
+  import { session_id, curr_page, menu } from './store.js'
+  import { api } from './utils/api.js'
   import { onMount } from 'svelte'
 
-  if (!$curr_page) curr_page.set('items')
+  let loading = true
 
   onMount(async _ => {
-    if (!$menu)
-      menu.set((await api(`menu/clyhtxwlk00001tx03yhu5xz6`)).data.menu)
+    const _session_id = localStorage.getItem('session_id')
+    if (!_session_id) return loading = false
+
+    const { res, data } = await api(`menu-from-session/${_session_id}`)
+    loading = false
+    if (!res.ok) return
+
+    session_id.set(_session_id)
+    menu.set(data.menu)
   })
+
+  $: {
+    if      (!$session_id) curr_page.set('login')
+    else if ($curr_page == 'login' || !$curr_page)  curr_page.set('items')
+  }
 </script>
 
 <style>

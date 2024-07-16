@@ -1,5 +1,13 @@
+import { session_id } from '../store'
+import { get } from 'svelte/store'
+
 export async function api(route, method, body) {
   const options = { headers: {}, method: method || 'GET' }
+
+  if (get(session_id))
+    options.headers['Authorization'] = `Bearer ${get(session_id)}`
+  else if (localStorage.getItem('session_id'))
+    options.headers['Authorization'] = `Bearer ${localStorage.getItem('session_id')}`
 
   if (body) {
     options.body = JSON.stringify(body)

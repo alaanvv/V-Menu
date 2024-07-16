@@ -1,12 +1,18 @@
 <div class='usn tac topbar'>
   <ul class='row'>
-    <TopBarItem page='menu'  name='Cardápio' i='restaurant_menu' />
-    <TopBarItem page='items' name='Produtos' i='lunch_dining' />
+    {#if $session_id}
+      <TopBarItem page='menu'  name='Cardápio' i='restaurant_menu' />
+      <TopBarItem page='items' name='Produtos' i='lunch_dining' />
+    {:else}
+      <TopBarItem page='login' name='Login'    i='login' />
+    {/if}
   </ul>
 </div>
 
 <script>
   import TopBarItem from '../components/TopBarItem.svelte'
+
+  import { session_id } from '../store.js'
 </script>
 
 <style>

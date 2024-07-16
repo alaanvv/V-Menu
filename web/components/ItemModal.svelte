@@ -43,7 +43,7 @@
     }
   }
 
-  $: if (form.price) {
+  $: if (form?.price) {
     form.price = String(form.price).replaceAll(',', '.').replaceAll(/[^\d\.]/g, '')
     const parts = form.price.split('.')
     if (parts.length > 1)

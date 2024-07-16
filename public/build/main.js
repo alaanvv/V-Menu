@@ -1656,7 +1656,7 @@ function create_fragment$b(ctx) {
 			const modal_changes = {};
 			if (dirty & /*show*/ 1) modal_changes.show = /*show*/ ctx[0];
 
-			if (dirty & /*$$scope, l_submitting, form, category*/ 270) {
+			if (dirty & /*$$scope, l_submitting, form, category*/ 142) {
 				modal_changes.$$scope = { dirty, ctx };
 			}
 
@@ -1704,12 +1704,6 @@ function instance$b($$self, $$props, $$invalidate) {
 		close();
 	}
 
-	function mount() {
-		$$invalidate(2, l_submitting = false);
-		$$invalidate(3, form = {});
-		if (category) $$invalidate(3, form.name = category.name, form);
-	}
-
 	$$self.$$.on_mount.push(function () {
 		if (show === undefined && !('show' in $$props || $$self.$$.bound[$$self.$$.props['show']])) {
 			console.warn("<CategoryModal> was created without expected prop 'show'");
@@ -1728,7 +1722,7 @@ function instance$b($$self, $$props, $$invalidate) {
 
 	function input_input_handler() {
 		form.name = this.value;
-		$$invalidate(3, form);
+		(($$invalidate(3, form), $$invalidate(0, show)), $$invalidate(1, category));
 	}
 
 	$$self.$$set = $$props => {
@@ -1745,8 +1739,7 @@ function instance$b($$self, $$props, $$invalidate) {
 		l_submitting,
 		form,
 		close,
-		submit,
-		mount
+		submit
 	});
 
 	$$self.$inject_state = $$props => {
@@ -1761,8 +1754,11 @@ function instance$b($$self, $$props, $$invalidate) {
 	}
 
 	$$self.$$.update = () => {
-		if ($$self.$$.dirty & /*show*/ 1) {
-			if (show) mount();
+		if ($$self.$$.dirty & /*show, category*/ 3) {
+			if (show) {
+				$$invalidate(2, l_submitting = false);
+				$$invalidate(3, form = { name: category?.name });
+			}
 		}
 	};
 
@@ -1830,7 +1826,7 @@ function create_if_block$5(ctx) {
 			const modal_changes = {};
 			if (dirty & /*show*/ 1) modal_changes.show = /*show*/ ctx[0];
 
-			if (dirty & /*$$scope, l_submitting, form, subcategory*/ 1038) {
+			if (dirty & /*$$scope, l_submitting, form, subcategory*/ 270) {
 				modal_changes.$$scope = { dirty, ctx };
 			}
 
@@ -2030,14 +2026,11 @@ function create_fragment$a(ctx) {
 }
 
 function instance$a($$self, $$props, $$invalidate) {
-	let $menu;
-	validate_store(menu, 'menu');
-	component_subscribe($$self, menu, $$value => $$invalidate(8, $menu = $$value));
 	let { $$slots: slots = {}, $$scope } = $$props;
 	validate_slots('SubcategoryModal', slots, []);
 	let { show, subcategory, category_id } = $$props;
 	let l_submitting;
-	let form = {};
+	let form;
 
 	function close() {
 		$$invalidate(0, show = false);
@@ -2047,12 +2040,6 @@ function instance$a($$self, $$props, $$invalidate) {
 		$$invalidate(2, l_submitting = true);
 		if (subcategory) await edit_subcategory(subcategory.id, form); else await create_subcategory(category_id, form);
 		close();
-	}
-
-	function mount() {
-		$$invalidate(2, l_submitting = false);
-		$$invalidate(3, form = {});
-		if (subcategory) $$invalidate(3, form.name = $menu.categories.find(c => c.id == category_id)?.subcategories.find(sc => sc.id == subcategory.id)?.name, form);
 	}
 
 	$$self.$$.on_mount.push(function () {
@@ -2077,7 +2064,7 @@ function instance$a($$self, $$props, $$invalidate) {
 
 	function input_input_handler() {
 		form.name = this.value;
-		$$invalidate(3, form);
+		(($$invalidate(3, form), $$invalidate(0, show)), $$invalidate(1, subcategory));
 	}
 
 	$$self.$$set = $$props => {
@@ -2090,16 +2077,13 @@ function instance$a($$self, $$props, $$invalidate) {
 		Modal,
 		create_subcategory,
 		edit_subcategory,
-		menu,
 		show,
 		subcategory,
 		category_id,
 		l_submitting,
 		form,
 		close,
-		submit,
-		mount,
-		$menu
+		submit
 	});
 
 	$$self.$inject_state = $$props => {
@@ -2115,8 +2099,11 @@ function instance$a($$self, $$props, $$invalidate) {
 	}
 
 	$$self.$$.update = () => {
-		if ($$self.$$.dirty & /*show*/ 1) {
-			if (show) mount();
+		if ($$self.$$.dirty & /*show, subcategory*/ 3) {
+			if (show) {
+				$$invalidate(2, l_submitting = false);
+				$$invalidate(3, form = { name: subcategory?.name });
+			}
 		}
 	};
 
@@ -3577,7 +3564,7 @@ function create_if_block$3(ctx) {
 			const modal_changes = {};
 			if (dirty & /*show*/ 1) modal_changes.show = /*show*/ ctx[0];
 
-			if (dirty & /*$$scope, l_submitting, form*/ 2054) {
+			if (dirty & /*$$scope, l_submitting, form*/ 1030) {
 				modal_changes.$$scope = { dirty, ctx };
 			}
 
@@ -3709,10 +3696,10 @@ function create_default_slot$2(ctx) {
 
 			if (!mounted) {
 				dispose = [
-					listen_dev(input0, "input", /*input0_input_handler*/ ctx[5]),
-					listen_dev(input1, "input", /*input1_input_handler*/ ctx[6]),
-					listen_dev(input2, "input", /*input2_input_handler*/ ctx[7]),
-					listen_dev(input3, "input", /*input3_input_handler*/ ctx[8]),
+					listen_dev(input0, "input", /*input0_input_handler*/ ctx[6]),
+					listen_dev(input1, "input", /*input1_input_handler*/ ctx[7]),
+					listen_dev(input2, "input", /*input2_input_handler*/ ctx[8]),
+					listen_dev(input3, "input", /*input3_input_handler*/ ctx[9]),
 					listen_dev(button, "click", /*submit*/ ctx[4], false, false, false, false)
 				];
 
@@ -3833,7 +3820,7 @@ function create_fragment$6(ctx) {
 function instance$6($$self, $$props, $$invalidate) {
 	let $menu;
 	validate_store(menu, 'menu');
-	component_subscribe($$self, menu, $$value => $$invalidate(9, $menu = $$value));
+	component_subscribe($$self, menu, $$value => $$invalidate(5, $menu = $$value));
 	let { $$slots: slots = {}, $$scope } = $$props;
 	validate_slots('MenuModal', slots, []);
 	let { show } = $$props;
@@ -3850,17 +3837,6 @@ function instance$6($$self, $$props, $$invalidate) {
 		close();
 	}
 
-	function mount() {
-		$$invalidate(1, l_submitting = false);
-
-		$$invalidate(2, form = {
-			name: $menu.name,
-			phone: $menu.phone,
-			whatsapp: $menu.whatsapp,
-			address: $menu.address
-		});
-	}
-
 	$$self.$$.on_mount.push(function () {
 		if (show === undefined && !('show' in $$props || $$self.$$.bound[$$self.$$.props['show']])) {
 			console.warn("<MenuModal> was created without expected prop 'show'");
@@ -3875,22 +3851,22 @@ function instance$6($$self, $$props, $$invalidate) {
 
 	function input0_input_handler() {
 		form.name = this.value;
-		$$invalidate(2, form);
+		(($$invalidate(2, form), $$invalidate(0, show)), $$invalidate(5, $menu));
 	}
 
 	function input1_input_handler() {
 		form.phone = this.value;
-		$$invalidate(2, form);
+		(($$invalidate(2, form), $$invalidate(0, show)), $$invalidate(5, $menu));
 	}
 
 	function input2_input_handler() {
 		form.whatsapp = this.value;
-		$$invalidate(2, form);
+		(($$invalidate(2, form), $$invalidate(0, show)), $$invalidate(5, $menu));
 	}
 
 	function input3_input_handler() {
 		form.address = this.value;
-		$$invalidate(2, form);
+		(($$invalidate(2, form), $$invalidate(0, show)), $$invalidate(5, $menu));
 	}
 
 	$$self.$$set = $$props => {
@@ -3906,7 +3882,6 @@ function instance$6($$self, $$props, $$invalidate) {
 		form,
 		close,
 		submit,
-		mount,
 		$menu
 	});
 
@@ -3921,8 +3896,17 @@ function instance$6($$self, $$props, $$invalidate) {
 	}
 
 	$$self.$$.update = () => {
-		if ($$self.$$.dirty & /*show*/ 1) {
-			if (show) mount();
+		if ($$self.$$.dirty & /*show, $menu*/ 33) {
+			if (show) {
+				$$invalidate(1, l_submitting = false);
+
+				$$invalidate(2, form = {
+					name: $menu.name,
+					phone: $menu.phone,
+					whatsapp: $menu.whatsapp,
+					address: $menu.address
+				});
+			}
 		}
 	};
 
@@ -3932,6 +3916,7 @@ function instance$6($$self, $$props, $$invalidate) {
 		form,
 		close,
 		submit,
+		$menu,
 		input0_input_handler,
 		input1_input_handler,
 		input2_input_handler,
@@ -4480,7 +4465,7 @@ function create_if_block$2(ctx) {
 			const modal_changes = {};
 			if (dirty & /*show*/ 1) modal_changes.show = /*show*/ ctx[0];
 
-			if (dirty & /*$$scope, l_submitting, form, item*/ 8206) {
+			if (dirty & /*$$scope, l_submitting, form, item*/ 1038) {
 				modal_changes.$$scope = { dirty, ctx };
 			}
 
@@ -4725,14 +4710,11 @@ function create_fragment$4(ctx) {
 }
 
 function instance$4($$self, $$props, $$invalidate) {
-	let $menu;
-	validate_store(menu, 'menu');
-	component_subscribe($$self, menu, $$value => $$invalidate(10, $menu = $$value));
 	let { $$slots: slots = {}, $$scope } = $$props;
 	validate_slots('ItemModal', slots, []);
 	let { show, item, subcategory_id } = $$props;
 	let l_submitting;
-	let form = {};
+	let form;
 
 	function close() {
 		$$invalidate(0, show = false);
@@ -4744,26 +4726,6 @@ function instance$4($$self, $$props, $$invalidate) {
 		$$invalidate(2, form.price_in_cents = Math.round(form.price * 100), form);
 		if (item) await edit_item(item.id, form); else await create_item(subcategory_id, form);
 		close();
-	}
-
-	function mount() {
-		$$invalidate(3, l_submitting = false);
-		$$invalidate(2, form = {});
-
-		if (item) {
-			const category = $menu.categories.find(c => c.subcategories.find(sc => sc.id == subcategory_id));
-			const subcategory = category.subcategories.find(sc => sc.id == subcategory_id);
-			const _item = subcategory.items.find(i => i.id == item.id);
-			$$invalidate(2, form.name = _item.name, form);
-			$$invalidate(2, form.description = _item.description, form);
-			$$invalidate(2, form.price = _item.price_in_cents / 100, form);
-		}
-	}
-
-	function format_price() {
-		$$invalidate(2, form.price = String(form.price).replaceAll(',', '.').replaceAll(/[^\d\.]/g, ''), form);
-		const parts = form.price.split('.');
-		if (parts.length > 1) $$invalidate(2, form.price = `${parts[0]}.${parts.slice(1).join('').slice(0, 2)}`, form);
 	}
 
 	$$self.$$.on_mount.push(function () {
@@ -4788,17 +4750,17 @@ function instance$4($$self, $$props, $$invalidate) {
 
 	function input0_input_handler() {
 		form.name = this.value;
-		$$invalidate(2, form);
+		(($$invalidate(2, form), $$invalidate(0, show)), $$invalidate(1, item));
 	}
 
 	function textarea_input_handler() {
 		form.description = this.value;
-		$$invalidate(2, form);
+		(($$invalidate(2, form), $$invalidate(0, show)), $$invalidate(1, item));
 	}
 
 	function input1_input_handler() {
 		form.price = this.value;
-		$$invalidate(2, form);
+		(($$invalidate(2, form), $$invalidate(0, show)), $$invalidate(1, item));
 	}
 
 	$$self.$$set = $$props => {
@@ -4811,17 +4773,13 @@ function instance$4($$self, $$props, $$invalidate) {
 		Modal,
 		create_item,
 		edit_item,
-		menu,
 		show,
 		item,
 		subcategory_id,
 		l_submitting,
 		form,
 		close,
-		submit,
-		mount,
-		format_price,
-		$menu
+		submit
 	});
 
 	$$self.$inject_state = $$props => {
@@ -4837,12 +4795,24 @@ function instance$4($$self, $$props, $$invalidate) {
 	}
 
 	$$self.$$.update = () => {
-		if ($$self.$$.dirty & /*show*/ 1) {
-			if (show) mount();
+		if ($$self.$$.dirty & /*show, item*/ 3) {
+			if (show) {
+				$$invalidate(3, l_submitting = false);
+
+				$$invalidate(2, form = {
+					name: item?.name,
+					description: item?.description,
+					price: item?.price
+				});
+			}
 		}
 
 		if ($$self.$$.dirty & /*form*/ 4) {
-			if (form.price) format_price();
+			if (form.price) {
+				$$invalidate(2, form.price = String(form.price).replaceAll(',', '.').replaceAll(/[^\d\.]/g, ''), form);
+				const parts = form.price.split('.');
+				if (parts.length > 1) $$invalidate(2, form.price = `${parts[0]}.${parts.slice(1).join('').slice(0, 2)}`, form);
+			}
 		}
 	};
 

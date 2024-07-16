@@ -32,7 +32,7 @@
     close()
   }
 
-  function mount() {
+  $: if (show) {
     l_submitting = false
     form = {
       name:     $menu.name,
@@ -41,8 +41,6 @@
       address:  $menu.address
     }
   }
-
-  $: if (show) mount()
 </script>
 
 <style>

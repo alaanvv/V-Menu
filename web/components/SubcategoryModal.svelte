@@ -14,11 +14,10 @@
   import Modal from './Modal.svelte'
 
   import { create_subcategory, edit_subcategory } from '../utils/menu-management.js'
-  import { menu } from '../store.js'
 
   export let show, subcategory, category_id
   let l_submitting
-  let form = {}
+  let form
 
   function close() { show = false }
 
@@ -30,14 +29,10 @@
     close()
   }
 
-  function mount() {
+  $: if (show) {
     l_submitting = false
-    form = {}
-    if (subcategory)
-      form.name = $menu.categories.find(c => c.id == category_id)?.subcategories.find(sc => sc.id == subcategory.id)?.name
+    form = { name: subcategory?.name }
   }
-
-  $: if (show) mount()
 </script>
 
 <style>

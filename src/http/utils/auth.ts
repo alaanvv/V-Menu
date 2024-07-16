@@ -1,6 +1,17 @@
 import { prisma } from '../../lib/prisma'
 import { FastifyRequest } from 'fastify'
 
+const TRUSTED_IPS = [
+  '::ffff:127.0.0.1'
+]
+
+export async function is_trusted_ip(req: FastifyRequest) {
+  const ip = req.headers['x-forwarded-for'] || req.socket.remoteAddress
+  console.log(ip)
+
+  if (ip && TRUSTED_IPS.includes(Array.isArray(ip) ? ip[0] : ip)) return 1
+}
+
 export async function get_auth(req: FastifyRequest, id: string) {
   const session_id = req.headers['authorization']?.split(' ')[1]
 

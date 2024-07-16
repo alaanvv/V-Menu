@@ -2,7 +2,9 @@ import { prisma } from '../../lib/prisma'
 import { FastifyRequest } from 'fastify'
 
 const TRUSTED_IPS = [
-  '::ffff:127.0.0.1'
+  '::ffff:127.0.0.1',
+  '127.0.0.1',
+  '192.168.1.107'
 ]
 
 export async function is_trusted_ip(req: FastifyRequest) {

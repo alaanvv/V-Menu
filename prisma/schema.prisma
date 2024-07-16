@@ -44,7 +44,7 @@ model Item {
   id             String      @id @default(cuid())
   subcategory_id String
   name           String
-  description    String
+  description    String?
   price_in_cents Decimal
   pos            Int         @default(autoincrement())
 

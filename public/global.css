@@ -109,17 +109,6 @@ label {
   display: block;
 }
 
-/* Number input */
-
-input[type='number'].hide-arrows {
-  appearance: textfield;
-  -moz-appearance: textfield;
-}
-
-input[type='number'].hide-arrows::-webkit-outer-spin-button, input[type='number'].hide-arrows::-webkit-inner-spin-button {
-  -webkit-appearance: none;
-}
-
 /* Button */
 
 button {
@@ -224,6 +213,10 @@ button.grn {
 
 .fg {
   flex-grow: 2;
+}
+
+.underline {
+  text-decoration: underline;
 }
 
 /* Misc */

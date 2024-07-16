@@ -22,7 +22,7 @@
 
 <Button class='grn' i='add' t='Categoria' action={create_category} />
 
-{#each $menu.categories as category}
+{#each $menu.categories || [] as category}
   <CategoryCard {category} />
 {/each}
 

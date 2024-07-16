@@ -8,7 +8,14 @@ export default async function(app: FastifyInstance) {
     const paramSchema = z.object({ id: z.string().cuid() })
     const { id } = paramSchema.parse(req.params)
 
-    try   { await prisma.category.delete({ where: { id } }) }
+    try {
+      const category = await prisma.category.delete({ where: { id } })
+
+      await prisma.category.updateMany({
+        where: { menu_id: category.menu_id, pos: { gt: category.pos } },
+        data:  { pos: { decrement: 1 } }
+      })
+    }
     catch { throw new BadRequestError('Category not found.') }
 
     return res.status(204).send()

@@ -14,7 +14,14 @@ export default async function(app: FastifyInstance) {
     if (!await prisma.category.findUnique({ where: { id } }))
       throw new NotFoundError('Category not found.')
 
-    const subcategory = await prisma.subcategory.create({ data: { ...data, category_id: id } })
+    const max_pos = await prisma.subcategory.aggregate({
+      where: { category_id: id },
+      _max: { pos: true }
+    })
+
+    const pos = (max_pos._max.pos || 0) + 1
+
+    const subcategory = await prisma.subcategory.create({ data: { ...data, category_id: id, pos } })
 
     return res.status(201).send({ subcategory })
   })

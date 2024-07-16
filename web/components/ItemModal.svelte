@@ -34,7 +34,7 @@
     close()
   }
 
-  $: if (show) {
+  function mount() {
     l_submitting = false
     form = {
       name: item?.name,
@@ -42,6 +42,8 @@
       price: item?.price
     }
   }
+
+  $: if (show) mount()
 
   $: if (form?.price) {
     form.price = String(form.price).replaceAll(',', '.').replaceAll(/[^\d\.]/g, '')

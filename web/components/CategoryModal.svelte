@@ -27,10 +27,12 @@
     close()
   }
 
-  $: if (show) {
+  function mount() {
     l_submitting = false
     form = { name: category?.name }
   }
+
+  $: if (show) mount()
 </script>
 
 <style>

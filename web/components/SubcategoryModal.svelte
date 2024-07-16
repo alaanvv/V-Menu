@@ -29,10 +29,12 @@
     close()
   }
 
-  $: if (show) {
+  function mount() {
     l_submitting = false
     form = { name: subcategory?.name }
   }
+
+  $: if (show) mount()
 </script>
 
 <style>

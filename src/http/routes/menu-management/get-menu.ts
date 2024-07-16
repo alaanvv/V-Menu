@@ -25,6 +25,8 @@ export default async function(app: FastifyInstance) {
     }
 
     (menu as any).categories = categories
+    delete (menu as any).username
+    delete (menu as any).password
 
     return res.status(200).send({ menu })
   })

@@ -53,8 +53,9 @@ model Item {
 - [x] Create management routes
 - [x] Frontend to manage menus
 - [x] Create order features
+- [ ] Write missing tests
 - [ ] Account system
-    - [ ] Database user linked to a menu
+    - [x] Database user linked to a menu
     - [ ] Route to create user (also menu)
     - [ ] Session database table
     - [ ] Routes for creating and deleting sessions

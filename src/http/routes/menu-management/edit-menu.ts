@@ -27,6 +27,9 @@ export default async function(app: FastifyInstance) {
     try   { menu = await prisma.menu.update({ where: { id }, data }) }
     catch { throw new NotFoundError('Menu not found.') }
 
+    delete (menu as any).username
+    delete (menu as any).password
+
     return res.status(204).send({ menu })
   })
 }

@@ -6,7 +6,7 @@
     </tr>
   </thead>
   <tbody>
-    {#each subcategory.items as item}
+    {#each subcategory.items || [] as item}
       <ItemRow {item} />
     {/each}
   </tbody>
@@ -46,7 +46,11 @@
     padding: 8px;
     border-bottom: 3px solid var(--gray);
   }
-  table :global(td:nth-child(4)), thead td:nth-child(2) {
+  table :global(td:nth-child(1):not(thead td)) {
+    min-width: 25%;
+    text-wrap: auto;
+  }
+  table :global(td:nth-child(1)), table :global(td:nth-child(4)), thead td:nth-child(2), table :global(td:nth-child(3)) {
     width: 1px;
     white-space: nowrap;
   }

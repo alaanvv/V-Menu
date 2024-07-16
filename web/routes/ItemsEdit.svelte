@@ -39,14 +39,14 @@
 
   import { menu } from '../store.js'
 
-  let category_id, subcategory_id, category, subcategory, query
+  let category_id, subcategory_id, category, subcategory, query = ''
   let filtered_menu
 
   function apply_filters(category_id, subcategory_id, query) {
     if (!$menu.categories.find(c => c.id == category_id)?.subcategories.find(sc => sc.id == subcategory_id))
       subcategory_id = undefined
 
-    filtered_menu = { ...$menu }
+    filtered_menu = JSON.parse(JSON.stringify($menu))
 
     if (category_id)
       filtered_menu.categories = filtered_menu.categories.filter(c => c.id == category_id)
@@ -55,7 +55,23 @@
       filtered_menu.categories = filtered_menu.categories.map(c => c.id != category_id ? c : { ...c, subcategories: c.subcategories.filter(sc => sc.id == subcategory_id) })
 
     if (query) {
-      filtered_menu.categories = filtered_menu.categories.map(c => ({ ...c, subcategories: c.subcategories.map(sc => ({ ...sc, items: sc.items.filter(i => i.name.toLowerCase().includes(query.toLowerCase())) })).filter(sc => sc.items.length) })).filter(c => c.subcategories.length)
+      function minify_text(text) {
+        return text.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9\s]/g, '')
+      }
+
+      function includes_arr(text, arr) {
+        for (let item of arr)
+          if (!text.includes(item)) return 0
+        return 1
+      }
+
+      filtered_menu.categories.forEach(c => {
+        c.subcategories.forEach(sc => {
+          sc.items = sc.items.filter(item => includes_arr(minify_text(item.name.replaceAll(' ', '')), minify_text(query).split(' ')))
+        })
+        c.subcategories = c.subcategories.filter(sc => sc.items.length)
+      })
+      filtered_menu.categories = filtered_menu.categories.filter(c => c.subcategories.length)
     }
   }
 

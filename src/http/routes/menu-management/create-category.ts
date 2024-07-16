@@ -1,5 +1,6 @@
+import { NotFoundError, ForbiddenError } from '../../errors'
 import { FastifyInstance } from 'fastify'
-import { NotFoundError } from '../../errors'
+import { get_auth } from '../../utils/auth'
 import { prisma } from '../../../lib/prisma'
 import { z } from 'zod'
 
@@ -10,6 +11,8 @@ export default async function(app: FastifyInstance) {
 
     const data   = bodySchema.parse(req.body)
     const { id } = paramSchema.parse(req.params)
+
+    if (!(await get_auth(req, id))) throw new ForbiddenError('No privileges.')
 
     if (!await prisma.menu.findUnique({ where: { id } }))
       throw new NotFoundError('Menu not found.')

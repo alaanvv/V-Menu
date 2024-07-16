@@ -78,6 +78,6 @@ model Session {
     - [x] Route to create user (also menu)
     - [x] Session database table
     - [x] Routes for creating and deleting sessions
-    - [ ] Require session token to modify stuff
+    - [x] Require session token to modify stuff
     - [ ] Login system
     - [ ] Create small and safe web app to register customers

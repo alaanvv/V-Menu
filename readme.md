@@ -75,9 +75,9 @@ model Session {
 - [x] Write missing tests
 - [ ] Account system
     - [x] Database user linked to a menu
-    - [ ] Route to create user (also menu)
-    - [ ] Session database table
-    - [ ] Routes for creating and deleting sessions
-    - [ ] Login system
+    - [x] Route to create user (also menu)
+    - [x] Session database table
+    - [x] Routes for creating and deleting sessions
     - [ ] Require session token to modify stuff
+    - [ ] Login system
     - [ ] Create small and safe web app to register customers

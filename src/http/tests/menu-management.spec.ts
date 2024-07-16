@@ -3,7 +3,7 @@ import { app, load_routes } from '../app'
 import request from 'supertest'
 
 describe('Menu management', _ => {
-  let menu_id: string, category_id: string, subcategory_id: string, item_id: string
+  let session_id: string, menu_id: string, category_id: string, subcategory_id: string, item_id: string
 
   beforeAll(async _ => {
     await load_routes()
@@ -24,6 +24,26 @@ describe('Menu management', _ => {
 
       expect(res.statusCode).toEqual(201)
       menu_id = res.body.menu.id
+    })
+  })
+
+  describe('POST /login', _ => {
+    it('should be able to login', async _ => {
+      const res = await request(app.server).post('/login').send({
+        username: 'Aderaldo',
+        password: 'adad',
+      })
+
+      expect(res.statusCode).toEqual(200)
+      session_id = res.body.session.id
+    })
+  })
+
+  describe('POST /logout', _ => {
+    it('should be able to logout', async _ => {
+      const res = await request(app.server).put('/logout').send({ session_id })
+
+      expect(res.statusCode).toEqual(204)
     })
   })
 

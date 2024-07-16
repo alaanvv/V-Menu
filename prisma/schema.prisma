@@ -12,9 +12,9 @@ model Menu {
   username String
   password String
   name     String
-  phone    String
-  whatsapp String
-  address  String
+  phone    String?
+  whatsapp String?
+  address  String?
 
   categories Category[]
   session    Session[]

@@ -4,15 +4,15 @@
 - [Todo](#todo)
 
 # Database
-```prisma
+```prisma 
  model Menu {
   id       String @id @default(cuid())
   username String
   password String
   name     String
-  phone    String
-  whatsapp String
-  address  String
+  phone    String?
+  whatsapp String?
+  address  String?
 
   categories Category[]
   session    Session[]

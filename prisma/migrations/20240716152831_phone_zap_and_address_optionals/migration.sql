@@ -1,0 +1,4 @@
+-- AlterTable
+ALTER TABLE "menus" ALTER COLUMN "address" DROP NOT NULL,
+ALTER COLUMN "phone" DROP NOT NULL,
+ALTER COLUMN "whatsapp" DROP NOT NULL;

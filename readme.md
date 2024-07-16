@@ -72,7 +72,7 @@ model Session {
 - [x] Create management routes
 - [x] Frontend to manage menus
 - [x] Create order features
-- [ ] Write missing tests
+- [x] Write missing tests
 - [ ] Account system
     - [x] Database user linked to a menu
     - [ ] Route to create user (also menu)

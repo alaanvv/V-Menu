@@ -5,7 +5,7 @@
     <form>
       <label> Nome:      <input bind:value={form.name} required /> </label>
       <label> Descrição: <textarea rows=5 bind:value={form.description} /> </label>
-      <label> Preço:     <input placehloder='R$' rows=5 bind:value={form.price} /> </label>
+      <label> Preço:     <input placehloder='R$' rows=5 bind:value={form.price} required /> </label>
 
       <button on:click={submit} disabled={l_submitting}> {l_submitting ? '...' : 'Enviar'} </button>
     </form>

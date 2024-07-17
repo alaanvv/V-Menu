@@ -53,4 +53,6 @@
 <script>
   import Category from './Category.svelte'
   export let menu
+
+  document.title = menu.name
 </script>

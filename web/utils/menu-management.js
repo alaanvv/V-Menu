@@ -19,7 +19,7 @@ export async function create_category(_data) {
 
   const { data } = await api(`category/${menu.id}`, 'POST', _data)
 
-  menu.categories.push(data.category)
+  menu.categories = [...(menu.categories || []), data.category]
 
   _menu.set(menu)
 }
@@ -73,7 +73,7 @@ export async function create_subcategory(id, _data) {
 
   for (let ci in menu.categories)
     if (menu.categories[ci].id == id)
-      menu.categories[ci].subcategories.push(data.subcategory)
+      menu.categories[ci].subcategories = [...(menu.categories[ci].subcategories || []), data.subcategory]
 
   _menu.set(menu)
 }
@@ -144,7 +144,7 @@ export async function create_item(id, _data) {
     const sci = menu.categories[ci].subcategories.findIndex(sc => sc.id == id)
     if (sci == -1) continue
 
-    menu.categories[ci].subcategories[sci].items.push(data.item)
+    menu.categories[ci].subcategories[sci].items = [...(menu.categories[ci].subcategories[sci].items || []), data.item]
     break
   }
 

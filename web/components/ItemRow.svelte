@@ -16,6 +16,10 @@
 </Modal>
 <ItemModal bind:show={m_edit} {item} subcategory_id={item.subcategory_id} />
 
+{#if l_deleting}
+  <Modal show={true}> Excluindo... </Modal>
+{/if}
+
 <script>
   import ItemModal from '../components/ItemModal.svelte'
   import Button from '../components/Button.svelte'
@@ -27,14 +31,17 @@
   export let item
   let m_options, m_edit
   let i, items_length
+  let l_deleting
 
   function show_options() { m_options = 1 }
   function edit()         { m_options = 0; m_edit    = 1 }
-  function _delete() {
+  async function _delete() {
     m_options = 0
     if (!confirm(`Certeza que quer excluir o produto ${item.name}?`)) return
 
-    delete_item(item.id)
+    l_deleting = true
+    await delete_item(item.id)
+    l_deleting = false
   }
   function move_up() {
     m_options = 0

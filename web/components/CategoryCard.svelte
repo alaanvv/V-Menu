@@ -27,6 +27,10 @@
 <CategoryModal    bind:show={m_edit}        {category} />
 <SubcategoryModal bind:show={m_subcategory} category_id={category.id} />
 
+{#if l_deleting}
+  <Modal show={true}> Excluindo... </Modal>
+{/if}
+
 <script>
   import SubcategoryModal from '../components/SubcategoryModal.svelte'
   import SubcategoryCard  from '../components/SubcategoryCard.svelte'
@@ -39,16 +43,19 @@
 
   export let category
   let m_edit, m_subcategory, m_options
+  let l_deleting
   let i
 
   function create_sub()   { m_options = 0; m_subcategory = 1 }
   function edit()         { m_options = 0; m_edit        = 1 }
   function show_options() { m_options = 1 }
-  function _delete() {
+  async function _delete() {
     m_options = 0
     if (!confirm(`Certeza que quer excluir a categoria ${category.name}?`)) return
 
-    delete_category(category.id)
+    l_deleting = true
+    await delete_category(category.id)
+    l_deleting = false
   }
   function move_up()   { move_category_up(category.id)   }
   function move_down() { move_category_down(category.id) }

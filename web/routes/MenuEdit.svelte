@@ -1,8 +1,9 @@
 <div class='row'>
   <h1> {$menu.name} </h1>
-  <Button class='right blu' i='edit'   t='Editar' action={edit} />
-  <a href={`/s/cardapio/${$menu.id}`} target='_blank'> <Button i='menu_book' /> </a>
-  <Button                   i='logout'    action={logout} />
+  <a class='right' href={`/s/cardapio/${menu_names[$menu.id]}`} target='_blank'> <Button i='menu_book' /> </a>
+  <Button i='qr_code' action={create_qr} />
+  <Button class='blu' i='edit'   t='' action={edit} />
+  <Button class='red' i='logout'  action={logout} />
 </div>
 
 <table>
@@ -30,20 +31,27 @@
 
 <MenuModal     bind:show={m_edit} />
 <CategoryModal bind:show={m_create_category} />
+<QRModal       bind:show={m_qr} />
 
 <script>
   import CategoryModal from '../components/CategoryModal.svelte'
   import CategoryCard  from '../components/CategoryCard.svelte'
   import MenuModal     from '../components/MenuModal.svelte'
+  import QRModal       from '../components/QRModal.svelte'
   import Button        from '../components/Button.svelte'
   import Icon          from '../components/Icon.svelte'
 
   import { session_id, menu } from '../store.js'
   import { api } from '../utils/api.js'
 
-  let m_edit, m_create_category
+  let menu_names = {
+   'clyp7z8db0000cxl6arjgaa23': 'adeildo-lanches'
+  }
+
+  let m_edit, m_create_category, m_qr
 
   function edit()            { m_edit = 1 }
+  function create_qr()       { m_qr = 1 }
   function create_category() { m_create_category = 1 }
   function logout() {
     if (!confirm('Certeza que deseja sair dessa conta?')) return

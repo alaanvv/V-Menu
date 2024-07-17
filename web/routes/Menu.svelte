@@ -12,13 +12,19 @@
   import { onMount } from 'svelte'
   import { api } from '../utils/api.js'
 
+  let component, menu_id, menu, error
+
+  let menu_names = {
+   'adeildo-lanches': 'clyp7z8db0000cxl6arjgaa23'
+  }
+
   let components = {
    'clyp7z8db0000cxl6arjgaa23': m_clyp7z8db0000cxl6arjgaa23
   }
-  let component, menu_id, menu, error
 
   onMount(async _ => {
-    menu_id = window.location.pathname.split('/').pop()
+    const path = window.location.pathname.split('/').pop()
+    menu_id = menu_names[path] || path
 
     const { res, data } = await api(`menu/${menu_id}`)
     if (!res.ok) return error = 1

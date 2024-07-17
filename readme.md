@@ -3,7 +3,7 @@
 - [Todo](#todo)
 
 # Database
-```prisma
+```prisma  
  model Menu {
   id       String @id @default(cuid())
   username String

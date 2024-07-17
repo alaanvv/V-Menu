@@ -7,13 +7,13 @@
 {/if}
 
 <script>
-  import m_clyhtxwlk00001tx03yhu5xz6 from './menus/clyhtxwlk00001tx03yhu5xz6/Menu.svelte'
+  import m_clyp7z8db0000cxl6arjgaa23 from './menus/clyp7z8db0000cxl6arjgaa23/Menu.svelte'
 
   import { onMount } from 'svelte'
   import { api } from '../utils/api.js'
 
   let components = {
-   'clyhtxwlk00001tx03yhu5xz6': m_clyhtxwlk00001tx03yhu5xz6
+   'clyp7z8db0000cxl6arjgaa23': m_clyp7z8db0000cxl6arjgaa23
   }
   let component, menu_id, menu, error
 

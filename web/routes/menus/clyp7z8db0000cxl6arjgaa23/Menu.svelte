@@ -13,12 +13,12 @@
 <style>
   @font-face {
     font-family: 'Enriqueta';
-    src: url('../../../font/clyhtxwlk00001tx03yhu5xz6/Enriqueta.ttf') format('truetype');
+    src: url('../../../font/clyp7z8db0000cxl6arjgaa23/Enriqueta.ttf') format('truetype');
   }
 
   @font-face {
     font-family: 'Sarabun';
-    src: url('../../../font/clyhtxwlk00001tx03yhu5xz6/Sarabun.ttf') format('truetype');
+    src: url('../../../font/clyp7z8db0000cxl6arjgaa23/Sarabun.ttf') format('truetype');
   }
 
   main {

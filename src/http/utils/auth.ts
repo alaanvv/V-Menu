@@ -4,14 +4,20 @@ import { FastifyRequest } from 'fastify'
 const TRUSTED_IPS = [
   '::ffff:127.0.0.1',
   '127.0.0.1',
-  '192.168.1.107'
+  '192.168.1.107',
+  '186.194.213.229'
 ]
 
 export async function is_trusted_ip(req: FastifyRequest) {
-  const ip = req.headers['x-forwarded-for'] || req.socket.remoteAddress
-  console.log(ip)
+  let ip = req.headers['x-forwarded-for']
+  if (Array.isArray(ip)) ip = ip[0]
+  else if (ip)           ip = ip.split(',')[0]
+  else                   ip = req.socket.remoteAddress
 
-  if (ip && TRUSTED_IPS.includes(Array.isArray(ip) ? ip[0] : ip)) return 1
+  const allow = ip && TRUSTED_IPS.includes(Array.isArray(ip) ? ip[0] : ip)
+  console.log(`Checking privileges for ${ip}: ${allow ? 'Allowing' : 'Denying'}`)
+
+  return allow
 }
 
 export async function get_auth(req: FastifyRequest, id: string) {

@@ -1,3 +1,9 @@
+<div class='tac'>
+  <h2> Invista em profissionalismo  com a <a class='grn' href='mailto:valealan84@gmail.com'> vMenu </a> </h2>
+</div>
+
+<div class='hr' />
+
 <form class='tas' on:submit={submit}>
   {#if error} <p class='red'> {error} </p> {/if}
 
@@ -60,5 +66,13 @@
     margin: 10px 0;
 
     resize: none;
+  }
+
+  h2 {
+    margin-bottom: 20px;
+  }
+
+  div {
+    margin-bottom: 30px;
   }
 </style>

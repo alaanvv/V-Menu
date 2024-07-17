@@ -1,9 +1,9 @@
 {#if !component && !error}
-  Carregando...
+  <p> Carregando cardápio... </p>
 {:else if component}
   <svelte:component this={component} {menu} />
 {:else}
-  Cardápio não encontrado
+  <p> Cardápio não encontrado </p>
 {/if}
 
 <script>
@@ -33,3 +33,12 @@
     if (!component) return error = 1
   })
 </script>
+
+<style>
+  p {
+    margin-top: 50px;
+
+    text-align: center;
+    font-size: 2em;
+  }
+</style>

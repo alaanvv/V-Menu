@@ -26,7 +26,6 @@
   async function submit() {
     l_submitting = true
 
-    if (!form.description) delete form.description
     form.price_in_cents = Math.round(form.price * 100)
 
     if (item) await edit_item(item.id, form)

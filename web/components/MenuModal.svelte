@@ -4,9 +4,9 @@
 
     <form>
       <label> Nome:     <input bind:value={form.name}     required /> </label>
-      <label> Telefone: <input bind:value={form.phone}    required /> </label>
-      <label> Whatsapp: <input bind:value={form.whatsapp} required /> </label>
-      <label> Endereço: <input bind:value={form.address}  required /> </label>
+      <label> Telefone: <input bind:value={form.phone}    /> </label>
+      <label> Whatsapp: <input bind:value={form.whatsapp} /> </label>
+      <label> Endereço: <input bind:value={form.address}  /> </label>
 
       <button on:click={submit} disabled={l_submitting}> {l_submitting ? '...' : 'Enviar'} </button>
     </form>

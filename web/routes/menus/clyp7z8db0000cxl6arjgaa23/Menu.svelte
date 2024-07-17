@@ -46,8 +46,6 @@
 
     background-color: #f1e5cc !important;
   }
-
-
 </style>
 
 <script>

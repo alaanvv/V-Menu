@@ -5,7 +5,8 @@
     <form>
       <label> Nome: <input bind:value={form.name} required /> </label>
 
-      <button on:click={submit} disabled={l_submitting}> {l_submitting ? '...' : 'Enviar'} </button>
+      <button class='grn' on:click={submit} disabled={l_submitting}> {l_submitting ? '...' : (subcategory ? 'Editar' : 'Criar')} </button>
+      <button class='red' style='margin-top: 10px;' on:click={close} disabled={l_submitting}> Cancelar </button>
     </form>
   </Modal>
 {/if}

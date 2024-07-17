@@ -7,7 +7,8 @@
       <label> Descrição: <textarea rows=5 bind:value={form.description} /> </label>
       <label> Preço:     <input placehloder='R$' rows=5 bind:value={form.price} required /> </label>
 
-      <button on:click={submit} disabled={l_submitting}> {l_submitting ? '...' : 'Enviar'} </button>
+      <button class='grn' on:click={submit} disabled={l_submitting}> {l_submitting ? '...' : (item ? 'Editar' : 'Criar')} </button>
+      <button class='red' style='margin-top: 10px;' on:click={close} disabled={l_submitting}> Cancelar </button>
     </form>
   </Modal>
 {/if}

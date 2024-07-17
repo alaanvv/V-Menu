@@ -12,6 +12,7 @@
   <div class='btn-col'>
     <Button class='blu' i='edit'   t='Editar'   action={edit} />
     <Button class='red' i='delete' t='Excluir'  action={_delete} />
+    <Button             i='close'  t='Cancelar' action={_ => m_options = false} />
   </div>
 </Modal>
 <SubcategoryModal bind:show={m_edit} {subcategory} category_id={subcategory.category_id} />

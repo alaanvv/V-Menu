@@ -8,7 +8,8 @@
       <label> Whatsapp: <input bind:value={form.whatsapp} /> </label>
       <label> Endereço: <input bind:value={form.address}  /> </label>
 
-      <button on:click={submit} disabled={l_submitting}> {l_submitting ? '...' : 'Enviar'} </button>
+      <button class='grn' on:click={submit} disabled={l_submitting}> {l_submitting ? '...' : 'Editar'} </button>
+      <button class='red' style='margin-top: 10px;' on:click={close} disabled={l_submitting}> Cancelar </button>
     </form>
   </Modal>
 {/if}

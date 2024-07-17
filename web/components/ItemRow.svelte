@@ -8,10 +8,11 @@
 <Modal bind:show={m_options}>
   <p class='special'> Produto: {item.name} </p>
   <div class='btn-col'>
-    <Button class='blu' i='edit'   t='Editar'   action={edit} />
-    <Button class='red' i='delete' t='Excluir'  action={_delete} />
-    <Button i='keyboard_arrow_up'  t='Mover pra cima' action={move_up} disabled={i == 0} />
+    <Button class='blu' i='edit'    t='Editar'   action={edit} />
+    <Button class='red' i='delete'  t='Excluir'  action={_delete} />
+    <Button i='keyboard_arrow_up'   t='Mover pra cima' action={move_up} disabled={i == 0} />
     <Button i='keyboard_arrow_down' t='Mover pra baixo' action={move_down} disabled={i == items_length - 1} />
+    <Button i='close'               t='Cancelar'        action={_ => m_options = false} />
   </div>
 </Modal>
 <ItemModal bind:show={m_edit} {item} subcategory_id={item.subcategory_id} />

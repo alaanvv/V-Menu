@@ -22,6 +22,7 @@
     <Button class='grn' i='add'    t='Subcategoria' action={create_sub} />
     <Button class='blu' i='edit'   t='Editar'       action={edit} />
     <Button class='red' i='delete' t='Excluir'      action={_delete} />
+    <Button i='close'   t='Cancelar'                action={_ => m_options = false} />
   </div>
 </Modal>
 <CategoryModal    bind:show={m_edit}        {category} />

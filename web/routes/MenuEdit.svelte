@@ -1,7 +1,8 @@
 <div class='row'>
   <h1> {$menu.name} </h1>
   <Button class='right blu' i='edit'   t='Editar' action={edit} />
-  <Button                   i='logout' t='Sair'   action={logout} />
+  <Button                   i='menu_book'         action={goto_menu} />
+  <Button                   i='logout'    action={logout} />
 </div>
 
 <table>
@@ -45,10 +46,15 @@
   function edit()            { m_edit = 1 }
   function create_category() { m_create_category = 1 }
   function logout() {
+    if (!confirm('Certeza que deseja sair dessa conta?')) return
+
     api(`logout/${session_id}`)
     localStorage.removeItem('session_id')
     session_id.set()
     menu.set()
+  }
+  function goto_menu() {
+    window.location.href = `/s/cardapio/${$menu.id}`
   }
 </script>
 

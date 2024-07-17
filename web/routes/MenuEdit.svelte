@@ -1,7 +1,7 @@
 <div class='row'>
   <h1> {$menu.name} </h1>
   <Button class='right blu' i='edit'   t='Editar' action={edit} />
-  <Button                   i='menu_book'         action={goto_menu} />
+  <a href={`/s/cardapio/${$menu.id}`} target='_blank'> <Button i='menu_book' /> </a>
   <Button                   i='logout'    action={logout} />
 </div>
 

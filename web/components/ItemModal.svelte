@@ -39,7 +39,7 @@
     form = {
       name: item?.name,
       description: item?.description,
-      price: item?.price
+      price: item ? (item.price_in_cents / 100) : undefined
     }
   }
 

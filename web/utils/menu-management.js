@@ -160,7 +160,7 @@ export async function edit_item(id, _data) {
     for (let sci in menu.categories[ci].subcategories)
       for (let ii in menu.categories[ci].subcategories[sci].items)
         if (menu.categories[ci].subcategories[sci].items[ii].id == id) {
-          menu.categories[ci].subcategories[sci].items[ii] = { ...menu.categories[ci].subcategories[sci].items[ii].id, ..._data }
+          menu.categories[ci].subcategories[sci].items[ii] = { ...menu.categories[ci].subcategories[sci].items[ii], ..._data }
           break
         }
 

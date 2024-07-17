@@ -8,15 +8,15 @@
 <table>
   <tr>
     <td> <Icon i='phone' /> Telefone: </td>
-    <td> {$menu.phone} </td>
+    <td> {$menu.phone || 'Não informado.'} </td>
   </tr>
   <tr>
     <td> <Icon i='phone' /> Whatsapp: </td>
-    <td> {$menu.whatsapp} </td>
+    <td> {$menu.whatsapp || 'Não informado.'} </td>
   </tr>
   <tr>
     <td> <Icon i='place' /> Endereço: </td>
-    <td> {$menu.address} </td>
+    <td> {$menu.address || 'Não informado.'} </td>
   </tr>
 </table>
 

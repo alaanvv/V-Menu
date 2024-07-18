@@ -27,6 +27,7 @@
   import Modal from '../components/Modal.svelte'
 
   import { delete_item, move_item_up, move_item_down } from '../utils/menu-management.js'
+  import { format_price } from '../utils/misc.js'
   import { menu } from '../store.js'
 
   export let item
@@ -51,13 +52,6 @@
   function move_down() {
     m_options = 0
     move_item_down(item.id)
-  }
-
-  function format_price(n) {
-    let str = String(n / 100).replace('.', ',')
-    if (n % 100 == 0) str += ',00'
-    else if (n % 10 == 0) str += '0'
-    return str
   }
 
   function update_i() {

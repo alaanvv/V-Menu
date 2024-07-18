@@ -38,6 +38,7 @@
   import SubcategoryTable from '../components/SubcategoryTable.svelte'
 
   import { menu } from '../store.js'
+  import { minify_text } from '../utils/misc.js'
 
   let category_id, subcategory_id, category, subcategory, query = ''
   let filtered_menu
@@ -55,10 +56,6 @@
       filtered_menu.categories = filtered_menu.categories.map(c => c.id != category_id ? c : { ...c, subcategories: c.subcategories.filter(sc => sc.id == subcategory_id) })
 
     if (query) {
-      function minify_text(text) {
-        return text.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9\s]/g, '')
-      }
-
       function includes_arr(text, arr) {
         for (let item of arr)
           if (!text.includes(item)) return 0

@@ -11,7 +11,7 @@ const to_replace = {}
 for (let [k, v] of Object.entries(config().parsed))
   to_replace[`process.env.${k}`] = `'${v}'`
 
-const production = !process.env.ROLLUP_WATCH
+const production = process.env.NODE_ENV == 'production'
 
 export default {
   input: 'web/main.js',

@@ -3,8 +3,9 @@
   <Modal {show} on:close={close}>
     {#if qr}
       <img src={qr} alt='QR Code' />
-      <a href={qr} download={`qr-${format_name($menu.name)}`}> <Button class='grn m0a' t='Baixar Imagem' i='download' /> </a>
-      <Button class='m0a' t='Fechar' i='close' action={close} />
+
+      <a href={qr} download={`qr-${format_name($menu.name)}`}> <Button class='grn' t='Baixar Imagem' i='download' /> </a>
+      <Button i='close' t='Fechar' action={close} />
     {/if}
   </Modal>
 {/if}
@@ -46,7 +47,7 @@
   }
 
   div :global(button) {
-    min-width: 40%;
+    width: 100%;
     margin-top: 10px;
   }
 </style>

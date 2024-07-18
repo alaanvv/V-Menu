@@ -9680,7 +9680,7 @@ function create_if_block_1$4(ctx) {
 
 	button0 = new Button({
 			props: {
-				class: "grn m0a",
+				class: "grn",
 				t: "Baixar Imagem",
 				i: "download"
 			},
@@ -9689,9 +9689,8 @@ function create_if_block_1$4(ctx) {
 
 	button1 = new Button({
 			props: {
-				class: "m0a",
-				t: "Fechar",
 				i: "close",
+				t: "Fechar",
 				action: /*close*/ ctx[3]
 			},
 			$$inline: true
@@ -9707,12 +9706,12 @@ function create_if_block_1$4(ctx) {
 			create_component(button1.$$.fragment);
 			if (!src_url_equal(img.src, img_src_value = /*qr*/ ctx[1])) attr_dev(img, "src", img_src_value);
 			attr_dev(img, "alt", "QR Code");
-			attr_dev(img, "class", "svelte-15gssgh");
+			attr_dev(img, "class", "svelte-djbe8d");
 			add_location(img, file$9, 4, 6, 70);
 			attr_dev(a, "href", /*qr*/ ctx[1]);
 			attr_dev(a, "download", a_download_value = `qr-${format_name(/*$menu*/ ctx[2].name)}`);
-			attr_dev(a, "class", "svelte-15gssgh");
-			add_location(a, file$9, 5, 6, 107);
+			attr_dev(a, "class", "svelte-djbe8d");
+			add_location(a, file$9, 6, 6, 108);
 		},
 		m: function mount(target, anchor) {
 			insert_dev(target, img, anchor);
@@ -9843,7 +9842,7 @@ function create_fragment$9(ctx) {
 		c: function create() {
 			div = element("div");
 			if (if_block) if_block.c();
-			attr_dev(div, "class", "svelte-15gssgh");
+			attr_dev(div, "class", "svelte-djbe8d");
 			add_location(div, file$9, 0, 0, 0);
 		},
 		l: function claim(nodes) {

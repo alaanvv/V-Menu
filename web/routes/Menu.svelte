@@ -31,6 +31,7 @@
     menu = data.menu
     component = components[menu_id]
     if (!component) return error = 1
+    document.title = menu.name
   })
 </script>
 

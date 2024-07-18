@@ -1,5 +1,5 @@
 
-(function(l, r) { if (!l || l.getElementById('livereloadscript')) return; r = l.createElement('script'); r.async = 1; r.src = '//' + (self.location.host || 'localhost').split(':')[0] + ':35729/livereload.js?snipver=1'; r.id = 'livereloadscript'; l.getElementsByTagName('head')[0].appendChild(r) })(self.document);
+(function(l, r) { if (!l || l.getElementById('livernoeloadscript')) return; r = l.createElement('script'); r.async = 1; r.src = '//' + (self.location.host || 'localhost').split(':')[0] + ':35729/livereload.js?snipver=1'; r.id = 'livereloadscript'; l.getElementsByTagName('head')[0].appendChild(r) })(self.document);
 function noop() { }
 function assign(tar, src) {
     // @ts-ignore
@@ -6815,7 +6815,7 @@ var errorCorrectionLevel = {};
 	  } catch (e) {
 	    return defaultValue
 	  }
-	}; 
+	};
 } (errorCorrectionLevel));
 
 function BitBuffer$1 () {
@@ -7008,7 +7008,7 @@ var alignmentPattern = {};
 	  }
 
 	  return coords
-	}; 
+	};
 } (alignmentPattern));
 
 var finderPattern = {};
@@ -7273,7 +7273,7 @@ var maskPattern = {};
 	  }
 
 	  return bestPattern
-	}; 
+	};
 } (maskPattern));
 
 var errorCorrectionCode = {};
@@ -7550,7 +7550,7 @@ galoisField.mul = function mul (x, y) {
 	  }
 
 	  return poly
-	}; 
+	};
 } (polynomial));
 
 const Polynomial = polynomial;
@@ -7828,7 +7828,7 @@ regex.testAlphanumeric = function testAlphanumeric (str) {
 	  } catch (e) {
 	    return defaultValue
 	  }
-	}; 
+	};
 } (mode));
 
 (function (exports) {
@@ -7994,7 +7994,7 @@ regex.testAlphanumeric = function testAlphanumeric (str) {
 	  }
 
 	  return (version << 12) | d
-	}; 
+	};
 } (version));
 
 var formatInfo = {};
@@ -8440,7 +8440,7 @@ var dijkstra = {exports: {}};
 	// node.js module exports
 	{
 	  module.exports = dijkstra;
-	} 
+	}
 } (dijkstra));
 
 var dijkstraExports = dijkstra.exports;
@@ -8775,7 +8775,7 @@ var dijkstraExports = dijkstra.exports;
 	  return exports.fromArray(
 	    getSegmentsFromString(data, Utils.isKanjiModeEnabled())
 	  )
-	}; 
+	};
 } (segments));
 
 const Utils$1 = utils$1;
@@ -9377,7 +9377,7 @@ var utils = {};
 	      imgData[posDst] = pxColor.a;
 	    }
 	  }
-	}; 
+	};
 } (utils));
 
 (function (exports) {
@@ -9443,7 +9443,7 @@ var utils = {};
 	  const rendererOpts = opts.rendererOpts || {};
 
 	  return canvasEl.toDataURL(type, rendererOpts.quality)
-	}; 
+	};
 } (canvas));
 
 var svgTag = {};
@@ -12570,7 +12570,7 @@ function create_else_block$1(ctx) {
 	return block;
 }
 
-// (3:20) 
+// (3:20)
 function create_if_block_1$1(ctx) {
 	let switch_instance;
 	let switch_instance_anchor;
@@ -12999,7 +12999,7 @@ function create_if_block(ctx) {
 	return block;
 }
 
-// (13:47) 
+// (13:47)
 function create_if_block_5(ctx) {
 	let adminpanel;
 	let current;
@@ -13038,7 +13038,7 @@ function create_if_block_5(ctx) {
 	return block;
 }
 
-// (12:47) 
+// (12:47)
 function create_if_block_4(ctx) {
 	let login;
 	let current;
@@ -13077,7 +13077,7 @@ function create_if_block_4(ctx) {
 	return block;
 }
 
-// (11:47) 
+// (11:47)
 function create_if_block_3(ctx) {
 	let itemsedit;
 	let current;

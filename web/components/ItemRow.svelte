@@ -21,6 +21,10 @@
   <Modal show={true}> Excluindo... </Modal>
 {/if}
 
+{#if l_moving}
+  <Modal show={true}> Movendo... </Modal>
+{/if}
+
 <script>
   import ItemModal from '../components/ItemModal.svelte'
   import Button from '../components/Button.svelte'
@@ -33,7 +37,7 @@
   export let item
   let m_options, m_edit
   let i, items_length
-  let l_deleting
+  let l_deleting, l_moving
 
   function show_options() { m_options = 1 }
   function edit()         { m_options = 0; m_edit    = 1 }
@@ -45,13 +49,17 @@
     await delete_item(item.id)
     l_deleting = false
   }
-  function move_up() {
+  async function move_up()   {
     m_options = 0
-    move_item_up(item.id)
+    l_moving = true
+    await move_item_up(item.id)
+    l_moving = false
   }
-  function move_down() {
+  async function move_down() {
     m_options = 0
-    move_item_down(item.id)
+    l_moving = true
+    await move_item_down(item.id)
+    l_moving = false
   }
 
   function update_i() {

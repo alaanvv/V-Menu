@@ -49,7 +49,7 @@ export async function delete_category(id) {
 export async function move_category_up(id) {
   const menu = get(_menu)
 
-  api(`raise-category/${id}`, 'PUT')
+  await api(`raise-category/${id}`, 'PUT')
 
   const i = menu.categories.findIndex(c => c.id == id)
   const item = menu.categories.splice(i, 1)[0]
@@ -108,7 +108,7 @@ export async function delete_subcategory(id) {
 export async function move_subcategory_up(id) {
   const menu = get(_menu)
 
-  api(`raise-subcategory/${id}`, 'PUT')
+  await api(`raise-subcategory/${id}`, 'PUT')
 
   for (let ci in menu.categories) {
     const sci = menu.categories[ci].subcategories.findIndex(sc => sc.id == id)
@@ -182,7 +182,7 @@ export async function delete_item(id) {
 export async function move_item_up(id) {
   const menu = get(_menu)
 
-  api(`raise-item/${id}`, 'PUT')
+  await api(`raise-item/${id}`, 'PUT')
 
   for (let ci in menu.categories) {
     const sci = menu.categories[ci].subcategories.findIndex(sc => sc.items.find(i => i.id == id))
@@ -205,7 +205,7 @@ export async function move_item_down(id) {
     if (sci == -1) continue
     const ii = menu.categories[ci].subcategories[sci].items.findIndex(i => i.id == id)
 
-    await move_subcategory_up(menu.categories[ci].subcategories[sci].items[ii + 1].id)
+    await move_item_up(menu.categories[ci].subcategories[sci].items[ii + 1].id)
     break
   }
 }

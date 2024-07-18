@@ -21,6 +21,10 @@
   <Modal show={true}> Excluindo... </Modal>
 {/if}
 
+{#if l_moving}
+  <Modal show={true}> Movendo... </Modal>
+{/if}
+
 <script>
   import SubcategoryModal from '../components/SubcategoryModal.svelte'
   import Button           from '../components/Button.svelte'
@@ -32,7 +36,7 @@
   export let subcategory
   let m_edit, m_options
   let category, i
-  let l_deleting
+  let l_deleting, l_moving
 
   function show_options() { m_options = 1 }
   function edit()         { m_options = 0; m_edit    = 1 }
@@ -44,8 +48,16 @@
     await delete_subcategory(subcategory.id)
     l_deleting = false
   }
-  function move_up()   { move_subcategory_up(subcategory.id) }
-  function move_down() { move_subcategory_down(subcategory.id) }
+  async function move_up()   {
+    l_moving = true
+    await move_subcategory_up(subcategory.id)
+    l_moving = false
+  }
+  async function move_down() {
+    l_moving = true
+    await move_subcategory_down(subcategory.id)
+    l_moving = false
+  }
 
   function update_i() {
     category = $menu.categories.find(c => c.subcategories?.find(sc => sc.id == subcategory.id))

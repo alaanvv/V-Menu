@@ -1,25 +1,28 @@
 <main>
+  <div class='images'>
+    {#each images[plain_name] || [] as image}
+      <img class='img' src={`/img/${menu.id}/${image}.png`} alt=''>
+    {/each}
+  </div>
+
   <h1> {category.name} </h1>
 
   {#each category.items as item}
-    <Item {item} />
+    <Item {item} {category} {menu} />
   {/each}
 </main>
 
-<style>
-  h1 {
-    margin: 40px 0;
-
-    text-align: center;
-    color: #652505;
-    font-family: 'Enriqueta', sans-serif;
-    font-weight: 800;
-    font-size: 2.5em;
-    letter-spacing: -2px;
-  }
-</style>
-
 <script>
   import Item from './Item.svelte'
-  export let category
+
+  import { minify_text } from '../../../utils/misc.js'
+
+  export let category, menu
+
+  const images = {
+    'acrescimos': ['a1', 'a2'],
+    'bebidas':    ['b1', 'b2'],
+  }
+
+  const plain_name = minify_text(category.name)
 </script>

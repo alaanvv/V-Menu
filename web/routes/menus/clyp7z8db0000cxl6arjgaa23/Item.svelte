@@ -1,4 +1,12 @@
-<div class='main'>
+{#if image_i != undefined}
+  <div class='images items-image'>
+    {#each images[plain_name][image_i] || [] as image}
+      <img src={`/img/${menu.id}/${image}.png`} alt=''>
+    {/each}
+  </div>
+{/if}
+
+<div class='item'>
   <div class='row jcsb'>
     <p class='name'> {item.name} </p>
     {#if !item.description} <div class='dots' /> {/if}
@@ -9,74 +17,20 @@
   {/if}
 </div>
 
-<style>
-  p {
-    margin: 0;
-
-    text-transform: uppercase;
-  }
-
-  .main {
-    margin: 0 50px 30px 50px;
-
-    font-size: 1.4em;
-    font-weight: 800;
-    color: #904710;
-  }
-
-  .price {
-    align-self: start;
-    color: #090d0d;
-    text-wrap: nowrap;
-    font-family: 'Sarabun', sans-serif;
-  }
-
-  .price span {
-    font-family: 'Enriqueta', sans-serif;
-  }
-
-  .desc {
-    max-width: 70%;
-
-    font-size: 0.8em;
-    font-weight: 500;
-    color: #343122;
-  }
-
-  .dots {
-    flex-grow: 2;
-    align-self: flex-end;
-
-    margin-bottom: 8px;
-    border-bottom: dotted 4px;
-  }
-
-  @media screen and (max-width: 500px) {
-    .main {
-      margin: 0 20px 30px 20px;
-    }
-  }
-
-  @media screen and (max-width: 450px) {
-    .main {
-      font-size: 1.2em;
-    }
-  }
-
-  @media screen and (max-width: 400px) {
-    .main {
-      font-size: 1.1em;
-    }
-  }
-</style>
-
 <script>
-  export let item
+  import { minify_text, format_price } from '../../../utils/misc.js'
 
-  function format_price(n) {
-    let str = String(n / 100).replace('.', ',')
-    if (n % 100 == 0) str += ',00'
-    else if (n % 10 == 0) str += '0'
-    return str
+  export let item, category, menu
+  let image_i
+
+  const images = {
+    'hamburgueres': [['h1', 'h2'], ['h3', 'h4'], ['h5', 'h6']]
   }
+
+  const plain_name = minify_text(category.name)
+  const image_offset = Math.ceil(category.items.length / (images[plain_name]?.length + 1))
+  const i = category.items.findIndex(i => i.id == item.id)
+
+  if (images[plain_name] && i % image_offset == 0 && i)
+    image_i = (i / image_offset) - 1
 </script>

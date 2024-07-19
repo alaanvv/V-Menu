@@ -3,7 +3,7 @@
 - [Todo](#todo)
 
 # Database
-```prisma   
+```prisma
  model Menu {
   id       String @id @default(cuid())
   username String
@@ -73,10 +73,3 @@ model Session {
 - [x] Create order features
 - [x] Write missing tests
 - [x] Account system
-    - [x] Database user linked to a menu
-    - [x] Route to create user (also menu)
-    - [x] Session database table
-    - [x] Routes for creating and deleting sessions
-    - [x] Require session token to modify stuff
-    - [x] Login system
-    - [x] Create small and safe web app to register customers

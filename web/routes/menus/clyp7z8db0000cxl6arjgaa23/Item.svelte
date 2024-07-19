@@ -1,7 +1,7 @@
 {#if image_i != undefined}
   <div class='images items-image'>
     {#each images[plain_name][image_i] || [] as image}
-      <img src={`/img/${menu.id}/${image}.png`} alt=''>
+      <img src={`/assets/img/${menu.id}/${image}.png`} alt=''>
     {/each}
   </div>
 {/if}

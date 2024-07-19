@@ -3,7 +3,6 @@ import fastifyStatic from '@fastify/static'
 import cors from '@fastify/cors'
 import { ZodError } from 'zod'
 import fastify from 'fastify'
-import { env } from '../env'
 import { glob } from 'glob'
 import path from 'path'
 
@@ -13,8 +12,8 @@ app.register(cors, { origin: '*' })
 app.register(fastifyStatic, { root: path.join(process.cwd(), 'public') })
 
 app.get('/s/*', (_, res) => res.sendFile('index.html'))
-app.get('/s',   (_, res) => res.redirect(302, '/s/'))
-app.get('/',    (_, res) => res.redirect(302, '/s/'))
+app.get('/s',   (_, res) => res.redirect('/s/', 302))
+app.get('/',    (_, res) => res.redirect('/s/', 302))
 
 export async function load_routes() {
   try {
@@ -41,8 +40,7 @@ app.setErrorHandler((error, _, reply) => {
   if (error instanceof ForbiddenError)
     return reply.status(403).send({ message: error.message })
 
-  if (env.NODE_ENV !== 'production')
-    console.log(error)
+  console.error(error)
 
   return reply.status(500).send({ message: 'Internal server error.' })
 })

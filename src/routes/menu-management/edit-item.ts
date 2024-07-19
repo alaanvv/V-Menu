@@ -1,12 +1,16 @@
 import { BadRequestError, NotFoundError, ForbiddenError } from '../../errors'
 import { FastifyInstance } from 'fastify'
 import { get_auth } from '../../utils/auth'
-import { prisma } from '../../../lib/prisma'
+import { prisma } from '../../prisma'
 import { z } from 'zod'
 
 export default async function(app: FastifyInstance) {
-  app.put('/subcategory/:id', async (req, res) => {
-    const bodySchema  = z.object({ name: z.optional(z.string()) })
+  app.put('/item/:id', async (req, res) => {
+    const bodySchema  = z.object({
+      name:           z.optional(z.string()),
+      description:    z.optional(z.string()),
+      price_in_cents: z.optional(z.number().int().min(1))
+    })
     const paramSchema = z.object({ id: z.string().cuid() })
 
     const data = bodySchema.parse(req.body) as { [key: string]: any }
@@ -21,10 +25,10 @@ export default async function(app: FastifyInstance) {
     if (!Object.entries(data).length)
       throw new BadRequestError('Sent no data.')
 
-    let subcategory
-    try   { subcategory = await prisma.subcategory.update({ where: { id }, data }) }
-    catch { throw new NotFoundError('Subcategory not found.') }
+    let item
+    try   { item = await prisma.item.update({ where: { id }, data }) }
+    catch { throw new NotFoundError('Item not found.') }
 
-    return res.status(204).send({ subcategory })
+    return res.status(204).send({ item })
   })
 }

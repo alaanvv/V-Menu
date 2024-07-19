@@ -1,5 +1,5 @@
-import { env } from '../env'
 import { app, load_routes } from './app'
+import { env } from './env'
 
 async function main() {
   await load_routes()

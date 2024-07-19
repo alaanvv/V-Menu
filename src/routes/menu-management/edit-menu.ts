@@ -1,15 +1,16 @@
 import { BadRequestError, NotFoundError, ForbiddenError } from '../../errors'
 import { FastifyInstance } from 'fastify'
 import { get_auth } from '../../utils/auth'
-import { prisma } from '../../../lib/prisma'
+import { prisma } from '../../prisma'
 import { z } from 'zod'
 
 export default async function(app: FastifyInstance) {
-  app.put('/item/:id', async (req, res) => {
-    const bodySchema  = z.object({
-      name:           z.optional(z.string()),
-      description:    z.optional(z.string()),
-      price_in_cents: z.optional(z.number().int().min(1))
+  app.put('/menu/:id', async (req, res) => {
+    const bodySchema = z.object({
+      name:     z.optional(z.string()),
+      phone:    z.optional(z.string()),
+      whatsapp: z.optional(z.string()),
+      address:  z.optional(z.string())
     })
     const paramSchema = z.object({ id: z.string().cuid() })
 
@@ -25,10 +26,13 @@ export default async function(app: FastifyInstance) {
     if (!Object.entries(data).length)
       throw new BadRequestError('Sent no data.')
 
-    let item
-    try   { item = await prisma.item.update({ where: { id }, data }) }
-    catch { throw new NotFoundError('Item not found.') }
+    let menu
+    try   { menu = await prisma.menu.update({ where: { id }, data }) }
+    catch { throw new NotFoundError('Menu not found.') }
 
-    return res.status(204).send({ item })
+    delete (menu as any).username
+    delete (menu as any).password
+
+    return res.status(204).send({ menu })
   })
 }

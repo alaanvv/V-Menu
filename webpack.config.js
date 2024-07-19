@@ -3,7 +3,7 @@ const path = require('path')
 
 module.exports = {
   mode: 'development',
-  entry: './dist/src/http/server.js',
+  entry: './dist/src/server.js',
   target: 'node',
   output: {
     filename: 'main.js',

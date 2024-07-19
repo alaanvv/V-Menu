@@ -1,6 +1,6 @@
 import { FastifyInstance } from 'fastify'
 import { BadRequestError } from '../../errors'
-import { prisma } from '../../../lib/prisma'
+import { prisma } from '../../prisma'
 import { z } from 'zod'
 
 export default async function(app: FastifyInstance) {

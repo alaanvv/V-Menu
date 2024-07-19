@@ -7,7 +7,7 @@
     "dev-web": "rollup -c -w",
     "build-api": "echo tsc && npx tsc && echo webpack && npx webpack",
     "start-api": "node ./dist/main.js",
-    "dev-api": "tsx watch ./src/http/server.ts",
+    "dev-api": "tsx watch ./src/server.ts",
     "build": "npm run build-web && npm run build-api",
     "start": "npm run start-api",
     "dev": "npm run dev-web & npm run dev-api",

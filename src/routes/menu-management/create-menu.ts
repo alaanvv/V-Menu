@@ -1,7 +1,7 @@
 import { FastifyInstance } from 'fastify'
 import { ForbiddenError } from '../../errors'
 import { is_trusted_ip } from '../../utils/auth'
-import { prisma } from '../../../lib/prisma'
+import { prisma } from '../../prisma'
 import { z } from 'zod'
 
 export default async function(app: FastifyInstance) {

@@ -1,7 +1,7 @@
 import { BadRequestError, ForbiddenError } from '../../errors'
 import { FastifyInstance } from 'fastify'
 import { get_auth } from '../../utils/auth'
-import { prisma } from '../../../lib/prisma'
+import { prisma } from '../../prisma'
 import { z } from 'zod'
 
 export default async function(app: FastifyInstance) {

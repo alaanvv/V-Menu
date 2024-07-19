@@ -61,9 +61,6 @@
     session_id.set()
     menu.set()
   }
-  function goto_menu() {
-    window.location.href = `/s/cardapio/${$menu.id}`
-  }
 </script>
 
 <style>

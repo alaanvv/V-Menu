@@ -7,7 +7,7 @@
 {/if}
 
 <script>
-  import m_clyp7z8db0000cxl6arjgaa23 from './menus/clyp7z8db0000cxl6arjgaa23/Menu.svelte'
+  import clyp7z8db0000cxl6arjgaa23 from './menus/clyp7z8db0000cxl6arjgaa23/Menu.svelte'
 
   import { onMount } from 'svelte'
   import { api } from '../utils/api.js'
@@ -19,7 +19,7 @@
   }
 
   let components = {
-   'clyp7z8db0000cxl6arjgaa23': m_clyp7z8db0000cxl6arjgaa23
+   'clyp7z8db0000cxl6arjgaa23': clyp7z8db0000cxl6arjgaa23
   }
 
   onMount(async _ => {

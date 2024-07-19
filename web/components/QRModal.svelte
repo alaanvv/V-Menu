@@ -33,7 +33,7 @@
   }
 
   onMount(async _ => {
-    qr = await QRCode.toDataURL(`${window.location}cardapio/${menu_names[$menu.id]}`)
+    qr = await QRCode.toDataURL(`${window.location}m/${menu_names[$menu.id]}`)
   })
 </script>
 

@@ -31,7 +31,7 @@
   let loading, menu_route
 
   onMount(async _ => {
-    if (window.location.pathname.startsWith('/s/cardapio')) {
+    if (window.location.pathname.startsWith('/m/')) {
       return menu_route = true
     }
 

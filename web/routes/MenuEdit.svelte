@@ -1,6 +1,6 @@
 <div class='row'>
   <h1> {$menu.name} </h1>
-  <a class='right' href={`/s/cardapio/${menu_names[$menu.id]}`} target='_blank'> <Button i='menu_book' /> </a>
+  <a class='right' href={`/m/${menu_names[$menu.id]}`} target='_blank'> <Button i='menu_book' /> </a>
   <Button i='qr_code' action={create_qr} />
   <Button class='blu' i='edit'   t='' action={edit} />
   <Button class='red' i='logout'  action={logout} />

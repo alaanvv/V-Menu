@@ -1,17 +1,11 @@
 import livereload from 'rollup-plugin-livereload'
 import resolve from '@rollup/plugin-node-resolve'
 import commonjs from '@rollup/plugin-commonjs'
-import replace from '@rollup/plugin-replace'
 import postcss from 'rollup-plugin-postcss'
 import terser from '@rollup/plugin-terser'
 import svelte from 'rollup-plugin-svelte'
 import babel from '@rollup/plugin-babel'
 import autoprefixer from 'autoprefixer'
-import { config } from 'dotenv'
-
-const to_replace = {}
-for (let [k, v] of Object.entries(config().parsed))
-  to_replace[`process.env.${k}`] = `'${v}'`
 
 const production = process.env.NODE_ENV == 'production'
 
@@ -24,11 +18,6 @@ export default {
   },
 
   plugins: [
-    replace({
-      include: ['web/**/*.js', 'web/**/*.ts', 'web/**/*.svelte'],
-      preventAssignment: true,
-      values: to_replace
-    }),
     svelte({
       compilerOptions: { dev: !production },
       onwarn: (warning, handler) => { if (warning.code === 'a11y-autofocus') return	handler(warning) }

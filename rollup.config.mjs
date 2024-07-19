@@ -2,9 +2,11 @@ import livereload from 'rollup-plugin-livereload'
 import resolve from '@rollup/plugin-node-resolve'
 import commonjs from '@rollup/plugin-commonjs'
 import replace from '@rollup/plugin-replace'
+import postcss from 'rollup-plugin-postcss'
 import terser from '@rollup/plugin-terser'
 import svelte from 'rollup-plugin-svelte'
-import css from 'rollup-plugin-css-only'
+import babel from '@rollup/plugin-babel'
+import autoprefixer from 'autoprefixer'
 import { config } from 'dotenv'
 
 const to_replace = {}
@@ -31,7 +33,10 @@ export default {
       compilerOptions: { dev: !production },
       onwarn: (warning, handler) => { if (warning.code === 'a11y-autofocus') return	handler(warning) }
     }),
-    css({ output: 'bundle.css' }),
+    postcss({
+      plugins: [autoprefixer()],
+      sourceMap: true
+    }),
     resolve({
       preferBuiltins: true,
       browser: true,
@@ -39,6 +44,13 @@ export default {
       exportConditions: ['svelte']
     }),
     commonjs(),
+    babel({
+      babelHelpers: 'bundled',
+      presets: [['@babel/preset-env', {
+      targets: '> 0.25%, not dead, ie 11'
+    }]],
+      extensions: ['.js', '.html', '.svelte']
+    }),
     !production && livereload('public'),
     production && terser()
   ],

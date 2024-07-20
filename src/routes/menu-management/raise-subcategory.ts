@@ -1,4 +1,6 @@
 import { BadRequestError, NotFoundError, ForbiddenError } from '../../errors'
+import { get_menu_from_subcategory } from '../../utils/fetch-menu'
+import { ssr_render } from '../../utils/render'
 import { FastifyInstance } from 'fastify'
 import { get_auth } from '../../utils/auth'
 import { prisma } from '../../prisma'
@@ -33,6 +35,7 @@ export default async function(app: FastifyInstance) {
       data: { pos: { decrement: 1 } }
     })
 
+    ssr_render(await get_menu_from_subcategory(id))
     return res.status(204).send({ subcategory })
   })
 }

@@ -1,4 +1,6 @@
 import { NotFoundError, ForbiddenError } from '../../errors'
+import { get_menu_from_category } from '../../utils/fetch-menu'
+import { ssr_render } from '../../utils/render'
 import { FastifyInstance } from 'fastify'
 import { get_auth } from '../../utils/auth'
 import { prisma } from '../../prisma'
@@ -26,6 +28,7 @@ export default async function(app: FastifyInstance) {
 
     const category = await prisma.category.create({ data: { ...data, menu_id: id, pos } })
 
+    ssr_render(await get_menu_from_category(category.id))
     return res.status(201).send({ category })
   })
 }

@@ -1,20 +1,16 @@
-{#if menu_route}
-  <Menu />
-{:else}
-  <TopBar />
+<TopBar />
 
-  <main>
-    {#if loading}
-      Carregando...
-    {:else}
-      {#if      $menu && $curr_page == 'menu'}        <MenuEdit />
-      {:else if $menu && $curr_page == 'items'}       <ItemsEdit />
-      {:else if          $curr_page == 'login'}       <Login />
-      {:else if          $curr_page == 'admin'}       <AdminPanel />
-      {/if}
+<main>
+  {#if loading}
+    Carregando...
+  {:else}
+    {#if      $menu && $curr_page == 'menu'}        <MenuEdit />
+    {:else if $menu && $curr_page == 'items'}       <ItemsEdit />
+    {:else if          $curr_page == 'login'}       <Login />
+    {:else if          $curr_page == 'admin'}       <AdminPanel />
     {/if}
-  </main>
-{/if}
+  {/if}
+</main>
 
 <script>
   import AdminPanel from './routes/AdminPanel.svelte'
@@ -22,19 +18,14 @@
   import MenuEdit   from './routes/MenuEdit.svelte'
   import TopBar     from './components/TopBar.svelte'
   import Login      from './routes/Login.svelte'
-  import Menu       from './routes/Menu.svelte'
 
   import { session_id, curr_page, menu } from './store.js'
   import { api } from './utils/api.js'
   import { onMount } from 'svelte'
 
-  let loading, menu_route
+  let loading
 
   onMount(async _ => {
-    if (window.location.pathname.startsWith('/m/')) {
-      return menu_route = true
-    }
-
     loading = true
     const _session_id = localStorage.getItem('session_id')
     if (!_session_id) return loading = false

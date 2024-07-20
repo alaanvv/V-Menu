@@ -1,4 +1,5 @@
 import { BadRequestError, NotFoundError, ForbiddenError } from '../../errors'
+import { ssr_render } from '../../utils/render'
 import { FastifyInstance } from 'fastify'
 import { get_auth } from '../../utils/auth'
 import { prisma } from '../../prisma'
@@ -33,6 +34,7 @@ export default async function(app: FastifyInstance) {
     delete (menu as any).username
     delete (menu as any).password
 
+    ssr_render(menu)
     return res.status(204).send({ menu })
   })
 }

@@ -3,7 +3,7 @@
 - [Todo](#todo)
 
 # Database
-```prisma        
+```prisma 
  model Menu {
   id       String @id @default(cuid())
   username String
@@ -84,4 +84,4 @@ model Session {
 - [x] Write tests for the new route
 
 > FINAL-BOSS
-- [ ] Render menus on server side
+- [x] Render menus on server side

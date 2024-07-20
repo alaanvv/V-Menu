@@ -11,7 +11,7 @@
     "build": "npm run build-web && npm run build-api",
     "start": "npm run start-api",
     "dev": "npm run dev-web & npm run dev-api",
-    "test": "vitest run --dir ./src",
+    "test": "vitest run --dir ./src --environment ./prisma/vitest-environment-prisma",
     "migrate": "prisma migrate dev",
     "docker": "docker compose up -d",
     "studio": "prisma studio"

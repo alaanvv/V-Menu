@@ -6,6 +6,8 @@ import terser from '@rollup/plugin-terser'
 import svelte from 'rollup-plugin-svelte'
 import babel from '@rollup/plugin-babel'
 import autoprefixer from 'autoprefixer'
+import { config } from 'dotenv'
+config()
 
 const production = process.env.NODE_ENV == 'production'
 

@@ -35,7 +35,9 @@ export default async function(app: FastifyInstance) {
       data: { pos: { decrement: 1 } }
     })
 
-    ssr_render(await get_menu_from_item(id))
+    const menu = await get_menu_from_item(id)
+    console.log(menu)
+    ssr_render(menu)
     return res.status(204).send({ item })
   })
 }

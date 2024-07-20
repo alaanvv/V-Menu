@@ -2,7 +2,6 @@ require('svelte/register')
 import fs from 'fs'
 
 export function ssr_render(menu: any) {
-  console.log(menu)
   const App = require(`../../web/routes/menus/${menu.path}/Menu.svelte`).default
   const result = App.render({ menu })
 

@@ -16,12 +16,12 @@
   </select>
 </div>
 
-{#each filtered_menu.categories as category}
+{#each filtered_menu.categories || [] as category}
   <div class='hr' />
 
   <h1> {category.name} </h1>
 
-  {#each category.subcategories as subcategory}
+  {#each category.subcategories || [] as subcategory}
     <SubcategoryTable {subcategory} />
   {/each}
 {/each}

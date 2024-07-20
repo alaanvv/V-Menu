@@ -35,9 +35,7 @@
     "rollup-plugin-postcss": "^4.0.2",
     "stream-browserify": "^3.0.0",
     "webpack-node-externals": "^3.0.0",
-    "zod": "^3.23.8"
-  },
-  "devDependencies": {
+    "zod": "^3.23.8",
     "@babel/core": "^7.24.9",
     "@babel/preset-env": "^7.24.8",
     "@rollup/plugin-babel": "^6.0.4",

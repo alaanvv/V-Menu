@@ -16,11 +16,6 @@
     "docker": "docker compose up -d",
     "studio": "prisma studio"
   },
-  "browserslist": [
-    "> 0.25%",
-    "not dead",
-    "ie 11"
-  ],
   "dependencies": {
     "@fastify/cors": "^9.0.1",
     "@fastify/static": "^7.0.4",

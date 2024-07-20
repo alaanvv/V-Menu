@@ -19,10 +19,10 @@ export default async function(app: FastifyInstance) {
 
     if (!(await is_trusted_ip(req))) throw new ForbiddenError('No privileges.')
 
-    const menu = await prisma.menu.create({ data })
+    const menu: any = await prisma.menu.create({ data })
 
-    delete (menu as any).username
-    delete (menu as any).password
+    delete menu.username
+    delete menu.password
 
     return res.status(201).send({ menu })
   })

@@ -15,7 +15,7 @@ export default async function(app: FastifyInstance) {
     })
     const paramSchema = z.object({ id: z.string().cuid() })
 
-    const data = bodySchema.parse(req.body) as { [key: string]: any }
+    const data: any = bodySchema.parse(req.body)
     const { id } = paramSchema.parse(req.params)
 
     if (!(await get_auth(req, id))) throw new ForbiddenError('No privileges.')

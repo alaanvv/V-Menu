@@ -22,6 +22,52 @@ export async function get_menu(id: string) {
   })
 }
 
+export async function get_menu_from_session(id: string) {
+  return (await prisma.session.findUnique({
+    where: { id },
+    include: {
+      menu: {
+        include: {
+          categories: {
+            orderBy: { pos: 'asc' },
+            include: {
+              subcategories: {
+                orderBy: { pos: 'asc' },
+                include: {
+                  items: {
+                    orderBy: { pos: 'asc' }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }))?.menu
+}
+
+export async function get_menu_from_path(path: string) {
+  return await prisma.menu.findFirst({
+    where: { path },
+    include: {
+      categories: {
+        orderBy: { pos: 'asc' },
+        include: {
+          subcategories: {
+            orderBy: { pos: 'asc' },
+            include: {
+              items: {
+                orderBy: { pos: 'asc' }
+              }
+            }
+          }
+        }
+      }
+    }
+  })
+}
+
 export async function get_menu_from_category(id: string) {
   return (await prisma.category.findUnique({
     where: { id },
@@ -73,7 +119,7 @@ export async function get_menu_from_subcategory(id: string) {
         }
       }
     }
-  })).subcategory.category.menu
+  })).category.menu
 }
 
 export async function get_menu_from_item(id: string) {

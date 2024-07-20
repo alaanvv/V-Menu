@@ -1,14 +1,13 @@
 import { FastifyInstance } from 'fastify'
+import { ForbiddenError } from '../../errors'
+import { is_trusted_ip } from '../../utils/auth'
 import { prisma } from '../../prisma'
 
 export default async function(app: FastifyInstance) {
-  app.get('/menus', async (_, res) => {
-    const menus = await prisma.menu.findMany()
+  app.get('/menus', async (req, res) => {
+    if (!(await is_trusted_ip(req))) throw new ForbiddenError('No privileges.')
 
-    for (let i in menus) {
-      delete (menus[i] as any).username
-      delete (menus[i] as any).password
-    }
+    const menus = await prisma.menu.findMany()
 
     return res.status(200).send({ menus })
   })

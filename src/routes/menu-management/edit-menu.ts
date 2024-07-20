@@ -1,6 +1,6 @@
 import { BadRequestError, NotFoundError, ForbiddenError } from '../../errors'
-import { ssr_render } from '../../utils/render'
 import { FastifyInstance } from 'fastify'
+import { ssr_render } from '../../utils/render'
 import { get_auth } from '../../utils/auth'
 import { prisma } from '../../prisma'
 import { z } from 'zod'
@@ -27,12 +27,12 @@ export default async function(app: FastifyInstance) {
     if (!Object.entries(data).length)
       throw new BadRequestError('Sent no data.')
 
-    let menu
+    let menu: any
     try   { menu = await prisma.menu.update({ where: { id }, data }) }
     catch { throw new NotFoundError('Menu not found.') }
 
-    delete (menu as any).username
-    delete (menu as any).password
+    delete menu.username
+    delete menu.password
 
     ssr_render(menu)
     return res.status(204).send({ menu })

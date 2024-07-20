@@ -1,7 +1,7 @@
 import { BadRequestError, ForbiddenError } from '../../errors'
 import { get_menu_from_category } from '../../utils/fetch-menu'
-import { ssr_render } from '../../utils/render'
 import { FastifyInstance } from 'fastify'
+import { ssr_render } from '../../utils/render'
 import { get_auth } from '../../utils/auth'
 import { prisma } from '../../prisma'
 import { z } from 'zod'

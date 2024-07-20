@@ -12,7 +12,8 @@ export default async function(app: FastifyInstance) {
       name:     z.string(),
       phone:    z.optional(z.string()),
       whatsapp: z.optional(z.string()),
-      address:  z.optional(z.string())
+      address:  z.optional(z.string()),
+      path:     z.string()
     })
     const data = bodySchema.parse(req.body)
 

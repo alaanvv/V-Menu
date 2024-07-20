@@ -1,7 +1,7 @@
 <div class='root'>
   <div class='background'>
     <main>
-      <img class='banner' src={`/assets/img/${menu.id}/banner.png`} alt='banner' />
+      <img class='banner' src={`/assets/img/${menu.path}/banner.png`} alt='banner' />
 
       {#each menu.categories[0].subcategories as category}
         <Category {category} {menu} />

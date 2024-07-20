@@ -15,6 +15,7 @@ model Menu {
   phone    String?
   whatsapp String?
   address  String?
+  path     String
 
   categories Category[]
   session    Session[]

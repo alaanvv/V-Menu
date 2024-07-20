@@ -1,7 +1,7 @@
 <main>
   <div class='images'>
     {#each images[plain_name] || [] as image}
-      <img class='img' src={`/assets/img/${menu.id}/${image}.png`} alt=''>
+      <img class='img' src={`/assets/img/${menu.path}/${image}.png`} alt=''>
     {/each}
   </div>
 

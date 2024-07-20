@@ -1,36 +1,27 @@
-{#if !component && !error}
-  <p> Carregando cardápio... </p>
-{:else if component}
-  <svelte:component this={component} {menu} />
-{:else}
-  <p> Cardápio não encontrado </p>
+{#if component} <svelte:component this={component} {menu} />
+{:else}         <p> {message} </p>
 {/if}
 
 <script>
-  import clyp7z8db0000cxl6arjgaa23 from './menus/clyp7z8db0000cxl6arjgaa23/Menu.svelte'
-
+  import adeildo_lanches from './menus/adeildo-lanches/Menu.svelte'
   import { onMount } from 'svelte'
   import { api } from '../utils/api.js'
 
-  let component, menu_id, menu, error
-
-  let menu_names = {
-   'adeildo-lanches': 'clyp7z8db0000cxl6arjgaa23'
-  }
-
-  let components = {
-   'clyp7z8db0000cxl6arjgaa23': clyp7z8db0000cxl6arjgaa23
-  }
+  let component, menu, message = 'Carregando cardápio...'
 
   onMount(async _ => {
-    const path = window.location.pathname.split('/').pop()
-    menu_id = menu_names[path] || path
+    const components = {
+      'adeildo-lanches': adeildo_lanches
+    }
 
-    const { res, data } = await api(`menu/${menu_id}`)
-    if (!res.ok) return error = 1
+    const path = window.location.pathname.split('/').pop()
+
+    const { res, data } = await api(`menu-by-path/${path}`)
+    component = components[path]
+
+    if (!res.ok || !component) return message = 'Cardápio não encontrado'
+
     menu = data.menu
-    component = components[menu_id]
-    if (!component) return error = 1
     document.title = menu.name
   })
 </script>

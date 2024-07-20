@@ -1,5 +1,5 @@
 import { afterAll, beforeAll, describe, expect, it } from 'vitest'
-import { app, load_routes } from '../app'
+import { app, load_routes } from './app'
 import request from 'supertest'
 
 describe('Menu management', _ => {
@@ -19,7 +19,8 @@ describe('Menu management', _ => {
         name:     'Aderaldo Lanxes',
         address:  'Rua A, Centro, n°57',
         phone:    '(12) 3456-7891',
-        whatsapp: '(12) 3456-7891'
+        whatsapp: '(12) 3456-7891',
+        path:     'aderaldo-lanxes'
       })
 
       expect(res.statusCode).toEqual(201)

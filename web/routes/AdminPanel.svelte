@@ -2,6 +2,7 @@
   <label> Username: <input bind:value={form.username} required /> </label>
   <label> Password: <input bind:value={form.password} required /> </label>
   <label> Name:     <input bind:value={form.name}     required /> </label>
+  <label> Path:     <input bind:value={form.path}     required /> </label>
 
   <Button disabled={l_submitting} action={submit} t={l_submitting ? '...' : 'Create'} />
 </form>
@@ -29,7 +30,6 @@
 
   async function submit() {
     l_submitting = true
-    console.log(form)
     const { data } = await api('menu', 'POST', form)
     menus = [...menus, data.menu]
     l_submitting = false

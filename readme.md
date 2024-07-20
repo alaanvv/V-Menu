@@ -3,7 +3,7 @@
 - [Todo](#todo)
 
 # Database
-```prisma    
+```prisma        
  model Menu {
   id       String @id @default(cuid())
   username String
@@ -12,6 +12,7 @@
   phone    String?
   whatsapp String?
   address  String?
+  path     String
 
   categories Category[]
   session    Session[]
@@ -73,3 +74,14 @@ model Session {
 - [x] Create order features
 - [x] Write missing tests
 - [x] Account system
+
+- [x] Create path field for menus
+- [x] Make menu findable by name
+- [x] Make its input only available in creation
+- [x] Change folder names to that path
+- [x] Try to make it import dynamically (I tried LOL)
+- [x] Make scroll go back when changing tab
+- [x] Write tests for the new route
+
+> FINAL-BOSS
+- [ ] Render menus on server side

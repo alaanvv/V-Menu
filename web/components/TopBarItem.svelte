@@ -8,5 +8,8 @@
 
   export let page, name, i
 
-  function enter() { curr_page.set(page) }
+  function enter() {
+    curr_page.set(page)
+    document.querySelector('main').scrollTop = 0
+  }
 </script>

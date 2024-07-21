@@ -1,7 +1,7 @@
 <div class='root'>
   <div class='background'>
     <main>
-      <img class='banner' src={`../../assets/img/${menu.path}/banner.png`} alt='banner' />
+      <img class='banner' src={`/assets/img/${menu.path}/banner.png`} alt='banner' />
 
       {#each menu.categories[0].subcategories as category}
         <Category {category} {menu} />
@@ -22,12 +22,12 @@
 <style>
   @font-face {
     font-family: 'Enriqueta';
-    src: url('../../assets/font/Enriqueta.ttf') format('truetype');
+    src: url('/assets/font/Enriqueta.ttf') format('truetype');
   }
 
   @font-face {
     font-family: 'Sarabun';
-    src: url('../../assets/font/Sarabun.ttf') format('truetype');
+    src: url('/assets/font/Sarabun.ttf') format('truetype');
   }
 
   .root {

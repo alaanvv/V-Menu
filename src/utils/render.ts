@@ -11,7 +11,8 @@ export function ssr_render(menu: any) {
     <head>
     	<meta charset='utf-8'>
     	<meta name='viewport' content='width=device-width,initial-scale=1'>
-    	<link rel='stylesheet' href='../../assets/css/global.css'>
+    	<link rel='stylesheet' href='/assets/css/global.css'>
+      <link rel='icon' href='/assets/img/favicon.png' />
     	<title> ${menu.name} </title>
       ${result.head}
       <style> ${result.css.code} </style>

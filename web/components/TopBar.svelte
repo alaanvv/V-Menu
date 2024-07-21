@@ -6,7 +6,7 @@
     {:else}
       <TopBarItem page='login' name='Login'    i='login' />
     {/if}
-    {#if window.location.href.endsWith('adm')}
+    {#if window.location.search == '?adm'}
       <TopBarItem page='admin' name='Admin'    i='build' />
     {/if}
   </ul>

@@ -1,5 +1,5 @@
 import { BadRequestError, ForbiddenError } from '../../errors'
-import { get_menu_from_category } from '../../utils/fetch-menu'
+import { get_menu } from '../../utils/fetch-menu'
 import { FastifyInstance } from 'fastify'
 import { ssr_render } from '../../utils/render'
 import { get_auth } from '../../utils/auth'
@@ -13,8 +13,10 @@ export default async function(app: FastifyInstance) {
 
     if (!(await get_auth(req, id))) throw new ForbiddenError('No privileges.')
 
+    let menu_id: string
     try {
       const category = await prisma.category.delete({ where: { id } })
+      menu_id = category.menu_id
 
       await prisma.category.updateMany({
         where: { menu_id: category.menu_id, pos: { gt: category.pos } },
@@ -23,7 +25,7 @@ export default async function(app: FastifyInstance) {
     }
     catch { throw new BadRequestError('Category not found.') }
 
-    ssr_render(await get_menu_from_category(id))
+    ssr_render(await get_menu(menu_id))
     return res.status(204).send()
   })
 }

@@ -1,5 +1,5 @@
 import { BadRequestError, ForbiddenError } from '../../errors'
-import { get_menu_from_subcategory } from '../../utils/fetch-menu'
+import { get_menu_from_category } from '../../utils/fetch-menu'
 import { FastifyInstance } from 'fastify'
 import { ssr_render } from '../../utils/render'
 import { get_auth } from '../../utils/auth'
@@ -13,8 +13,10 @@ export default async function(app: FastifyInstance) {
 
     if (!(await get_auth(req, id))) throw new ForbiddenError('No privileges.')
 
+    let category_id: string
     try {
       const subcategory = await prisma.subcategory.delete({ where: { id } })
+      category_id = subcategory.category_id
 
       await prisma.subcategory.updateMany({
         where: { category_id: subcategory.category_id, pos: { gt: subcategory.pos } },
@@ -23,7 +25,7 @@ export default async function(app: FastifyInstance) {
     }
     catch { throw new BadRequestError('Subcategory not found.') }
 
-    ssr_render(await get_menu_from_subcategory(id))
+    ssr_render(await get_menu_from_category(category_id))
     return res.status(204).send()
   })
 }

@@ -15,8 +15,28 @@ export default async function(app: FastifyInstance) {
     if (!menu)
       throw new BadRequestError('Invalid credentials.')
 
-    // TODO Add include menu
-    const session = await prisma.session.create({ data: { menu_id: menu.id } })
+    const session = await prisma.session.create({
+      data: { menu_id: menu.id },
+      include: {
+        menu: {
+          include: {
+            categories: {
+              orderBy: { pos: 'asc' },
+              include: {
+                subcategories: {
+                  orderBy: { pos: 'asc' },
+                  include: {
+                    items: {
+                      orderBy: { pos: 'asc' }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    })
 
     return res.status(200).send({ session })
   })

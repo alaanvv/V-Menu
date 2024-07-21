@@ -45,7 +45,7 @@
     if (res.ok) {
       localStorage.setItem('session_id', data.session.id)
       session_id.set(data.session.id)
-      menu.set((await api(`menu/${data.session.menu_id}`)).data.menu)
+      menu.set(data.session.menu)
       return
     }
 

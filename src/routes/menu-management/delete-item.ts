@@ -8,10 +8,11 @@ import { z } from 'zod'
 
 export default async function(app: FastifyInstance) {
   app.delete('/item/:id', async (req, res) => {
-    const paramSchema = z.object({ id: z.string().cuid() })
-    const { id } = paramSchema.parse(req.params)
+    const schema = z.object({ id: z.string().cuid() })
+    const { id } = schema.parse(req.params)
 
-    if (!(await get_auth(req, id))) throw new ForbiddenError('No privileges.')
+    if (!(await get_auth(req, id)))
+      throw new ForbiddenError('No privileges.')
 
     let subcategory_id: string
     try {

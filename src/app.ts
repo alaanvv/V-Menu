@@ -11,18 +11,12 @@ export const app = fastify()
 app.register(cors, { origin: '*' })
 app.register(fastifyStatic, { root: path.join(process.cwd(), 'public') })
 
+// TODO Make it a ?
 app.get('/adm', (_, res) => res.sendFile('index.html'))
 
 export async function load_routes() {
-  try {
-    const context = require.context('./routes', true, /\.js$/)
-    const routes = context.keys().map(context)
-    await Promise.all(routes.map(async (route: any) => { await app.register(route.default || route) }))
-  }
-  catch {
-    const routes = glob.sync(path.join(__dirname, './routes/*/*'))
-    await Promise.all(routes.map(async path => app.register((await import(`${path}`)).default)))
-  }
+  const routes = glob.sync(path.join(__dirname, './routes/*/*'))
+  await Promise.all(routes.map(async path => app.register((await import(`${path}`)).default)))
 }
 
 app.setErrorHandler((error, _, reply) => {

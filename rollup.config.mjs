@@ -1,11 +1,10 @@
 import livereload from 'rollup-plugin-livereload'
 import resolve from '@rollup/plugin-node-resolve'
 import commonjs from '@rollup/plugin-commonjs'
-import css from 'rollup-plugin-css-only'
 import terser from '@rollup/plugin-terser'
 import svelte from 'rollup-plugin-svelte'
-import { config } from 'dotenv'
-config()
+import css from 'rollup-plugin-css-only'
+import 'dotenv/config'
 
 const production = process.env.NODE_ENV == 'production'
 
@@ -15,7 +14,6 @@ export default {
     format: 'esm',
     dir: 'public/build'
   },
-
   plugins: [
     svelte({
       compilerOptions: { dev: !production },
@@ -32,6 +30,5 @@ export default {
     !production && livereload('public'),
     production && terser()
   ],
-
-  watch: { clearScreen: false	}
+  watch: { clearScreen: true }
 }

@@ -5,7 +5,8 @@ import { prisma } from '../../prisma'
 
 export default async function(app: FastifyInstance) {
   app.get('/menus', async (req, res) => {
-    if (!(await is_trusted_ip(req))) throw new ForbiddenError('No privileges.')
+    if (!(await is_trusted_ip(req)))
+      throw new ForbiddenError('No privileges.')
 
     const menus = await prisma.menu.findMany()
 

@@ -6,10 +6,11 @@ import { z } from 'zod'
 
 export default async function(app: FastifyInstance) {
   app.delete('/menu/:id', async (req, res) => {
-    if (!(await is_trusted_ip(req))) throw new ForbiddenError('No privileges.')
+    if (!(await is_trusted_ip(req)))
+      throw new ForbiddenError('No privileges.')
 
-    const paramSchema = z.object({ id: z.string().cuid() })
-    const { id } = paramSchema.parse(req.params)
+    const schema = z.object({ id: z.string().cuid() })
+    const { id } = schema.parse(req.params)
 
     try   { await prisma.menu.delete({ where: { id } }) }
     catch { throw new BadRequestError('Menu not found.') }

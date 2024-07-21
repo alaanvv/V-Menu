@@ -8,18 +8,19 @@ import { z } from 'zod'
 
 export default async function(app: FastifyInstance) {
   app.put('/menu/:id', async (req, res) => {
-    const bodySchema = z.object({
+    const body_schema = z.object({
       name:     z.optional(z.string()),
       phone:    z.optional(z.string()),
       whatsapp: z.optional(z.string()),
       address:  z.optional(z.string())
     })
-    const paramSchema = z.object({ id: z.string().cuid() })
+    const param_schema = z.object({ id: z.string().cuid() })
 
-    const data = bodySchema.parse(req.body) as { [key: string]: any }
-    const { id } = paramSchema.parse(req.params)
+    const data: any = body_schema.parse(req.body)
+    const { id } = param_schema.parse(req.params)
 
-    if (!(await get_auth(req, id))) throw new ForbiddenError('No privileges.')
+    if (!(await get_auth(req, id)))
+      throw new ForbiddenError('No privileges.')
 
     for (let entry of Object.entries(data))
       if (entry[1] === null)

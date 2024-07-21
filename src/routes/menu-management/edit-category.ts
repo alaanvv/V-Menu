@@ -8,13 +8,14 @@ import { z } from 'zod'
 
 export default async function(app: FastifyInstance) {
   app.put('/category/:id', async (req, res) => {
-    const bodySchema  = z.object({ name: z.optional(z.string()) })
-    const paramSchema = z.object({ id: z.string().cuid() })
+    const body_schema  = z.object({ name: z.optional(z.string()) })
+    const param_schema = z.object({ id: z.string().cuid() })
 
-    const data = bodySchema.parse(req.body) as { [key: string]: any }
-    const { id } = paramSchema.parse(req.params)
+    const data = body_schema.parse(req.body) as { [key: string]: any }
+    const { id } = param_schema.parse(req.params)
 
-    if (!(await get_auth(req, id))) throw new ForbiddenError('No privileges.')
+    if (!(await get_auth(req, id)))
+      throw new ForbiddenError('No privileges.')
 
     for (let entry of Object.entries(data))
       if (entry[1] === null)
@@ -23,7 +24,7 @@ export default async function(app: FastifyInstance) {
     if (!Object.entries(data).length)
       throw new BadRequestError('Sent no data.')
 
-    let category
+    let category: any
     try   { category = await prisma.category.update({ where: { id }, data }) }
     catch { throw new NotFoundError('Category not found.') }
 

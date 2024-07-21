@@ -6,7 +6,7 @@ import { z } from 'zod'
 
 export default async function(app: FastifyInstance) {
   app.post('/menu', async (req, res) => {
-    const bodySchema = z.object({
+    const schema = z.object({
       username: z.string(),
       password: z.string(),
       name:     z.string(),
@@ -15,9 +15,10 @@ export default async function(app: FastifyInstance) {
       address:  z.optional(z.string()),
       path:     z.string()
     })
-    const data = bodySchema.parse(req.body)
+    const data = schema.parse(req.body)
 
-    if (!(await is_trusted_ip(req))) throw new ForbiddenError('No privileges.')
+    if (!(await is_trusted_ip(req)))
+      throw new ForbiddenError('No privileges.')
 
     const menu: any = await prisma.menu.create({ data })
 

@@ -1,6 +1,6 @@
 <button on:click={action} class={clazz} class:row={i && t} {disabled}>
   {#if i} <Icon {i} /> {/if}
-  {#if t} {t}          {/if}
+  {t || ''}
 </button>
 
 <script>

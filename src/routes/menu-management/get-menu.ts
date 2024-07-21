@@ -5,8 +5,8 @@ import { z } from 'zod'
 
 export default async function(app: FastifyInstance) {
   app.get('/menu/:id', async (req, res) => {
-    const paramSchema = z.object({ id: z.string().cuid() })
-    const { id } = paramSchema.parse(req.params)
+    const schema = z.object({ id: z.string().cuid() })
+    const { id } = schema.parse(req.params)
 
     const menu: any = await get_menu(id)
 

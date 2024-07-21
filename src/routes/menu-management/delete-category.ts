@@ -1,17 +1,18 @@
 import { BadRequestError, ForbiddenError } from '../../errors'
-import { get_menu } from '../../utils/fetch-menu'
 import { FastifyInstance } from 'fastify'
 import { ssr_render } from '../../utils/render'
+import { get_menu } from '../../utils/fetch-menu'
 import { get_auth } from '../../utils/auth'
 import { prisma } from '../../prisma'
 import { z } from 'zod'
 
 export default async function(app: FastifyInstance) {
   app.delete('/category/:id', async (req, res) => {
-    const paramSchema = z.object({ id: z.string().cuid() })
-    const { id } = paramSchema.parse(req.params)
+    const schema = z.object({ id: z.string().cuid() })
+    const { id } = schema.parse(req.params)
 
-    if (!(await get_auth(req, id))) throw new ForbiddenError('No privileges.')
+    if (!(await get_auth(req, id)))
+      throw new ForbiddenError('No privileges.')
 
     let menu_id: string
     try {

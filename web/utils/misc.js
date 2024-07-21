@@ -4,7 +4,7 @@ export function minify_text(text) {
 
 export function format_price(n) {
   let str = String(n / 100).replace('.', ',')
-  if (n % 100 == 0) str += ',00'
-  else if (n % 10 == 0) str += '0'
+  if      (n % 100 == 0) str += ',00'
+  else if (n % 10  == 0) str += '0'
   return str
 }

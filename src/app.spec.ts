@@ -2,7 +2,7 @@ import { afterAll, beforeAll, describe, expect, it } from 'vitest'
 import { app, load_routes } from './app'
 import request from 'supertest'
 
-describe('Menu management', _ => {
+describe('App', _ => {
   let session_id: string, menu_id: string, category_id: string, subcategory_id: string, item_id: string
 
   beforeAll(async _ => {

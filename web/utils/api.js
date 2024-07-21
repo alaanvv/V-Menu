@@ -14,7 +14,9 @@ export async function api(route, method, body) {
     options.headers['Content-Type'] = 'application/json'
   }
 
-  const res = await fetch(`${window.location.origin}/${route}`, options)
+  // TODO Check if I broke it
+  // const res = await fetch(`${window.location.origin}/${route}`, options)
+  const res = await fetch(`/${route}`, options)
   let data
 
   if (res.headers?.get('content-type')?.includes('application/json'))

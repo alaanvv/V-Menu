@@ -9,7 +9,7 @@
   export let page, name, i
 
   function enter() {
-    curr_page.set(page)
     document.querySelector('main').scrollTop = 0
+    curr_page.set(page)
   }
 </script>

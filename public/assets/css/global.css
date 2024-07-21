@@ -33,6 +33,11 @@ html, body {
   overflow: hidden;
 }
 
+ul {
+  padding: 0;
+  margin: 0;
+}
+
 /* Headers */
 
 h1, .special {
@@ -182,12 +187,8 @@ button.grn {
 .cp { cursor: pointer; }
 .cw { cursor: wait;    }
 
-.tac {
-  text-align: center;
-}
-.tas {
-  text-align: start;
-}
+.tac { text-align: center; }
+.tas { text-align: start;  }
 
 .b {
   font-weight: bold;
@@ -286,9 +287,4 @@ button.grn {
 
     width: 100%;
   }
-}
-
-ul {
-  padding: 0;
-  margin: 0;
 }

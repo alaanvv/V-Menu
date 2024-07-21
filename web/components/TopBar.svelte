@@ -45,6 +45,8 @@
   }
 
   @supports (-webkit-touch-callout: none) {
-    .topbar { padding-top: 80px; }
+    .topbar {
+      padding-top: 80px;
+    }
   }
 </style>

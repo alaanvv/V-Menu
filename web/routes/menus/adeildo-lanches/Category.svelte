@@ -7,7 +7,7 @@
 
   <h1> {category.name} </h1>
 
-  {#each category.items as item}
+  {#each category.items || [] as item}
     <Item {item} {category} {menu} />
   {/each}
 </main>

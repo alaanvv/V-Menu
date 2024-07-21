@@ -1,5 +1,4 @@
-const { PrismaClient } = require('@prisma/client')
-const prisma = new PrismaClient()
+import { prisma } from '../prisma'
 
 export async function get_menu(id: string) {
   return await prisma.menu.findUnique({
@@ -90,7 +89,7 @@ export async function get_menu_from_category(id: string) {
         }
       }
     }
-  })).menu
+  }))?.menu
 }
 
 export async function get_menu_from_subcategory(id: string) {
@@ -119,7 +118,7 @@ export async function get_menu_from_subcategory(id: string) {
         }
       }
     }
-  })).category.menu
+  }))?.category.menu
 }
 
 export async function get_menu_from_item(id: string) {
@@ -152,5 +151,5 @@ export async function get_menu_from_item(id: string) {
         }
       }
     }
-  })).subcategory.category.menu
+  }))?.subcategory.category.menu
 }

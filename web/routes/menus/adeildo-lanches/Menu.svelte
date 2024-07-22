@@ -1,23 +1,19 @@
-<div class='root'>
-  <div class='background'>
-    <main>
-      <img class='banner' src={`/assets/img/${menu.path}/banner.png`} alt='banner' />
+<main>
+  <img class='banner' src={`/assets/img/${menu.path}/banner.png`} alt='banner' />
 
-      {#each menu.categories[0].subcategories as category}
-        <Category {category} {menu} />
-      {/each}
+  {#each menu.categories[0].subcategories as category}
+    <Category {category} {menu} />
+  {/each}
 
-      <footer>
-        <p class='tac'>
-          {menu.whatsapp} <br>
-          Faça seu pedido, <br>
-          atendemos todos os dias!
-        </p>
-      </footer>
-      <br> <br> <br> <br>
-    </main>
-  </div>
-</div>
+  <footer>
+    <p class='tac'>
+      {menu.whatsapp} <br>
+      Faça seu pedido, <br>
+      atendemos todos os dias!
+    </p>
+  </footer>
+  <br> <br> <br> <br>
+</main>
 
 <style>
   @font-face {
@@ -30,40 +26,33 @@
     src: url('/assets/font/Sarabun.ttf') format('truetype');
   }
 
-  .root {
+  :root {
     --f-header:   'Enriqueta', serif;
     --f-item:     inherit;
     --f-currency: 'Sarabun', sans-serif;
     --f-number:   'Enriqueta', serif;
 
-    --bg0: #f1e5cc !important;
+    --bg0_h: #f1e5cc !important;
     --bg1: #fff2d7 !important;
 
     --fg0: #652505;
     --fg1: #904710;
     --fg2: #090d0d;
+
+    overflow-y: scroll;
   }
 
-  .background {
-    position: fixed;
-    left: 0;
-    top: 0;
-    z-index: 1;
-
-    width: 100%;
-    height: 100%;
-
-    background-color: var(--bg0);
+  :global(body) {
+    overflow: visible;
+    height: auto;
   }
 
   main {
     max-width: 500px;
-    height: 100%;
     margin: 0 auto;
 
     background-color: var(--bg1);
     box-shadow: 0 0 10px 3px #0000000f !important;
-    overflow-y: scroll;
 
     text-transform: uppercase;
   }

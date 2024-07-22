@@ -1,6 +1,6 @@
 {#if show}
   <Modal {show} on:close={close}>
-    <h2 class='special tac'> {subcategory ? `Subcategoria: ${subcategory.name}` : 'Criando uma Subcategoria'} </h2>
+    <h2 class='special tac'> {subcategory ? `${$menu.single_category ? 'Categoria' : 'Subcategoria'}: ${subcategory.name}` : `Criando uma ${$menu.single_category ? 'Categoria' : 'Subcategoria'}`} </h2>
 
     <form>
       <label> Nome: <input bind:value={form.name} required /> </label>
@@ -15,6 +15,7 @@
   import Modal from './Modal.svelte'
 
   import { create_subcategory, edit_subcategory } from '../utils/menu-management.js'
+  import { menu } from '../store.js'
 
   export let show, subcategory, category_id
   let l_submitting

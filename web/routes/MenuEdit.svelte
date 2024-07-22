@@ -23,7 +23,9 @@
 
 <div class='hr' />
 
-<Button class='grn' i='add' t='Categoria' action={create_category} />
+{#if !$menu.single_category && $menu.categories.length}
+  <Button class='grn' i='add' t='Categoria' action={create_category} />
+{/if}
 
 {#each $menu.categories || [] as category}
   <CategoryCard {category} />

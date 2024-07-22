@@ -16,6 +16,7 @@ model Menu {
   whatsapp String?
   address  String?
   path     String
+  single_category Boolean
 
   categories Category[]
   session    Session[]

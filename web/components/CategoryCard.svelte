@@ -1,12 +1,16 @@
 <div class='category'>
   <div class='row toprow jcsb'>
-    <h2> {category.name} </h2>
+    {#if $menu.single_category}
+      <Button class='grn' i='add' t='Categoria' action={create_sub} />
+    {:else}
+      <h2> {category.name} </h2>
 
-    <div class='row jce'>
-      <Button i='settings' action={show_options} />
-      <Button i='keyboard_arrow_up' action={move_up} disabled={i == 0} />
-      <Button i='keyboard_arrow_down' action={move_down} disabled={i == $menu.categories.length - 1} />
-    </div>
+      <div class='row jce'>
+        <Button i='settings' action={show_options} />
+        <Button i='keyboard_arrow_up' action={move_up} disabled={i == 0} />
+        <Button i='keyboard_arrow_down' action={move_down} disabled={i == $menu.categories.length - 1} />
+      </div>
+    {/if}
   </div>
 
   <ul>
@@ -22,7 +26,7 @@
     <Button class='grn' i='add'    t='Subcategoria' action={create_sub} />
     <Button class='blu' i='edit'   t='Editar'       action={edit} />
     <Button class='red' i='delete' t='Excluir'      action={_delete} />
-    <Button i='close'   t='Cancelar'                action={_ => m_options = false} />
+    <Button             i='close'  t='Cancelar'     action={_ => m_options = false} />
   </div>
 </Modal>
 <CategoryModal    bind:show={m_edit}        {category} />

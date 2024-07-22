@@ -8,7 +8,7 @@
 </li>
 
 <Modal bind:show={m_options}>
-  <p class='special'> Subcategoria: {subcategory.name} </p>
+  <p class='special'> {$menu.single_category ? 'Categoria' : 'Subcategoria'}: {subcategory.name} </p>
   <div class='btn-col'>
     <Button class='blu' i='edit'   t='Editar'   action={edit} />
     <Button class='red' i='delete' t='Excluir'  action={_delete} />
@@ -42,7 +42,7 @@
   function edit()         { m_options = 0; m_edit    = 1 }
   async function _delete() {
     m_options = 0
-    if (!confirm(`Certeza que quer excluir a subcategoria ${subcategory.name}?`)) return
+    if (!confirm(`Certeza que quer excluir a ${$menu.single_category ? 'categoria' : 'subcategoria'} ${subcategory.name}?`)) return
 
     l_deleting = true
     await delete_subcategory(subcategory.id)

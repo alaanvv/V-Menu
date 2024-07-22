@@ -77,3 +77,8 @@ model Session {
 
 > FINAL-BOSS
 - [x] Render menus on server side
+
+- [x] Make menus able to be single-category
+    - [x] Database field
+    - [x] Make it changeable
+    - [x] Edit frontend to match this

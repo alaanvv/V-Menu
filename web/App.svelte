@@ -40,7 +40,7 @@
 
   $: {
     if      (!$session_id && $curr_page != 'admin') curr_page.set('login')
-    else if ($curr_page == 'login' || !$curr_page)  curr_page.set('items')
+    else if ($curr_page == 'login' || !$curr_page)  curr_page.set('menu')
   }
 </script>
 

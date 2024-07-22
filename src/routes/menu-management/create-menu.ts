@@ -13,7 +13,8 @@ export default async function(app: FastifyInstance) {
       phone:    z.optional(z.string()),
       whatsapp: z.optional(z.string()),
       address:  z.optional(z.string()),
-      path:     z.string()
+      path:     z.string(),
+      single_category: z.coerce.boolean()
     })
     const data = schema.parse(req.body)
 

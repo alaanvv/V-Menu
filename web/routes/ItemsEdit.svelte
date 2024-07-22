@@ -1,15 +1,17 @@
 <div class='row'>
   <input placeholder='Pesquisar' bind:value={query}>
 
-  <select bind:value={category_id}>
-    <option value={undefined}> Todas categorias </option>
-    {#each $menu.categories || [] as category}
-      <option value={category.id}> {category.name} </option>
-    {/each}
-  </select>
+  {#if !$menu.single_category}
+    <select bind:value={category_id}>
+      <option value={undefined}> Todas categorias </option>
+      {#each $menu.categories || [] as category}
+        <option value={category.id}> {category.name} </option>
+      {/each}
+    </select>
+  {/if}
 
-  <select bind:value={subcategory_id} disabled={!category_id}>
-    <option value={undefined}> Todas subcategorias </option>
+  <select bind:value={subcategory_id} disabled={!$menu.single_category && !category_id}>
+    <option value={undefined}> Todas {$menu.single_category ? 'categorias' : 'subcategorias'} </option>
     {#each category?.subcategories || [] as subcategory}
       <option value={subcategory.id}> {subcategory.name} </option>
     {/each}
@@ -19,7 +21,9 @@
 {#each filtered_menu.categories || [] as category}
   <div class='hr' />
 
-  <h1> {category.name} </h1>
+  {#if !$menu.single_category}
+    <h1> {category.name} </h1>
+  {/if}
 
   {#each category.subcategories || [] as subcategory}
     <SubcategoryTable {subcategory} />
@@ -42,6 +46,9 @@
 
   let category_id, subcategory_id, category, subcategory, query = ''
   let filtered_menu
+
+  if ($menu.single_category)
+    category_id = $menu.categories[0].id
 
   function apply_filters(category_id, subcategory_id, query) {
     if (!$menu.categories.find(c => c.id == category_id)?.subcategories.find(sc => sc.id == subcategory_id))

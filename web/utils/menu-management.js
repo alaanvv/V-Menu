@@ -3,6 +3,14 @@ import { get } from 'svelte/store'
 import { api } from './api.js'
 
 // Menu
+export async function create_menu(_data) {
+  await api(`menu`, 'POST', _data)
+}
+
+export async function adm_edit_menu(id, _data) {
+  await api(`menu/${id}`, 'PUT', _data)
+}
+
 export async function edit_menu(_data) {
   let menu = get(_menu)
 

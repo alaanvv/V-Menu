@@ -1,40 +1,36 @@
-<form>
-  <label> Username: <input bind:value={form.username} required /> </label>
-  <label> Password: <input bind:value={form.password} required /> </label>
-  <label> Name:     <input bind:value={form.name}     required /> </label>
-  <label> Path:     <input bind:value={form.path}     required /> </label>
+<div class='wrapper m0a'>
+  <Button class='grn' action={create_menu} i='add' t='New menu' />
 
-  <Button disabled={l_submitting} action={submit} t={l_submitting ? '...' : 'Create'} />
-</form>
-
-<div class='hr' />
-
-<div class='cards'>
-{#each menus || [] as menu}
-  <div class='card row'>
-    <h2 class='special tac'> {menu.name} </h2>
-    <Button class='red' action={_ => delete_menu(menu.id)} i='delete' />
+  <div class='cards'>
+    {#each menus || [] as menu}
+      <div class='card row'>
+        <h2 class='special tac'> {menu.name} </h2>
+        <Button class='blu right' action={_ => edit_menu(menu)}      i='edit' />
+        <Button class='red'     action={_ => delete_menu(menu.id)} i='delete' />
+      </div>
+    {/each}
   </div>
-{/each}
 </div>
 
+<AdminModal bind:show={m_menu} {menu} />
+
 <script>
-  import Button from '../components/Button.svelte'
+  import AdminModal from '../components/AdminModal.svelte'
+  import Button     from '../components/Button.svelte'
 
   import { onMount } from 'svelte'
   import { api } from '../utils/api.js'
 
-  let menus
-  let form = {}
-  let l_submitting
+  let menus, menu
+  let m_menu
 
-  async function submit() {
-    l_submitting = true
-    const { data } = await api('menu', 'POST', form)
-    menus = [...menus, data.menu]
-    l_submitting = false
+  async function create_menu() {
+    m_menu = true
+  }
 
-    form = {}
+  async function edit_menu(_menu) {
+    menu = _menu
+    m_menu = true
   }
 
   async function delete_menu(id) {
@@ -43,33 +39,30 @@
     menus = menus.filter(m => m.id != id)
   }
 
-  onMount(async _ => {
-    menus = (await api('menus')).data.menus
-  })
+  onMount(async _ => { menus = (await api('menus')).data.menus })
 </script>
 
 <style>
-  form {
-    max-width: 300px;
-    margin: 0 auto;
+  .wrapper {
+    max-width: 400px;
   }
 
-  input {
-    width: 100% !important;
-    margin: 10px 0;
-
-    resize: none;
+  .wrapper > :global(*) {
+    width: 100%;
   }
 
   .cards {
     display: flex;
     flex-direction: column;
     gap: 10px;
+
+    margin-top: 30px;
   }
 
   .card {
+    box-sizing: border-box;
     display: inline-flex;
 
-    margin: 0 auto;
+    width: 100%;
   }
 </style>

@@ -1,11 +1,13 @@
 <main>
   <img class='banner' src={`/assets/img/${menu.path}/banner.png`} alt='banner' />
 
-  <header>
-    <p class='tac' style='white-space: break-spaces;'>
-      {menu.header}
-    </p>
-  </header>
+  {#if menu.header}
+    <header>
+      <p class='tac' style='white-space: break-spaces;'>
+        {menu.header}
+      </p>
+    </header>
+  {/if}
 
   {#each menu.categories[0].subcategories as category}
     <Category {category} {menu} />
@@ -72,7 +74,7 @@
   }
 
   header {
-    margin: 0 30px;
+    margin: 0 30px 30px 30px;
     padding: 30px 0;
     border-bottom: 4px solid var(--fg0)
   }

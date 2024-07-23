@@ -14,6 +14,7 @@ export default async function(app: FastifyInstance) {
       whatsapp: z.optional(z.string()),
       address:  z.optional(z.string()),
       footer:   z.optional(z.string()),
+      header:   z.optional(z.string()),
       single_category: z.optional(z.coerce.boolean())
     })
     const param_schema = z.object({ id: z.string().cuid() })

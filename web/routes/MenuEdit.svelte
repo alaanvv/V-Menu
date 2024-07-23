@@ -20,6 +20,10 @@
     <td> {$menu.address || 'Não informado.'} </td>
   </tr>
   <tr>
+    <td> <Icon i='info' />  Cabeçalho: </td>
+    <td> {$menu.header  || 'Não informado.'} </td>
+  </tr>
+  <tr>
     <td> <Icon i='info' />  Rodapé: </td>
     <td> {$menu.footer  || 'Não informado.'} </td>
   </tr>

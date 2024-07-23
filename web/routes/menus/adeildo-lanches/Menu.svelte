@@ -1,6 +1,12 @@
 <main>
   <img class='banner' src={`/assets/img/${menu.path}/banner.png`} alt='banner' />
 
+  <header>
+    <p class='tac' style='white-space: break-spaces;'>
+      {menu.header}
+    </p>
+  </header>
+
   {#each menu.categories[0].subcategories as category}
     <Category {category} {menu} />
   {/each}
@@ -56,13 +62,19 @@
     text-transform: uppercase;
   }
 
-  footer {
+  footer, header {
     margin: 80px 0 0 0;
 
     line-height: 1.3em;
     font-size: 1.3em;
     font-weight: 800;
     color: var(--fg0);
+  }
+
+  header {
+    margin: 0 30px;
+    padding: 30px 0;
+    border-bottom: 4px solid var(--fg0)
   }
 
   .banner {

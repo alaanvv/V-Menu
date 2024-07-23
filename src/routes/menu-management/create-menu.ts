@@ -14,6 +14,7 @@ export default async function(app: FastifyInstance) {
       whatsapp: z.optional(z.string()),
       address:  z.optional(z.string()),
       footer:   z.optional(z.string()),
+      header:   z.optional(z.string()),
       path:     z.string(),
       single_category: z.coerce.boolean()
     })

@@ -6,10 +6,9 @@
   {/each}
 
   <footer>
-    <p class='tac'>
-      {menu.whatsapp} <br>
-      Faça seu pedido, <br>
-      atendemos todos os dias!
+    <p class='tac' style='white-space: break-spaces;'>
+      {menu.whatsapp}
+      {menu.footer}
     </p>
   </footer>
   <br> <br> <br> <br>
@@ -84,6 +83,13 @@
     width: 25%;
     border-radius: 100%;
   }
+  main :global(.images img:last-child) {
+    margin-right: 16.666%;
+  }
+  main :global(.images img:first-child) {
+    margin-left: 16.666%;
+    margin-right: auto;
+  }
 
   main :global(p) {
     margin: 0;
@@ -140,6 +146,11 @@
   @media screen and (max-width: 500px) {
     main :global(.item) {
       margin: 0 20px 30px 20px;
+    }
+
+    main :global(.images img) {
+      width: 25vw;
+      height: 25vw;
     }
   }
 

@@ -19,6 +19,10 @@
     <td> <Icon i='place' /> Endereço: </td>
     <td> {$menu.address || 'Não informado.'} </td>
   </tr>
+  <tr>
+    <td> <Icon i='info' />  Rodapé: </td>
+    <td> {$menu.footer  || 'Não informado.'} </td>
+  </tr>
 </table>
 
 <div class='hr' />
@@ -68,6 +72,8 @@
 <style>
   td {
     padding: 10px 10px 0 0;
+
+    white-space: break-spaces;
   }
   td:nth-child(1) {
     display: flex;

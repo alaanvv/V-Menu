@@ -15,8 +15,8 @@
 
   <footer>
     <p class='tac' style='white-space: break-spaces;'>
-      {menu.whatsapp}
-      {menu.footer}
+{menu.whatsapp}
+{menu.footer}
     </p>
   </footer>
   <br> <br> <br> <br>

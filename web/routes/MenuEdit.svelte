@@ -1,6 +1,6 @@
 <div class='row'>
   <h1> {$menu.name} </h1>
-  <a class='right' href={`/m/${menu_names[$menu.id] || $menu.id}`} target='_blank'> <Button i='menu_book' /> </a>
+  <a class='right' href={`/m/${$menu.path}`} target='_blank'> <Button i='menu_book' /> </a>
   <Button i='qr_code' action={create_qr} />
   <Button class='blu' i='edit'   t='' action={edit} />
   <Button class='red' i='logout'  action={logout} />
@@ -31,7 +31,7 @@
 
 <div class='hr' />
 
-{#if !$menu.single_category && $menu.categories.length}
+{#if !$menu.single_category ||  !$menu.categories.length}
   <Button class='grn' i='add' t='Categoria' action={create_category} />
 {/if}
 
@@ -53,10 +53,6 @@
 
   import { session_id, menu } from '../store.js'
   import { api } from '../utils/api.js'
-
-  let menu_names = {
-   'clyp7z8db0000cxl6arjgaa23': 'adeildo-lanches'
-  }
 
   let m_edit, m_create_category, m_qr
 

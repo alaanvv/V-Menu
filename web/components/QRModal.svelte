@@ -22,10 +22,6 @@
   export let show
   let qr
 
-  let menu_names = {
-   'clyp7z8db0000cxl6arjgaa23': 'adeildo-lanches'
-  }
-
   function close() { show = false }
 
   function format_name(name) {
@@ -33,7 +29,7 @@
   }
 
   onMount(async _ => {
-    qr = await QRCode.toDataURL(`${window.location}m/${menu_names[$menu.id] || $menu.id}`)
+    qr = await QRCode.toDataURL(`${window.location}m/${$menu.path}`)
   })
 </script>
 

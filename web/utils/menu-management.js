@@ -8,10 +8,18 @@ export async function create_menu(_data) {
 }
 
 export async function adm_edit_menu(id, _data) {
+  for (let key in _data)
+    if (_data[key] == null)
+      delete _data[key]
+
   await api(`menu/${id}`, 'PUT', _data)
 }
 
 export async function edit_menu(_data) {
+  for (let key in _data)
+    if (_data[key] == null)
+      delete _data[key]
+
   let menu = get(_menu)
 
   await api(`menu/${menu.id}`, 'PUT', _data)
@@ -33,6 +41,10 @@ export async function create_category(_data) {
 }
 
 export async function edit_category(id, _data) {
+  for (let key in _data)
+    if (_data[key] == null)
+      delete _data[key]
+
   const menu = get(_menu)
 
   await api(`category/${id}`, 'PUT', _data)
@@ -87,6 +99,10 @@ export async function create_subcategory(id, _data) {
 }
 
 export async function edit_subcategory(id, _data) {
+  for (let key in _data)
+    if (_data[key] == null)
+      delete _data[key]
+
   const menu = get(_menu)
 
   await api(`subcategory/${id}`, 'PUT', _data)
@@ -160,6 +176,10 @@ export async function create_item(id, _data) {
 }
 
 export async function edit_item(id, _data) {
+  for (let key in _data)
+    if (_data[key] == null)
+      delete _data[key]
+
   const menu = get(_menu)
 
   await api(`item/${id}`, 'PUT', _data)

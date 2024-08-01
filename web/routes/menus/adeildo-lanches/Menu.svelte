@@ -9,7 +9,7 @@
     </header>
   {/if}
 
-  {#each menu.categories[0].subcategories as category}
+  {#each menu.categories[0]?.subcategories || [] as category}
     <Category {category} {menu} />
   {/each}
 
